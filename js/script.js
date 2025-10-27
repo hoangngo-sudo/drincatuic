@@ -21,8 +21,11 @@ function theme() {
     localStorage.setItem("darkmode", "null");
   };
 
+  // Change this condition to NOT apply dark mode on first load
   if (darkmode === "active") {
     enableDarkMode();
+  } else {
+    disableDarkMode();
   }
 
   // Add click event listener to all theme buttons
