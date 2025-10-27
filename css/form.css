@@ -1,7 +1,12 @@
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
-
+@font-face {
+  font-family: 'WF Visual Sans';
+  src: url('https://dhygzobemt712.cloudfront.net/Fonts/VF/WFVisualSansVF.woff2') format('woff2');
+  font-weight: 100 300;
+  font-style: normal;
+  font-display: swap;
+}
 * {
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'WF Visual Sans', sans-serif;
 }
 
 :root {
@@ -194,101 +199,41 @@ input::placeholder {
   display: block;
 }
 
-/* Modal Styles */
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.527);
+/* Success Message Styles */
+.success-message {
   display: none;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  opacity: 0;
-  transition: opacity 0.3s ease;
+  margin-bottom: 1.5rem;
+  padding: 1rem 0;
+  animation: slideIn 0.4s ease;
 }
 
-.modal.active {
-  display: flex;
-  opacity: 1;
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
+.success-message.active {
+  display: block;
 }
 
-.modal-container {
-  background-color: white;
-  width: 90%;
-  max-width: 500px;
-  padding: 1.6rem;
-  border-radius: 8px;
-  box-shadow: 0 0.25rem 1.25rem rgba(0, 0, 0, 0.2);
-  text-align: center;
-  position: relative;
-  opacity: 0;
-  transform: scale(0.8);
-  transition: all 0.3s ease;
-}
-
-.modal.active .modal-container {
-  opacity: 1;
-  transform: scale(1);
-}
-
-.modal-close {
-  position: absolute;
-  top: 0.6rem;
-  right: 0.6rem;
-  background: transparent;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  color: #6703c4;
-}
-
-.modal-header {
-  margin-bottom: 0.9rem;
-}
-
-.modal-header h2 {
-  color: #6703c4;
-  font-size: 2rem;
-  margin-bottom: 0.6rem;
-}
-
-.modal-body p {
-  margin-bottom: 0.6rem;
+.success-message p {
   font-size: 1rem;
-  line-height: 2;
+  line-height: 1.8;
+  color: #10b981;
+  margin: 0;
+  font-weight: 500;
+  text-align: left;
 }
 
-.modal-body p:last-child {
-  margin-bottom: 0;
-}
-
-.modal-image-container {
-  width: 7.5rem;
-  height: 7.5rem;
-  margin: 0 auto 15px;
-  overflow: hidden;
-}
-
-.modal-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  animation: rotation 4s infinite linear;
-}
-
-@keyframes rotation {
+@keyframes slideIn {
   from {
-    transform: rotate(0deg);
+    opacity: 0;
+    transform: translateY(-10px);
   }
-
   to {
-    transform: rotate(359deg);
+    opacity: 1;
+    transform: translateY(0);
   }
+}
+
+.btn.loading {
+  opacity: 0.7;
+  cursor: not-allowed;
 }
 
 /* ============================

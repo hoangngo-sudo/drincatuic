@@ -42,62 +42,44 @@ document.addEventListener("DOMContentLoaded", theme);
 function form() {
   const form = document.querySelector(".form");
   const submitBtn = document.querySelector(".btn");
-  const modal = document.querySelector(".modal");
-  const modalClose = document.querySelector(".modal-close");
-  const modalMessage = document.querySelector(".modal-message");
-  let modalTimeout;
+  const successMessage = document.querySelector("#successMessage");
+  const successText = document.querySelector("#successText");
 
-  // Create a container for displaying registrations
-  const registrationList = document.createElement("div");
-  registrationList.className = "registration-list";
-
-  // Add the registration list to the page
-  if (form) {
-    form.appendChild(registrationList);
-  }
-
-  // Function to show modal with customized message
-  const showModal = (name) => {
-    if (modal) {
+  // Function to show success message with customized text
+  const showSuccessMessage = (name) => {
+    if (successMessage && successText) {
       // Set personalized message
-      if (modalMessage) {
-        modalMessage.textContent = `Thank you, ${name}! Your registration has been received.`;
-      }
+      successText.textContent = `Thank you ${name}, you have been registered.`;
 
-      // Show the modal
-      modal.classList.add("active");
+      // Show the success message
+      successMessage.classList.add("active");
 
-      // Set timeout to automatically close modal after 10 seconds
-      modalTimeout = setTimeout(() => {
-        closeModal();
-      }, 10000);
+      // Scroll to the success message
+      successMessage.scrollIntoView({ behavior: "smooth", block: "nearest" });
     }
   };
 
-  // Function to close the modal
-  const closeModal = () => {
-    if (modal) {
-      const modalContainer = modal.querySelector(".modal-container");
-      if (modalContainer) {
-        modalContainer.classList.remove("active");
-      }
-
-      // Delay removing the modal's active class to allow for container animation
-      setTimeout(() => {
-        modal.classList.remove("active");
-      }, 300);
-
-      // Clear any existing timeout
-      if (modalTimeout) {
-        clearTimeout(modalTimeout);
-      }
+  // Function to hide success message
+  const hideSuccessMessage = () => {
+    if (successMessage) {
+      successMessage.classList.remove("active");
     }
   };
 
-  // Add event listener to the modal close button
-  if (modalClose) {
-    modalClose.addEventListener("click", closeModal);
-  }
+  // Function to set button loading state
+  const setButtonLoading = (isLoading) => {
+    if (submitBtn) {
+      if (isLoading) {
+        submitBtn.classList.add("loading");
+        submitBtn.value = "REGISTERING...";
+        submitBtn.disabled = true;
+      } else {
+        submitBtn.classList.remove("loading");
+        submitBtn.value = "SUBMIT RSVP";
+        submitBtn.disabled = false;
+      }
+    }
+  };
 
   // Function to reset error styling
   const resetErrorStyling = (type) => {
@@ -303,61 +285,50 @@ function form() {
   };
 
   // Function to add register to the list
-  const addRegister = () => {
+  const addRegister = async () => {
     const nameInput = document.getElementById("name");
     const emailInput = document.getElementById("email");
     const phoneInput = document.getElementById("phone");
+    const acknowledgeCheckbox = document.getElementById("acknowledge");
+    const willPayRadio = document.getElementById("will-pay");
+    const alreadyPaidRadio = document.getElementById("already-paid");
 
     if (!nameInput || !emailInput || !phoneInput) return;
 
-    // Create a register object
+    // Set button to loading state
+    setButtonLoading(true);
+
     let register = {
       name: nameInput.value,
       email: emailInput.value,
       phone: phoneInput.value,
       services: [],
+      acknowledged: acknowledgeCheckbox ? acknowledgeCheckbox.checked : false,
+      payment_status: willPayRadio && willPayRadio.checked ? "will-pay" : "already-paid",
     };
 
-    // Get selected services
-    const checkboxes = document.querySelectorAll(
-      'input[type="checkbox"]:checked'
-    );
+    const checkboxes = document.querySelectorAll('input[type="checkbox"][id]:checked');
     checkboxes.forEach((checkbox) => {
       if (checkbox.id !== "acknowledge") {
-        const label = document.querySelector(`label[for="${checkbox.id}"]`);
-        if (label) {
-          register.services.push(label.textContent);
-        }
+        register.services.push(checkbox.value);
       }
     });
 
-    // Get other service if provided
-    const otherService = document.getElementById("other-service");
-    if (otherService && otherService.value.trim()) {
-      register.services.push(otherService.value);
+    // Insert into Supabase
+    const { data, error } = await supabase
+      .from("registrations")
+      .insert([register]);
+
+    if (error) {
+      console.error("Error:", error);
+      console.error("Error details:", error.message);
+      setButtonLoading(false);
+      alert("Registration failed. Please try again.");
+    } else {
+      showSuccessMessage(register.name);
+      clearForm();
+      setButtonLoading(false);
     }
-
-    // Create a new entry
-    const entry = document.createElement("div");
-    entry.className = "registration-entry";
-    entry.innerHTML = `
-      <div class="entry-header">
-        <div class="tick">✅</div>
-        <p><strong>${register.name}</strong> has joined the team!<br>
-        Email: ${register.email}<br>
-        Phone: ${register.phone}<br>
-        ${
-          register.services.length > 0
-            ? `<i>Services: ${register.services.join(", ")}</i>`
-            : ""
-        }</p>
-      </div>
-    `;
-
-    registrationList.appendChild(entry);
-
-    // Show the modal with the person's name
-    showModal(register.name);
   };
 
   // Clear form fields
