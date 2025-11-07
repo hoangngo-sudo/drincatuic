@@ -1,6 +1,8 @@
 # Deeper Root In Christ
+[![GitHub](https://img.shields.io/badge/GitHub-Repository-blue?style=for-the-badge)](https://github.com/hoangngo-sudo/drincatuic)
 
 A beautiful registration website for my spring student retreat.
+
 
 ## Demo
 
