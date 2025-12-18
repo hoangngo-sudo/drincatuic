@@ -71,7 +71,7 @@ function form() {
     if (submitBtn) {
       if (isLoading) {
         submitBtn.classList.add("loading");
-        submitBtn.value = "REGISTERING...";
+        submitBtn.value = "Registering...";
         submitBtn.disabled = true;
       } else {
         submitBtn.classList.remove("loading");
@@ -298,6 +298,14 @@ function form() {
     // Set button to loading state
     setButtonLoading(true);
 
+    // Map checkbox values to full descriptive sentences
+    const serviceTextMap = {
+      'praise': 'I want to participate in praise and worship',
+      'bible': 'I want to facilitate group bible study',
+      'prayer': 'I want to join the prayer team',
+      'outdoor': 'I want to lead an outdoor activity'
+    };
+
     let register = {
       name: nameInput.value,
       email: emailInput.value,
@@ -307,15 +315,25 @@ function form() {
       payment_status: willPayRadio && willPayRadio.checked ? "will-pay" : "already-paid",
     };
 
+    // Collect service selections as full sentences
     const checkboxes = document.querySelectorAll('input[type="checkbox"][id]:checked');
     checkboxes.forEach((checkbox) => {
       if (checkbox.id !== "acknowledge") {
-        register.services.push(checkbox.value);
+        // Map checkbox value to full sentence
+        if (serviceTextMap[checkbox.value]) {
+          register.services.push(serviceTextMap[checkbox.value]);
+        }
       }
     });
 
+    // Add custom "Other" service if provided
+    const otherServiceInput = document.getElementById("other-service");
+    if (otherServiceInput && otherServiceInput.value.trim()) {
+      register.services.push(`Other: ${otherServiceInput.value.trim()}`);
+    }
+
     // Insert into Supabase
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
       .from("registrations")
       .insert([register]);
 
