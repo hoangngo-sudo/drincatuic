@@ -1,61 +1,68 @@
 function Slider() {
-  const slides = document.querySelector(".slides");
-  const slideElements = document.querySelectorAll(".slide");
+  const carousel = document.querySelector(".slides");
+  const items = document.querySelectorAll(".slide");
+  const dotsContainer = document.querySelector(".dots");
   const prevButton = document.querySelector(".prev-btn");
   const nextButton = document.querySelector(".next-btn");
 
-  if (!slides || slideElements.length === 0) return;
-  
+  if (!carousel || items.length === 0 || !dotsContainer) return;
+
   let currentIndex = 0;
-  const maxIndex = slideElements.length - 1;
-  
-  // Update button states based on current position
-  function updateButtonStates() {
-    // Disable prev button at beginning
-    if (currentIndex === 0) {
-      prevButton.classList.add("disabled");
-    } else {
-      prevButton.classList.remove("disabled");
-    }
-    
-    // Disable next button at end
-    if (currentIndex === maxIndex) {
-      nextButton.classList.add("disabled");
-    } else {
-      nextButton.classList.remove("disabled");
-    }
+
+  // Insert dots into the DOM
+  items.forEach((_, index) => {
+    let dot = document.createElement("span");
+    dot.classList.add("dot");
+    if (index === 0) dot.classList.add("active");
+    dot.dataset.index = index;
+    dotsContainer.appendChild(dot);
+  });
+
+  let dots = document.querySelectorAll(".dot");
+
+  // Set first item as active initially
+  items[0].classList.add("active");
+
+  // Function to show a specific item
+  function showItem(index) {
+    items.forEach((item, idx) => {
+      item.classList.remove("active");
+      dots[idx].classList.remove("active");
+      if (idx === index) {
+        item.classList.add("active");
+        dots[idx].classList.add("active");
+      }
+    });
+    currentIndex = index;
   }
-  
-  // Initial button state
-  updateButtonStates();
-  
+
   // Previous button click handler
   if (prevButton) {
     prevButton.addEventListener("click", () => {
-      if (currentIndex > 0) {
-        currentIndex--;
-        slides.scrollTo({
-          left: currentIndex * slideElements[0].offsetWidth,
-          behavior: 'smooth'
-        });
-        updateButtonStates();
-      }
+      let index = [...items].findIndex((item) =>
+        item.classList.contains("active")
+      );
+      showItem((index - 1 + items.length) % items.length);
     });
   }
-  
+
   // Next button click handler
   if (nextButton) {
     nextButton.addEventListener("click", () => {
-      if (currentIndex < maxIndex) {
-        currentIndex++;
-        slides.scrollTo({
-          left: currentIndex * slideElements[0].offsetWidth,
-          behavior: 'smooth'
-        });
-        updateButtonStates();
-      }
+      let index = [...items].findIndex((item) =>
+        item.classList.contains("active")
+      );
+      showItem((index + 1) % items.length);
     });
   }
+
+  // Event listeners for dots
+  dots.forEach((dot) => {
+    dot.addEventListener("click", () => {
+      let index = parseInt(dot.dataset.index);
+      showItem(index);
+    });
+  });
 }
 
 document.addEventListener("DOMContentLoaded", Slider);
