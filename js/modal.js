@@ -3,7 +3,7 @@ if (modal) {
   const modalImg = modal.querySelector(".modal-img");
   const closeBtn = modal.querySelector(".modal-close");
   const gridImages = document.querySelectorAll(
-    ".image-grid img, .image-grid-span img"
+    ".image-grid img, .image-grid-span img, .polaroid-grid img"
   );
 
   // Function to open modal with specific image

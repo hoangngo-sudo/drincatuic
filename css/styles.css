@@ -1,6 +1,8 @@
-/* ============================
-   FONTS
-============================ */
+/* -----------------------------------------------
+   Fonts
+   Variable font loaded from CloudFront CDN.
+   Weight range 100–300, swap display to avoid FOIT.
+   ----------------------------------------------- */
 
 @font-face {
   font-family: 'WF Visual Sans';
@@ -10,9 +12,12 @@
   font-display: swap;
 }
 
-/* ============================
-   ROOT SETTINGS
-============================ */
+/* -----------------------------------------------
+   Custom Properties — Theme Tokens
+   All theme-dependent values live here as tokens.
+   Components reference tokens so dark mode works
+   automatically — no per-component dark overrides.
+   ----------------------------------------------- */
 
 :root {
   font-family: 'WF Visual Sans', sans-serif;
@@ -28,6 +33,7 @@
   --border-color: #00000070;
   --svg-color: #000;
 
+  /* Semantic tokens — used by multiple components */
   --nav-bg: #00000061;
   --highlight: #E91E63;
   --btn-hover: #E91E63;
@@ -35,6 +41,18 @@
   --selection-text: #000;
   --footer-copyright: #E91E63;
 
+  /* Reusable component tokens — eliminate scattered dark-mode overrides */
+  --glass-bg: rgba(255, 255, 255, 0.08);  /* frosted-glass panel fill (nav, scroll mouse, expandable) */
+  --nav-shadow: 0 0 0 0.6px var(--border-color),
+                0 16px 32px rgba(0, 0, 0, 0.12);  /* nav pill box-shadow; dark mode drops the outer shadow */
+  --slider-control-bg: #fff;               /* slider button & dot default fill */
+
+  /* Polaroid collage tokens */
+  --polaroid-frame-bg: #efefef;
+  --polaroid-shadow: 0 3px 12px rgba(0, 0, 0, 0.10), 0 1px 4px rgba(0, 0, 0, 0.06);
+  --polaroid-shadow-hover: 0 10px 28px rgba(0, 0, 0, 0.16), 0 2px 6px rgba(0, 0, 0, 0.08);
+
+  /* Z-index scale — named layers prevent z-index conflicts */
   --z-background: 0;
   --z-content: 100;
   --z-header: 200;
@@ -46,11 +64,11 @@
   --z-modal: 1000;
 }
 
-/* Dark mode color theme */
+/* Dark mode — overrides color tokens only; components inherit automatically */
 .dark-mode {
   --primary-color: #ff4081;
   --primary-dark-color: #ff4081;
-  --secondary-color: #ffffff;
+  --secondary-color: #fff;
   --tertiary-color: #1c1c1c;
   --border-color: #ffffff80;
   --background-color: #141414;
@@ -63,14 +81,22 @@
   --selection-bg: #ff4081;
   --selection-text: #000;
 
+  --glass-bg: rgba(0, 0, 0, 0.08);
+  --nav-shadow: 0 0 0 0.6px var(--border-color);
+  --slider-control-bg: var(--tertiary-color);
+
+  --polaroid-frame-bg: #1e1e1e;
+  --polaroid-shadow: 0 3px 12px rgba(0, 0, 0, 0.45), 0 1px 4px rgba(0, 0, 0, 0.25);
+  --polaroid-shadow-hover: 0 10px 28px rgba(0, 0, 0, 0.55), 0 2px 6px rgba(0, 0, 0, 0.3);
+
   background-color: var(--background-color);
 }
 
-/* ============================
-   BASE STYLES
-============================ */
+/* -----------------------------------------------
+   Base Styles
+   ----------------------------------------------- */
 
-/* Prevent horizontal overflow and scrolling */
+/* Prevent horizontal overflow site-wide */
 html,
 body {
   width: 100%;
@@ -79,54 +105,7 @@ body {
   position: relative;
 }
 
-/* ============================
-   KEYFRAME ANIMATIONS
-============================ */
-
-@keyframes push-in-animation {
-  0%, 100% {
-    transform: none;
-  }
-  15% {
-    transform: scale(0.75);
-  }
-  30% {
-    transform: scale(1.1);
-  }
-}
-
-@keyframes push-left-animation {
-  0% {
-    opacity: 0;
-    transform: translateX(30px);
-  }
-  15% {
-    opacity: 1;
-    transform: translateX(-10px);
-  }
-  100% {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-@keyframes push-right-animation {
-  0% {
-    opacity: 1;
-    transform: none;
-  }
-  20% {
-    opacity: 1;
-    transform: translateX(-10px);
-  }
-  55%, 100% {
-    opacity: 0;
-    transform: translateX(30px);
-  }
-}
-
-/* Text selection colors */
-/* Code for Firefox */
+/* Text selection highlight color */
 ::-moz-selection {
   color: var(--selection-text);
   background: var(--selection-bg);
@@ -137,58 +116,96 @@ body {
   background: var(--selection-bg);
 }
 
+/* -----------------------------------------------
+   Animations
+   All @keyframes consolidated here.
+   ----------------------------------------------- */
 
-/* ============================
-   THEME BUTTON
-============================ */
+@keyframes push-in-animation {
+  0%, 100% { transform: none; }
+  15% { transform: scale(0.75); }
+  30% { transform: scale(1.1); }
+}
 
-.theme-btn {
+@keyframes push-left-animation {
+  0% { opacity: 0; transform: translateX(30px); }
+  15% { opacity: 1; transform: translateX(-10px); }
+  100% { opacity: 1; transform: none; }
+}
+
+@keyframes push-right-animation {
+  0% { opacity: 1; transform: none; }
+  20% { opacity: 1; transform: translateX(-10px); }
+  55%, 100% { opacity: 0; transform: translateX(30px); }
+}
+
+@keyframes mouse-scroll {
+  0% { top: 10%; opacity: 1; }
+  80% { opacity: 1; }
+  100% { top: 30%; opacity: 0; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* -----------------------------------------------
+   Utility Classes
+   Reusable helpers used across multiple components.
+   ----------------------------------------------- */
+
+/* Prevents CSS transitions — used by JS when setting initial element positions */
+.no-transition {
+  transition: none !important;
+}
+
+/* Scroll-triggered fade-in animation (JS adds .visible / .hidden) */
+.fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.fade-in.hidden {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+/* Full-width page wrapper */
+.container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+/* Accent-colored inline text */
+.highlight-pink {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+/* -----------------------------------------------
+   Typography — Body Section
+   .body-section is shared across h1–h3, p, a, and
+   <section> elements. Element qualifiers are
+   intentional — each element type gets distinct sizing.
+   ----------------------------------------------- */
+
+/* Shared z-index lift for all .body-section elements */
+.body-section {
   position: relative;
-  height: 60px;
-  width: 60px;
-  padding: 0;
-  margin: 0;
-  transition: color 0.2s ease;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: var(--z-nav);
-  line-height: 1;
-  flex-shrink: 0;
+  z-index: var(--z-content);
 }
 
-.theme-icon {
-  transition: fill 0.3s ease;
-  fill: var(--secondary-color);
-  width: 30px;
-  height: 30px;
-  display: block;
-  flex-shrink: 0;
-  margin: auto;
-  padding: 0;
-  position: relative;
-}
-
-.theme-icon:hover {
-  fill: var(--primary-color);
-}
-
-.light-icon {
-  display: none;
-}
-
-.dark-mode .dark-icon {
-  display: none;
-}
-
-.dark-mode .light-icon {
-  display: block;
-}
-
-/* ============================
-   TYPOGRAPHY
-============================ */
-
+/* Common text styles for body-section headings, paragraphs, links */
 h1.body-section,
 h2.body-section,
 h3.body-section,
@@ -222,20 +239,16 @@ p.body-section {
   font-weight: 400;
 }
 
-span.highlight-pink {
-  color: var(--primary-color);
-  font-weight: 600;
-}
+/* -----------------------------------------------
+   Layout — Hero Background
+   Two overlapping images swap via opacity for dark/light mode.
+   Default shows dark-bg to avoid white flash before JS loads.
+   ----------------------------------------------- */
 
-/* ============================
-   LAYOUT
-============================ */
-
-/* Background container */
 .bg-container {
   position: absolute;
   left: 45%;
-  top: 5%;
+  top: 3%;
   width: 100%;
   height: 100vh;
   z-index: var(--z-background);
@@ -253,28 +266,20 @@ span.highlight-pink {
   z-index: var(--z-background);
 }
 
-.light-bg {
-  opacity: 0;
-}
+/* Default state: dark bg visible, light bg hidden (prevents white flash) */
+.dark-bg { opacity: 1; }
+.light-bg { opacity: 0; }
 
-.dark-bg {
-  opacity: 1;
-}
+/* Light mode: swap background visibility */
+body:not(.dark-mode) .dark-bg { opacity: 0; }
+body:not(.dark-mode) .light-bg { opacity: 1; }
 
-body:not(.dark-mode) .dark-bg {
-  opacity: 0;
-}
+/* -----------------------------------------------
+   Layout — Content Sections
+   ----------------------------------------------- */
 
-body:not(.dark-mode) .light-bg {
-  opacity: 1;
-}
-
-.body-section {
-  position: relative;
-  z-index: var(--z-content);
-}
-
-article.body-content {
+/* Centered flex container for each content area */
+.body-content {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -283,11 +288,13 @@ article.body-content {
   padding-bottom: 0;
 }
 
-article.body-content.body-content--firstviewport {
+/* First viewport hero area — taller with bottom padding for scroll room */
+.body-content--firstviewport {
   min-height: 85vh;
   padding-bottom: 8.5rem;
 }
 
+/* Max-width text column within content sections */
 section.body-section {
   max-width: min(39rem, 100% - 2rem);
   margin: 0 auto;
@@ -297,26 +304,25 @@ section.body-section {
   text-align: left;
 }
 
-/* ============================
-   NAV
-============================ */
+/* -----------------------------------------------
+   Nav Block
+   Frosted-glass pill nav, centered-fixed at top.
+   Uses --glass-bg and --nav-shadow tokens so
+   dark/light theming needs zero overrides here.
+   ----------------------------------------------- */
 
-header.header-link {
+.nav-container {
   position: relative;
-  transition: opacity 1s 0.5s;
-  box-sizing: border-box;
-  display: flex;
-  justify-content: flex-end;
-  z-index: var(--z-header);
 }
 
-nav.sticky-nav {
+.sticky-nav {
   display: flex;
   position: fixed;
   top: 1rem;
   left: 50%;
-  background-color: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 0 0 0.6px var(--border-color), 0 16px 32px rgba(0, 0, 0, 0.12);
+  transform: translateX(-50%);
+  background-color: var(--glass-bg);
+  box-shadow: var(--nav-shadow);
   backdrop-filter: url(#frosted);
   -webkit-backdrop-filter: blur(8px);
   border-radius: 3rem;
@@ -324,13 +330,19 @@ nav.sticky-nav {
   align-items: center;
   justify-content: center;
   flex-wrap: nowrap;
-  transform: translateX(-50%);
   z-index: var(--z-nav);
   transition: all 0.3s ease;
   cursor: pointer;
 }
 
-a.nav-link {
+/* Scroll-responsive: slides navbar up out of view */
+.sticky-nav.nav-hidden {
+  transform: translateX(-50%) translateY(calc(-100% - 2rem));
+  pointer-events: none;
+  opacity: 0;
+}
+
+.nav-link {
   color: var(--secondary-color);
   text-decoration: none;
   font-weight: 400;
@@ -341,14 +353,14 @@ a.nav-link {
   display: inline-block;
 }
 
-a.nav-link:hover {
+.nav-link:hover {
   color: var(--primary-color);
   background-color: rgba(233, 30, 99, 0.1);
   padding: 0.6rem 1rem;
 }
 
-/* Override nav-link styles for theme button */
-a.nav-link.theme-btn {
+/* When theme toggle sits inside nav — circular, no text padding */
+.nav-link.theme-btn {
   padding: 0;
   width: 60px;
   height: 60px;
@@ -360,18 +372,40 @@ a.nav-link.theme-btn {
   border-radius: 50%;
 }
 
-.dark-mode nav.sticky-nav {
-  background-color: rgba(0, 0, 0, 0.08);
-  box-shadow: 0 0 0 0.6px var(--border-color);
+/* -----------------------------------------------
+   Hamburger Block
+   Mobile menu toggle — hidden on desktop,
+   shown at ≤768px via media query.
+   ----------------------------------------------- */
+
+.hamburger {
+  display: none;
+  cursor: pointer;
+  z-index: var(--z-hamburger);
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  padding: 10px;
+  transition: all 0.3s ease;
 }
 
-/* ============================
-   MENU SIDEBAR
-============================ */
-
-.nav-container {
-  position: relative;
+.hamburger:hover svg {
+  fill: var(--primary-color);
 }
+
+/* Targets both <svg class="hamburger-icon"> and any svg child */
+.hamburger svg {
+  width: 2rem;
+  height: 2rem;
+  fill: var(--secondary-color);
+  transition: all 0.3s ease;
+}
+
+/* -----------------------------------------------
+   Sidebar Block
+   Full-screen mobile nav panel, slides in from right.
+   Layered above .overlay (z-sidebar > z-overlay).
+   ----------------------------------------------- */
 
 .menu-sidebar {
   position: fixed;
@@ -426,36 +460,6 @@ a.nav-link.theme-btn {
   padding: 1.5rem;
 }
 
-.hamburger {
-  display: none;
-  cursor: pointer;
-  z-index: var(--z-hamburger);
-  position: fixed;
-  top: 1rem;
-  left: 1rem;
-  padding: 10px;
-  transition: all 0.3s ease;
-}
-
-.hamburger:hover svg,
-.hamburger:hover .hamburger-icon {
-  fill: var(--primary-color);
-}
-
-.hamburger-icon {
-  width: 2rem;
-  height: 2rem;
-  fill: var(--secondary-color);
-  transition: all 0.3s ease;
-}
-
-.hamburger svg {
-  width: 2rem;
-  height: 2rem;
-  fill: var(--secondary-color);
-  transition: all 0.3s ease;
-}
-
 .sidebar-links {
   display: flex;
   flex-direction: column;
@@ -481,6 +485,7 @@ a.nav-link.theme-btn {
   padding: 1rem 0;
 }
 
+/* Larger theme toggle when rendered inside sidebar */
 .sidebar-links .theme-btn {
   height: 80px;
   width: 80px;
@@ -493,6 +498,7 @@ a.nav-link.theme-btn {
   color: var(--primary-color);
 }
 
+/* Translucent backdrop behind open sidebar */
 .overlay {
   position: fixed;
   top: 0;
@@ -503,7 +509,8 @@ a.nav-link.theme-btn {
   z-index: var(--z-overlay);
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+              visibility 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .overlay.active {
@@ -511,14 +518,65 @@ a.nav-link.theme-btn {
   visibility: visible;
 }
 
-/* ============================
-   HEADER
-============================ */
+/* -----------------------------------------------
+   Theme Toggle Block
+   Dark/light mode switch icon.
+   Renders inside both nav (desktop) and sidebar (mobile).
+   JS toggles .dark-mode on body; icon swap is pure CSS.
+   ----------------------------------------------- */
 
-img.header-img {
+.theme-btn {
+  position: relative;
+  height: 60px;
+  width: 60px;
+  padding: 0;
+  margin: 0;
+  transition: color 0.2s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: var(--z-nav);
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.theme-icon {
+  transition: fill 0.3s ease;
+  fill: var(--secondary-color);
+  width: 30px;
+  height: 30px;
+  display: block;
+  flex-shrink: 0;
+  margin: auto;
+  padding: 0;
+  position: relative;
+}
+
+.theme-icon:hover {
+  fill: var(--primary-color);
+}
+
+/* Show moon icon by default; swap to sun icon in dark mode */
+.light-icon { display: none; }
+.dark-mode .dark-icon { display: none; }
+.dark-mode .light-icon { display: block; }
+
+/* -----------------------------------------------
+   Header Block
+   ----------------------------------------------- */
+
+.header-link {
+  position: relative;
+  transition: opacity 1s 0.5s;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: flex-end;
+  z-index: var(--z-header);
+}
+
+.header-img {
   position: relative;
   z-index: 2;
-  /* overflow: hidden; */
   cursor: pointer;
   height: 4rem;
   width: 4rem;
@@ -528,11 +586,15 @@ img.header-img {
   flex: 0 0 auto;
 }
 
-/* ============================
-   HEADER BUTTON and RSVP BUTTON LINK
-============================ */
+/* -----------------------------------------------
+   Button Block — RSVP CTA
+   Pill-shaped link button with frosted-glass border.
+   On hover: scales up, fills with primary color,
+   reveals 5 floating letter images (J-e-s-u-s)
+   that scatter outward via absolute positioning.
+   ----------------------------------------------- */
 
-a.button {
+.button {
   color: var(--primary-color);
   text-decoration: none;
   box-shadow: 0 0 0 0.6px var(--border-color);
@@ -549,11 +611,8 @@ a.button {
   position: relative;
 }
 
-.dark-mode a.button {
-  box-shadow: 0 0 0 0.6px var(--border-color);
-}
-
-a.button::after {
+/* Glow pseudo-element behind button — fades in on hover */
+.button::after {
   content: '';
   width: 100%;
   height: 100%;
@@ -570,12 +629,14 @@ a.button::after {
   transition: opacity 0.4s;
 }
 
-span.button-text {
+/* Button label text stays above floating images */
+.button-text {
   position: relative;
   z-index: 10;
 }
 
-a.button img {
+/* Floating letter images — hidden by default, revealed on hover */
+.button img {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -586,72 +647,38 @@ a.button img {
   opacity: 0;
 }
 
-.button__J {
-  width: 3rem;
-  transform: translate(-1.5rem, -1rem)rotate(10deg);
-  filter: blur(0.2px);
-}
+/* Each letter: unique size, rotation, and hover offset */
+.button__J  { width: 3rem; transform: translate(-1.5rem, -1rem) rotate(10deg);  filter: blur(0.2px); }
+.button__e  { width: 3rem; transform: translate(-1.5rem, -1rem) rotate(5deg);   filter: blur(0.2px); }
+.button__s  { width: 2rem; transform: translate(-2rem, -1rem) rotate(-20deg);   filter: blur(0.2px); }
+.button__u  { width: 2rem; transform: translate(-2rem, -1rem) rotate(-10deg);   filter: blur(0.2px); }
+.button__s2 { width: 4rem; transform: translate(-1.5rem, -1rem) rotate(10deg);  filter: blur(0.2px); }
 
-.button__e {
-  width: 3rem;
-  transform: translate(-1.5rem, -1rem)rotate(5deg);
-  filter: blur(0.2px);
-}
+/* Hover: show glow, fill button, scale up */
+.button:hover::after { opacity: 1; }
 
-.button__s {
-  width: 2rem;
-  transform: translate(-2rem, -1rem)rotate(-20deg);
-  filter: blur(0.2px);
-}
-
-.button__u {
-  width: 2rem;
-  transform: translate(-2rem, -1rem)rotate(-10deg);
-  filter: blur(0.2px);
-}
-
-.button__s2 {
-  width: 4rem;
-  transform: translate(-1.5rem, -1rem)rotate(10deg);
-  filter: blur(0.2px);
-
-}
-
-a.button:hover::after {
-  opacity: 1;
-}
-
-a.button:hover {
+.button:hover {
   color: var(--secondary-color);
   background-color: var(--btn-hover);
   transform: scale(1.2);
 }
 
-a.button:hover img {
-  opacity: 1;
-}
+.button:hover img { opacity: 1; }
 
-a.button:hover .button__J {
-  transform: translate(-4.5rem, -0.5rem)scale(1.2);
-}
+/* Hover: scatter letters outward from center */
+.button:hover .button__J  { transform: translate(-4.5rem, -0.5rem) scale(1.2); }
+.button:hover .button__e  { transform: translate(-3rem, -2.5rem) scale(1.2); }
+.button:hover .button__s  { transform: translate(-1.2rem, 0.1rem) scale(1.2); }
+.button:hover .button__u  { transform: translate(-0.5rem, -2.5rem) scale(1.2); }
+.button:hover .button__s2 { transform: translate(0.5rem, -1.5rem) scale(1.2); }
 
-a.button:hover .button__e {
-  transform: translate(-3rem, -2.5rem)scale(1.2);
-}
+/* -----------------------------------------------
+   Social Button Block (BEM)
+   Icon with reveal-on-hover colored background and label.
+   Used in header (Instagram link) and footer (social links).
+   ----------------------------------------------- */
 
-a.button:hover .button__s {
-  transform: translate(-1.2rem, 0.1rem)scale(1.2);
-}
-
-a.button:hover .button__u {
-  transform: translate(-0.5rem, -2.5rem)scale(1.2);
-}
-
-a.button:hover .button__s2 {
-  transform: translate(0.5rem, -1.5rem)scale(1.2);
-}
-
-a.social-button {
+.social-button {
   font-size: 1rem;
   line-height: 1;
   text-align: center;
@@ -663,22 +690,16 @@ a.social-button {
   text-decoration: none;
   display: inline-block;
   width: 8rem;
-  padding: 2rem 0 2rem;
-  /* top, left & right, bottom */
+  padding: 2rem 0;
   margin: 0;
   height: auto;
 }
 
-a.social-button:hover .social-button--background {
-  opacity: 1;
-}
+.social-button:hover .social-button--background { opacity: 1; }
+.social-button:hover .social-button--label { opacity: 1; color: var(--secondary-color); }
 
-a.social-button:hover .social-button--label {
-  opacity: 1;
-  color: var(--secondary-color);
-}
-
-div.social-button--background {
+/* Full-size colored backdrop, hidden until hover */
+.social-button--background {
   background-color: var(--primary-color);
   position: absolute;
   z-index: 1;
@@ -692,7 +713,8 @@ div.social-button--background {
   opacity: 0;
 }
 
-div.social-button--label {
+/* Label text below icon — fades in on hover */
+.social-button--label {
   color: var(--tertiary-color);
   text-align: center;
   justify-content: center;
@@ -706,25 +728,12 @@ div.social-button--label {
   transition: opacity 0.1s, color 0.1s ease;
 }
 
-/* ============================
-   SCROLLING MOUSE
-============================ */
-
-@keyframes mouse-scroll {
-  0% {
-    top: 10%;
-    opacity: 1;
-  }
-
-  80% {
-    opacity: 1;
-  }
-
-  100% {
-    top: 30%;
-    opacity: 0;
-  }
-}
+/* -----------------------------------------------
+   Scroll Mouse Block
+   Animated scroll-down indicator at left edge of hero.
+   Uses --glass-bg for theme-aware inner background.
+   Hidden at ≤768px (see media queries).
+   ----------------------------------------------- */
 
 .scroll-mouse-container {
   position: absolute;
@@ -745,11 +754,7 @@ div.social-button--label {
   height: 50px;
   position: relative;
   border-radius: 34px;
-  box-shadow: 0 0 0 0.6px var(--border-color);
-}
-
-.dark-mode .scroll-mouse-container .scroll-mouse-inner {
-  background-color: rgba(0, 0, 0, 0.08);
+  background-color: var(--glass-bg);
   box-shadow: 0 0 0 0.6px var(--border-color);
 }
 
@@ -762,60 +767,51 @@ div.social-button--label {
   margin-left: -6px;
   border-radius: 50%;
   background-color: var(--secondary-color);
-  animation: mouse-scroll .9s infinite;
+  animation: mouse-scroll 0.9s infinite;
 }
 
-/* ============================
-   IMAGE GRID
-============================ */
+/* -----------------------------------------------
+   Image Grid Block
+   Responsive CSS Grid galleries for event photos.
+   Two aspect ratios share a common base layout —
+   only --row-heights differs between variants.
+   Columns adjust from 4→2 at ≤768px (media queries).
+   ----------------------------------------------- */
 
-article.image-grid {
+/* Shared grid base for both 5:4 and 16:9 galleries */
+.image-grid,
+.image-grid-span {
   --gap: 0.125rem;
   --num-cols: 4;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: repeat(var(--num-cols), 1fr);
+  grid-auto-rows: var(--row-heights);
+  gap: var(--gap);
+  padding: 0 0 clamp(2rem, 5vw, 5rem);
+  margin: 0;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+/* 5:4 portrait ratio — group photos */
+.image-grid {
   --row-heights: calc((100vw / var(--num-cols)) * 4 / 5);
-  box-sizing: border-box;
-  display: grid;
-  grid-template-columns: repeat(var(--num-cols), 1fr);
-  grid-auto-rows: var(--row-heights);
-  gap: var(--gap);
-  padding: 0 0 clamp(2rem, 5vw, 5rem);
-  margin: 0;
   will-change: transform;
-  width: 100%;
-  max-width: 100%;
-  overflow: hidden;
 }
 
-article.image-grid-span {
-  --gap: 0.125rem;
-  --num-cols: 4;
+/* 16:9 landscape ratio — wide/panoramic shots */
+.image-grid-span {
   --row-heights: calc((100vw / var(--num-cols)) * 9 / 16);
-  box-sizing: border-box;
-  display: grid;
-  grid-template-columns: repeat(var(--num-cols), 1fr);
-  grid-auto-rows: var(--row-heights);
-  gap: var(--gap);
-  padding: 0 0 clamp(2rem, 5vw, 5rem);
-  margin: 0;
-  width: 100%;
-  max-width: 100%;
-  overflow: hidden;
 }
 
-/* Grid item styling */
+/* Grid Item — individual photo/video cell */
 .grid-item {
   position: relative;
   overflow: hidden;
   width: 100%;
   box-sizing: border-box;
-}
-
-/*iframe containers cannot be resized*/
-.grid-item iframe {
-  width: 100% !important;
-  height: 100% !important;
-  max-width: 100%;
-  border: 0;
 }
 
 .image-grid .grid-item,
@@ -833,23 +829,116 @@ article.image-grid-span {
   content-visibility: auto;
 }
 
-.image-grid-col-2 {
-  grid-column: span 2;
+/* Force iframes (Vimeo embeds) to fill their grid cell */
+.grid-item iframe {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100%;
+  border: 0;
 }
 
-.image-grid-row-2 {
-  grid-row: span 2;
+/* Span helpers — let items occupy multiple grid tracks */
+.image-grid-col-2 { grid-column: span 2; }
+.image-grid-row-2 { grid-row: span 2; }
+
+/* -----------------------------------------------
+   Polaroid Collage Grid Block
+   Polaroid-style photo cards with white frames,
+   subtle shadows, and organic rotation.
+   3-col desktop → 1-col mobile.
+   ----------------------------------------------- */
+
+/* Grid container — 80% width, tight gap for scattered overlap */
+.polaroid-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0rem;
+  padding: 1rem 0 clamp(2rem, 5vw, 5rem);
+  width: 80%;
+  max-width: 80%;
+  margin: 0 auto;
+  overflow: visible;
 }
 
-/* ============================
-   IMAGE GRID HOVER OVERLAY
-============================ */
-
-/* Disable transitions when setting initial position */
-.no-transition {
-  transition: none !important;
+/* Card wrapper — rotation + hover transitions */
+.polaroid-card {
+  position: relative;
+  transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1),
+              z-index 0s 0.3s;
+  cursor: pointer;
+  border-radius: 5px;
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.158);
+  margin: 1rem;
 }
 
+/* Repeating rotation + offset pattern — scattered, overlapping look */
+.polaroid-card:nth-child(6n+1) { transform: rotate(-3.5deg) translate(-4px, 2px); }
+.polaroid-card:nth-child(6n+2) { transform: rotate(2.8deg) translate(3px, -3px); }
+.polaroid-card:nth-child(6n+3) { transform: rotate(-1.5deg) translate(-2px, 5px); }
+.polaroid-card:nth-child(6n+4) { transform: rotate(4deg) translate(5px, -1px); }
+.polaroid-card:nth-child(6n+5) { transform: rotate(-2.5deg) translate(-3px, 4px); }
+.polaroid-card:nth-child(6n+6) { transform: rotate(1.8deg) translate(2px, -4px); }
+
+/* Hover: straighten and lift */
+.polaroid-card:hover,
+.polaroid-card.hover,
+.polaroid-card.show-info {
+  transform: rotate(0deg) translateY(-4px);
+  z-index: 2;
+  transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1),
+              z-index 0s;
+}
+
+/* Polaroid frame — white border, rounded corners, soft shadow */
+.polaroid-frame {
+  position: relative;
+  background: var(--polaroid-frame-bg);
+  padding: 0.5rem 0.5rem 1.5rem;
+  border-radius: 5px;
+  box-shadow: var(--polaroid-shadow);
+  overflow: hidden;
+  transition: box-shadow 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.polaroid-card:hover .polaroid-frame,
+.polaroid-card.hover .polaroid-frame,
+.polaroid-card.show-info .polaroid-frame {
+  box-shadow: var(--polaroid-shadow-hover);
+}
+
+/* Image inside frame — default 5:4 ratio */
+.polaroid-frame > img {
+  width: 100%;
+  aspect-ratio: 5 / 4;
+  object-fit: cover;
+  display: block;
+  border-radius: 5px;
+  transition: transform 0.3s ease;
+  content-visibility: auto;
+}
+
+/* Subtle zoom on hover */
+.polaroid-card:hover .polaroid-frame > img,
+.polaroid-card.hover .polaroid-frame > img,
+.polaroid-card.show-info .polaroid-frame > img {
+  transform: scale(1.03);
+}
+
+/* 16:9 wide variant */
+.polaroid-grid--wide .polaroid-frame > img {
+  aspect-ratio: 16 / 9;
+}
+
+/* -----------------------------------------------
+   Grid Hover Overlay
+   Directional animated info overlay on grid images.
+   JS adds .hover (mouse) or .show-info (touch)
+   to .grid-item. Text elements receive a directional
+   translate offset from JS for enter/leave effects
+   (inspired by Hakim El Hattab).
+   ----------------------------------------------- */
+
+/* Dark overlay panel — hidden by default */
 .grid-item-info {
   position: absolute;
   top: 0;
@@ -875,70 +964,63 @@ article.image-grid-span {
   cursor: pointer;
 }
 
-.grid-item-info h3,
+/* Overlay text — directional transform is set/animated by JS */
 .grid-item-info p {
   position: relative;
   z-index: 2;
   opacity: 0;
   margin: 0;
-  /* Directional transitions - transform handled by JS */
   transition: opacity 0.3s cubic-bezier(0.23, 1, 0.32, 1),
               transform 0.3s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-.grid-item-info h3 {
-  font-size: 1.1em;
+.grid-item-info p:first-child {
+  font-size: 1em;
   font-weight: 600;
   margin-bottom: 0.3em;
   color: #fff;
 }
 
 .grid-item-info p {
-  font-size: 0.9em;
+  font-size: 1em;
   font-weight: 400;
   color: rgba(255, 255, 255, 0.8);
 }
 
-/* Hover state - mouse devices */
-.grid-item.hover .grid-item-info {
-  visibility: visible;
-  opacity: 1;
-}
-
-.grid-item.hover .grid-item-info h3,
-.grid-item.hover .grid-item-info p {
-  opacity: 1;
-}
-
-/* Staggered animation for text */
-.grid-item.hover .grid-item-info p {
-  transition-delay: 0.05s;
-}
-
-/* Image scale on hover */
-.grid-item.hover img {
-  transform: scale(1.05);
-}
-
-/* Touch device support */
+/* Active state — shared by mouse hover (.hover) and touch tap (.show-info) */
+.grid-item.hover .grid-item-info,
 .grid-item.show-info .grid-item-info {
   visibility: visible;
   opacity: 1;
 }
 
-.grid-item.show-info .grid-item-info h3,
+.grid-item.hover .grid-item-info p,
 .grid-item.show-info .grid-item-info p {
   opacity: 1;
+}
+
+/* Staggered text reveal — subtitle enters 50ms after title (mouse only) */
+.grid-item.hover .grid-item-info p {
+  transition-delay: 0.05s;
+}
+
+/* Touch devices: reset directional transform (no cursor direction to track) */
+.grid-item.show-info .grid-item-info p {
   transform: none;
 }
 
+/* Subtle zoom on active image */
+.grid-item.hover img,
 .grid-item.show-info img {
   transform: scale(1.05);
 }
 
-/* ============================
-   MODAL
-============================ */
+/* -----------------------------------------------
+   Modal Block
+   Fullscreen image viewer with blurred backdrop.
+   Opens when user clicks a grid image to show
+   full-resolution version (loaded from data-src).
+   ----------------------------------------------- */
 
 .modal {
   display: none;
@@ -950,8 +1032,8 @@ article.image-grid-span {
   height: 100vh;
   overflow: auto;
   background-color: #00000083;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
 }
 
 .modal.show {
@@ -972,32 +1054,31 @@ article.image-grid-span {
 }
 
 .modal-close {
-  position: absolute;
-  top: -50px;
-  right: -5px;
+  position: fixed;
+  top: 1.25rem;
+  right: 1.25rem;
   width: 40px;
   height: 40px;
   display: flex;
-  color: #f1f1f1;
-  font-size: 40px;
-  font-weight: bold;
   justify-content: center;
   align-items: center;
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 50%;
-  transition: 0.3s;
   cursor: pointer;
+  border-radius: 50%;
+  background: none;
+  box-shadow: 0 0 0 0.6px var(--border-color);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.modal-close:hover {
+  background-color: var(--primary-color);
+  box-shadow: 0 0 0 0.6px var(--primary-color);
 }
 
 .modal-close svg {
-  fill: #fff;
-  width: 40px;
-  height: 40px;
+  fill: var(--secondary-color);
+  width: 24px;
+  height: 24px;
   transition: fill 0.3s ease;
-}
-
-.modal-close svg:hover {
-  fill: var(--primary-color);
 }
 
 .modal-img {
@@ -1007,22 +1088,14 @@ article.image-grid-span {
   max-width: 100%;
   max-height: 80vh;
   object-fit: contain;
-  border: 0.6px solid var(--border-color);
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-/* ============================
-   SLIDER
-============================ */
+/* -----------------------------------------------
+   Slider Block
+   Poster carousel with prev/next buttons and dot indicators.
+   Uses --slider-control-bg token for dark/light theming
+   of buttons and dots — no dark-mode overrides needed.
+   ----------------------------------------------- */
 
 .slider {
   position: relative;
@@ -1041,6 +1114,7 @@ article.image-grid-span {
   overflow: hidden;
 }
 
+/* Slide images stack absolutely; only .active is visible */
 .slider img {
   width: 100%;
   height: fit-content;
@@ -1062,6 +1136,7 @@ article.image-grid-span {
   z-index: 1;
 }
 
+/* Circular prev/next buttons — positioned outside slider edges */
 .slider button {
   position: absolute;
   top: 50%;
@@ -1069,8 +1144,8 @@ article.image-grid-span {
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background-color: #fff;
-  border: 1px solid var(--border-color);
+  background-color: var(--slider-control-bg);
+  border: 0.6px solid var(--border-color);
   color: var(--secondary-color);
   font-size: 1.5rem;
   display: flex;
@@ -1091,15 +1166,10 @@ article.image-grid-span {
   fill: var(--secondary-color);
 }
 
-.prev-btn {
-  left: -60px;
-}
+.prev-btn { left: -60px; }
+.next-btn { right: -60px; }
 
-.next-btn {
-  right: -60px;
-}
-
-/* Dots navigation */
+/* Dot indicators — centered below slider content */
 .dots {
   position: absolute;
   bottom: 1rem;
@@ -1116,55 +1186,32 @@ article.image-grid-span {
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background-color: #fff;
+  background-color: var(--slider-control-bg);
   border: 1px solid var(--border-color);
   cursor: pointer;
   transition: 0.3s ease all;
 }
 
-.dot:hover {
+/* Hover and active share primary color fill */
+.dot:hover,
+.dot.active {
   background-color: var(--primary-color);
   border-color: var(--primary-color);
 }
 
 .dot.active {
-  background-color: var(--primary-color);
-  border-color: var(--primary-color);
   transform: scale(1.2);
 }
 
-.dark-mode .slider button {
-  background-color: var(--tertiary-color);
-  border-color: var(--border-color);
-  color: var(--secondary-color);
-}
+/* -----------------------------------------------
+   Expandable Block — Accordion Q&A
+   Clicking .expand-trigger toggles .active on
+   .expand-list-item, revealing .expand-target-short
+   via animated max-height. Uses --glass-bg token
+   so dark/light theming needs zero overrides.
+   ----------------------------------------------- */
 
-.dark-mode .slider button:hover {
-  background-color: var(--primary-color);
-  border-color: var(--primary-color);
-  color: #fff;
-}
-
-.dark-mode .dot {
-  background-color: var(--tertiary-color);
-  border-color: var(--border-color);
-}
-
-.dark-mode .dot:hover {
-  background-color: var(--primary-color);
-  border-color: var(--primary-color);
-}
-
-.dark-mode .dot.active {
-  background-color: var(--primary-color);
-  border-color: var(--primary-color);
-}
-
-/* ============================
-   EXPANDABLE LIST
-============================ */
-
-ul.expand-list {
+.expand-list {
   width: 100%;
   max-width: 800px;
   padding-left: 0;
@@ -1178,10 +1225,12 @@ ul.expand-list {
   border-radius: 0.2rem;
 }
 
+/* Override default 🌸 list bullet */
 .expand-list-item::before {
   display: none;
 }
 
+/* Trigger bar — clickable header with +++ / −−− indicator */
 .expand-trigger {
   position: relative;
   display: flex;
@@ -1194,24 +1243,24 @@ ul.expand-list {
   font-weight: 600;
   font-size: 1.1rem;
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
-  background-color: rgba(255, 255, 255, 0.08);
+  background-color: var(--glass-bg);
   box-shadow: 0 0 0 0.6px var(--border-color);
-  /* backdrop-filter: url(#frosted);
-  -webkit-backdrop-filter: blur(10px); */
   border-radius: 0.2rem;
   overflow: hidden;
-  min-height: 3.5rem; 
+  min-height: 3.5rem;
   line-height: 1.4;
 }
 
+/* Open state: square off bottom corners to join with content panel */
 .expand-list-item.active .expand-trigger {
   border-radius: 0.2rem 0.2rem 0 0;
 }
 
+/* Expand/collapse text icon */
 .expand-trigger::after {
   content: '+++';
   font-size: 1.5rem;
-  font-weight: 600; 
+  font-weight: 600;
   line-height: 1;
   transition: transform 0.3s ease;
   flex-shrink: 0;
@@ -1222,6 +1271,7 @@ ul.expand-list {
   transform: rotate(0deg);
 }
 
+/* Label wrapper inside trigger */
 .anchor-label {
   flex: 1;
   padding: 0 0.6rem;
@@ -1236,6 +1286,7 @@ ul.expand-list {
   align-items: center;
 }
 
+/* Hover highlight — fills trigger with primary color */
 .anchor-background {
   position: absolute;
   top: 0;
@@ -1256,12 +1307,14 @@ ul.expand-list {
   color: var(--secondary-color);
 }
 
+/* Expandable content panel — animated open/close via max-height */
 .expand-target-short {
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.5s cubic-bezier(0, 1, 0, 1), padding 0.3s ease;
-  background-color: rgba(255, 255, 255, 0.08);
+  background-color: var(--glass-bg);
   box-shadow: 0 0 0 0.6px var(--border-color);
+  border-radius: 0 0 0.2rem 0.2rem;
   padding: 0 1.5rem;
   opacity: 0;
   box-sizing: border-box;
@@ -1269,8 +1322,10 @@ ul.expand-list {
 
 .expand-list-item.active .expand-target-short {
   max-height: 1000px;
-  padding: 1rem 1.5rem 1rem 1.5rem;
-  transition: max-height 0.5s cubic-bezier(0, 0, 1, 0), padding 0.3s ease, opacity 0.1s ease;
+  padding: 1rem 1.5rem;
+  transition: max-height 0.5s cubic-bezier(0, 0, 1, 0),
+              padding 0.3s ease,
+              opacity 0.1s ease;
   border-bottom-left-radius: 0.2rem;
   border-bottom-right-radius: 0.2rem;
   opacity: 1;
@@ -1278,31 +1333,26 @@ ul.expand-list {
   clip-path: inset(0 -100px -100px -100px);
 }
 
-.dark-mode .expand-trigger {
-  background-color: rgba(0, 0, 0, 0.08);
-  box-shadow: 0 0 0 0.6px var(--border-color);
-}
+/* -----------------------------------------------
+   Download Link
+   ----------------------------------------------- */
 
-.dark-mode .expand-target-short {
-  border-radius: 0 0 0.2rem 0.2rem;
-  background-color: rgba(0, 0, 0, 0.08);
-  box-shadow: 0 0 0 0.6px var(--border-color);
-}
-
-a.download-link {
+.download-link {
   color: var(--primary-color);
   text-decoration: none;
   display: inline-block;
   position: relative;
 }
 
-a.download-link:hover {
+.download-link:hover {
   text-decoration: underline;
 }
 
-/* ============================
-   FOOTER
-============================ */
+/* -----------------------------------------------
+   Footer Block
+   Diagonal-topped section with SVG polygon background,
+   contact info, and social media links.
+   ----------------------------------------------- */
 
 .footer-container {
   position: relative;
@@ -1314,6 +1364,7 @@ a.download-link:hover {
   overflow: hidden;
 }
 
+/* SVG polygon fills background with a responsive diagonal top edge */
 .footer-background {
   position: absolute;
   top: 0;
@@ -1328,16 +1379,17 @@ a.download-link:hover {
   width: 100%;
   height: 100%;
   max-height: 100%;
-  /* Responsive clip-path: angle decreases as viewport width decreases */
+  /* Responsive clip-path: diagonal angle flattens as viewport narrows */
   clip-path: polygon(
-    0 clamp(5%, calc(2% + (10vw - 48px) / 10), 12%), 
-    100% 0, 
-    100% 100%, 
+    0 clamp(5%, calc(2% + (10vw - 48px) / 10), 12%),
+    100% 0,
+    100% 100%,
     0 100%
   );
 }
 
-footer.footer-content {
+/* Footer content wrapper — wraps to column on mobile */
+.footer-content {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -1359,13 +1411,13 @@ footer.footer-content {
 section.footer-section {
   margin: 0 auto 1rem clamp(1rem, 3vw, 2rem);
   max-width: min(600px, 100%);
-  align-items: left;
   text-align: left;
   padding: clamp(0.5rem, 2vw, 1rem);
   width: 100%;
   min-width: min(300px, 100%);
 }
 
+/* Footer text — white on dark background (merged from two duplicate selectors) */
 .footer-section,
 li.footer-section,
 ul.contact-info {
@@ -1373,8 +1425,11 @@ ul.contact-info {
   text-align: left;
   box-sizing: content-box;
   list-style-type: none;
+  padding-left: 0;
+  max-width: 90%;
 }
 
+/* Cherry blossom bullet for contact list items */
 ul li::before {
   content: "🌸";
 }
@@ -1400,13 +1455,6 @@ ul.contact-info li {
   line-height: 1.6;
 }
 
-.footer-section,
-li.footer-section,
-ul.contact-info {
-  padding-left: 0;
-  max-width: 90%;
-}
-
 .footer-section a {
   color: var(--primary-dark-color);
   text-decoration: none;
@@ -1418,14 +1466,14 @@ ul.contact-info {
   text-decoration: underline;
 }
 
-footer.footer-link {
+.footer-link {
   position: relative;
   transition: opacity 1s 0.5s;
   box-sizing: border-box;
-  display: flexbox;
+  display: flex;
 }
 
-img.footer-img {
+.footer-img {
   position: relative;
   z-index: 2;
   height: 4rem;
@@ -1434,6 +1482,7 @@ img.footer-img {
   transition: filter 0.3s ease;
 }
 
+/* Social link row in footer */
 .social-buttons {
   display: flex;
   flex-wrap: wrap;
@@ -1444,61 +1493,39 @@ img.footer-img {
   padding: clamp(1rem, 3vw, 2rem) 0;
 }
 
-a.social-button:hover .social-button--label {
+/* Footer-specific social button hover — overrides default label color */
+.social-button:hover .social-button--label {
   opacity: 1;
   color: var(--selection-text);
 }
 
-a.social-button:hover .footer-img {
-filter:invert(1);
+/* Invert footer social icon on hover for contrast */
+.social-button:hover .footer-img {
+  filter: invert(1);
 }
 
-/* ============================
-    FADE IN/OUT ANIMATION
-============================ */
-
-.fade-in {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.5s ease, transform 0.5s ease;
-}
-
-.fade-in.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.fade-in.hidden {
-  opacity: 0;
-  transform: translateY(20px);
-}
-
-/* ============================
-   MADE WITH LOVE BAR
-============================ */
+/* -----------------------------------------------
+   Made With Love Block (BEM)
+   Copyright bar pinned to bottom of footer.
+   ----------------------------------------------- */
 
 .madewithlove-bar {
   position: relative;
   width: 100%;
   display: flex;
-  justify-content: center; /* Change to center alignment */
+  justify-content: center;
   align-items: center;
   padding: 0.5rem 1rem;
   background-color: var(--footer-copyright);
   z-index: 2;
 }
 
+/* Merged from two duplicate selectors — removed invalid max-width: auto */
 .madewithlove-bar--text {
   color: #fff;
   font-size: 0.9rem;
-  text-align: center;
-}
-
-.madewithlove-bar--text {
-  color: #fff;
   text-decoration: none;
   width: 100%;
-  max-width: auto;
   text-align: center;
 }
 
@@ -1506,61 +1533,41 @@ filter:invert(1);
   text-decoration: underline;
 }
 
-a.madewithlove-bar--link {
+.madewithlove-bar--link {
   color: #fff;
 }
 
-/* ============================
-   CONTAINER
-============================ */
+/* -----------------------------------------------
+   Responsive Breakpoints
+   1024px — increase footer top padding for diagonal
+   768px  — mobile layout (hamburger, 2-col grid)
+   480px  — fine-tune mobile spacing
+   ----------------------------------------------- */
 
-.container {
-  width: 100%;
-  margin-left: auto;
-  margin-right: auto;
-  /* padding-left: 1rem;
-  padding-right: 1rem; */
-  box-sizing: border-box;
-  overflow-x: hidden;
-}
-
-/* ============================
-   MEDIA QUERIES
-============================ */
-
-/* increase footer padding as screen narrows */
 @media screen and (max-width: 1024px) {
-  footer.footer-content {
+  .footer-content {
     padding-top: clamp(8rem, 15vw, 12rem);
   }
 }
 
-/* Tablet and below: 768px */
 @media screen and (max-width: 768px) {
-  /* Hide sticky nav, show hamburger and sidebar */
-  nav.sticky-nav {
-    display: none;
+  /* Switch nav: hide desktop pill, show hamburger + sidebar */
+  .sticky-nav { display: none; }
+  .hamburger { display: block; }
+  .menu-sidebar { display: block; }
+
+  /* Grid: single column on mobile — one image at a time */
+  .image-grid,
+  .image-grid-span {
+    --num-cols: 1;
   }
 
-  .hamburger {
-    display: block;
-  }
+  /* Reset multi-track spans so no item overflows the 1-col grid */
+  .image-grid-col-2 { grid-column: span 1; }
+  .image-grid-row-2 { grid-row:    span 1; }
 
-  .menu-sidebar {
-    display: block;
-  }
-
-  /* Reduce image grid columns */
-  article.image-grid {
-    --num-cols: 2;
-  }
-
-  article.image-grid-span {
-    --num-cols: 2;
-  }
-
-  /* Stack footer content vertically */
-  footer.footer-content {
+  /* Footer: stack vertically with more top padding */
+  .footer-content {
     flex-direction: column;
     align-items: center;
     padding-top: 10rem;
@@ -1578,46 +1585,40 @@ a.madewithlove-bar--link {
     text-align: left;
   }
 
-  /* Adjust firstviewport padding */
-  article.body-content.body-content--firstviewport {
+  /* Hero: shorter viewport on tablets */
+  .body-content--firstviewport {
     min-height: 70vh;
     padding-bottom: 4rem;
   }
 
-  /* Hide scroll mouse on smaller screens */
-  .scroll-mouse-container {
-    display: none;
-  }
+  /* Hide scroll indicator on small screens */
+  .scroll-mouse-container { display: none; }
 
-  /* SVG clip-path now handled by calc() function above */
-  
+  /* Hide slider arrows on touch-sized screens */
   .slider .prev-btn,
   .slider .next-btn {
     display: none !important;
   }
+
+  /* Polaroid grid: single column, centered, keep rotation */
+  .polaroid-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    max-width: 400px;
+    margin: 0 auto;
+    justify-items: center;
+  }
 }
 
-/* Mobile: 480px and below */
 @media screen and (max-width: 480px) {
-  /* Two columns for grids on mobile */
-  article.image-grid {
-    --num-cols: 2;
+  /* Grid: 1-col (inherits from 768px breakpoint — kept for explicit intent) */
+  .image-grid,
+  .image-grid-span {
+    --num-cols: 1;
   }
 
-  article.image-grid-span {
-    --num-cols: 2;
-  }
-
-  /* Reduce footer padding since slope is shallower */
-  footer.footer-content {
+  /* Extra footer padding for shallower SVG diagonal on narrow screens */
+  .footer-content {
     padding-top: 13rem;
   }
-
-  /* SVG clip-path now handled by calc() function above */
 }
-
-
-
-
-
-

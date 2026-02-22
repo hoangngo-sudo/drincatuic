@@ -36,7 +36,7 @@
 
   function initGridHover() {
     const gridItems = document.querySelectorAll(
-      ".image-grid .grid-item, .image-grid-span .grid-item"
+      ".image-grid .grid-item, .image-grid-span .grid-item, .polaroid-grid .grid-item"
     );
 
     // Track mouse movement for directional effect
@@ -84,7 +84,7 @@
 
       // Get elements to animate directionally
       const animatedElements = item.querySelectorAll(
-        ".grid-item-info h3, .grid-item-info p, .grid-item-info .view-icon"
+        ".grid-item-info p, .grid-item-info .view-icon"
       );
 
       if (isTouchDevice()) {
