@@ -1,9 +1,3 @@
-/* -----------------------------------------------
-   Fonts
-   Variable font loaded from CloudFront CDN.
-   Weight range 100–300, swap display to avoid FOIT.
-   ----------------------------------------------- */
-
 @font-face {
   font-family: 'WF Visual Sans';
   src: url('https://dhygzobemt712.cloudfront.net/Fonts/VF/WFVisualSansVF.woff2') format('woff2');
@@ -11,13 +5,6 @@
   font-style: normal;
   font-display: swap;
 }
-
-/* -----------------------------------------------
-   Custom Properties — Theme Tokens
-   All theme-dependent values live here as tokens.
-   Components reference tokens so dark mode works
-   automatically — no per-component dark overrides.
-   ----------------------------------------------- */
 
 :root {
   font-family: 'WF Visual Sans', sans-serif;
@@ -33,26 +20,24 @@
   --border-color: #00000070;
   --svg-color: #000;
 
-  /* Semantic tokens — used by multiple components */
+  /* Semantic tokens */
   --nav-bg: #00000061;
   --highlight: #E91E63;
   --btn-hover: #E91E63;
   --selection-bg: #E91E63;
   --selection-text: #000;
   --footer-copyright: #E91E63;
-
-  /* Reusable component tokens — eliminate scattered dark-mode overrides */
   --glass-bg: rgba(255, 255, 255, 0.08);  /* frosted-glass panel fill (nav, scroll mouse, expandable) */
   --nav-shadow: 0 0 0 0.6px var(--border-color),
-                0 16px 32px rgba(0, 0, 0, 0.12);  /* nav pill box-shadow; dark mode drops the outer shadow */
+                0 5px 15px rgba(0, 0, 0, 0.12);  /* nav pill box-shadow; dark mode drops the outer shadow */
   --slider-control-bg: #fff;               /* slider button & dot default fill */
 
-  /* Polaroid collage tokens */
+  /* Polaroid collage */
   --polaroid-frame-bg: #efefef;
   --polaroid-shadow: 0 3px 12px rgba(0, 0, 0, 0.10), 0 1px 4px rgba(0, 0, 0, 0.06);
   --polaroid-shadow-hover: 0 10px 28px rgba(0, 0, 0, 0.16), 0 2px 6px rgba(0, 0, 0, 0.08);
 
-  /* Z-index scale — named layers prevent z-index conflicts */
+  /* Z-index scale */
   --z-background: 0;
   --z-content: 100;
   --z-header: 200;
@@ -64,7 +49,7 @@
   --z-modal: 1000;
 }
 
-/* Dark mode — overrides color tokens only; components inherit automatically */
+/* Dark mode */
 .dark-mode {
   --primary-color: #ff4081;
   --primary-dark-color: #ff4081;
@@ -92,10 +77,6 @@
   background-color: var(--background-color);
 }
 
-/* -----------------------------------------------
-   Base Styles
-   ----------------------------------------------- */
-
 /* Prevent horizontal overflow site-wide */
 html,
 body {
@@ -115,11 +96,6 @@ body {
   color: var(--selection-text);
   background: var(--selection-bg);
 }
-
-/* -----------------------------------------------
-   Animations
-   All @keyframes consolidated here.
-   ----------------------------------------------- */
 
 @keyframes push-in-animation {
   0%, 100% { transform: none; }
@@ -867,7 +843,7 @@ section.body-section {
               z-index 0s 0.3s;
   cursor: pointer;
   border-radius: 5px;
-  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.158);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.24);
   margin: 1rem;
 }
 
@@ -883,17 +859,17 @@ section.body-section {
 .polaroid-card:hover,
 .polaroid-card.hover,
 .polaroid-card.show-info {
-  transform: rotate(0deg) translateY(-4px);
+  transform: rotate(0deg);
   z-index: 2;
-  transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1),
-              z-index 0s;
+  /* transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1),
+              z-index 0s; */
 }
 
 /* Polaroid frame — white border, rounded corners, soft shadow */
 .polaroid-frame {
   position: relative;
   background: var(--polaroid-frame-bg);
-  padding: 0.5rem 0.5rem 1.5rem;
+  padding: 0.5rem;
   border-radius: 5px;
   box-shadow: var(--polaroid-shadow);
   overflow: hidden;
@@ -913,16 +889,15 @@ section.body-section {
   object-fit: cover;
   display: block;
   border-radius: 5px;
-  transition: transform 0.3s ease;
   content-visibility: auto;
 }
 
-/* Subtle zoom on hover */
-.polaroid-card:hover .polaroid-frame > img,
+/* Subtle zoom on hover — disabled */
+/* .polaroid-card:hover .polaroid-frame > img,
 .polaroid-card.hover .polaroid-frame > img,
 .polaroid-card.show-info .polaroid-frame > img {
   transform: scale(1.03);
-}
+} */
 
 /* 16:9 wide variant */
 .polaroid-grid--wide .polaroid-frame > img {
@@ -1009,9 +984,9 @@ section.body-section {
   transform: none;
 }
 
-/* Subtle zoom on active image */
-.grid-item.hover img,
-.grid-item.show-info img {
+/* Subtle zoom on active image — excludes polaroid cards */
+.grid-item:not(.polaroid-card).hover img,
+.grid-item:not(.polaroid-card).show-info img {
   transform: scale(1.05);
 }
 
@@ -1102,12 +1077,17 @@ section.body-section {
   max-width: min(600px, 100% - 2rem);
   margin: 0 auto;
   padding-top: clamp(1.5rem, 4vw, 3rem);
+  padding-bottom: clamp(2rem, 5vw, 5rem);
   overflow: visible;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 .slides {
   width: 100%;
-  aspect-ratio: 2/3;
+  aspect-ratio: 1545/2000;
   position: relative;
   display: flex;
   border-radius: 0.2rem;
@@ -1171,10 +1151,6 @@ section.body-section {
 
 /* Dot indicators — centered below slider content */
 .dots {
-  position: absolute;
-  bottom: 1rem;
-  left: 50%;
-  transform: translateX(-50%);
   display: flex;
   justify-content: center;
   align-items: center;
