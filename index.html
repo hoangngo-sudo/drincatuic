@@ -12,7 +12,7 @@
   <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
 
   <link rel="stylesheet" href="css/reset.css" />
-  <link rel="stylesheet" href="css/styles.min.css" />
+  <link rel="stylesheet" href="css/styles.css" />
 </head>
 
 <body>
@@ -494,11 +494,11 @@
   <script src="js/gridHover.min.js"></script>
   <script src="js/modal.min.js"></script>
   <script src="js/expandable.min.js"></script>
-  <script src="js/scrollNav.js"></script>
   <script src="js/config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/ScrollTrigger.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/ScrollSmoother.min.js"></script>
+  <script src="js/scrollNav.js"></script>
 
   <script>
  document.addEventListener("DOMContentLoaded", (event) => {
@@ -530,11 +530,15 @@
     });
   }
 
+  // Nav controller — GSAP-driven show/hide (initialised in scrollNav.js)
+  const scrollNavCtrl = scrollNav();
+
   // Scroll-driven rotation for hero background images
   let currentRotation = 0;
-  const SPEED_MULTIPLIER = 0.2;
+  const SPEED_MULTIPLIER = 0.1;
   const RESET_THRESHOLD = 100;  // px from top — start resetting below this
   const DECAY_RATE = 0.04;      // lerp factor per frame (0→1, higher = faster reset)
+  const NAV_VELOCITY_DEAD_ZONE = 300; // px/s — ignore jitter below this
 
   const darkImg = document.querySelector(".bg-image.dark-bg");
   const lightImg = document.querySelector(".bg-image.light-bg");
@@ -546,10 +550,9 @@
       const velocity = self.getVelocity();
       const scrollY = self.scroll();
 
+      // Hero rotation (unchanged)
       if (scrollY <= RESET_THRESHOLD) {
-        // Near top: lerp rotation back to 0
         currentRotation += (0 - currentRotation) * DECAY_RATE;
-        // Snap to exactly 0 when close enough to avoid endless micro-tween
         if (Math.abs(currentRotation) < 0.05) currentRotation = 0;
       } else {
         currentRotation += velocity * SPEED_MULTIPLIER * 0.016;
@@ -557,6 +560,17 @@
 
       rotateDark(currentRotation);
       rotateLight(currentRotation);
+
+      // Nav show/hide — synchronised with hero rotation
+      if (scrollNavCtrl) {
+        if (scrollY <= RESET_THRESHOLD) {
+          scrollNavCtrl.show();
+        } else if (velocity > NAV_VELOCITY_DEAD_ZONE) {
+          scrollNavCtrl.hide();
+        } else if (velocity < -NAV_VELOCITY_DEAD_ZONE) {
+          scrollNavCtrl.show();
+        }
+      }
     },
   });
  });
