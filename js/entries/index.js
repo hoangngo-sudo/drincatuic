@@ -5,19 +5,14 @@ import "../gridHover.js";
 import "../modal.js";
 import "../expandable.js";
 import scrollNav from "../scrollNav.js";
+import gsap from "gsap";
+import ScrollTrigger from "gsap/ScrollTrigger";
+import ScrollSmoother from "gsap/ScrollSmoother";
+
+gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
 
 document.addEventListener("DOMContentLoaded", () => {
   const scrollNavCtrl = scrollNav();
-
-  if (
-    typeof gsap === "undefined" ||
-    typeof ScrollTrigger === "undefined" ||
-    typeof ScrollSmoother === "undefined"
-  ) {
-    return;
-  }
-
-  gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
 
   let smoother;
   try {

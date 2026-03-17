@@ -16,12 +16,14 @@
  * Falls back to the original CSS-class approach when GSAP is not loaded.
  */
 
+import gsap from "gsap";
+
 export default function scrollNav() {
   const nav = document.querySelector(".sticky-nav");
   if (!nav) return null;
 
   /* ── GSAP available → use quickTo tweeners ── */
-  if (typeof gsap !== "undefined") {
+  if (gsap) {
     // Let GSAP own the centering so CSS translateX doesn't fight y animations
     gsap.set(nav, { xPercent: -50, x: 0, y: 0, opacity: 1 });
 

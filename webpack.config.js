@@ -74,7 +74,7 @@ module.exports = (_, argv) => {
         chunks: "all",
       },
     },
-    devtool: isProd ? "source-map" : "eval-cheap-module-source-map",
+    devtool: "source-map",
     devServer: {
       static: {
         directory: path.resolve(__dirname, "dist"),
@@ -82,6 +82,11 @@ module.exports = (_, argv) => {
       open: true,
       hot: true,
       port: 8080,
+    },
+    externals: {
+      gsap: "gsap",
+      "gsap/ScrollTrigger": "ScrollTrigger",
+      "gsap/ScrollSmoother": "ScrollSmoother",
     },
   };
 };
