@@ -3,7 +3,7 @@
 
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://player.vimeo.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' https://dhygzobemt712.cloudfront.net; frame-src https://player.vimeo.com; connect-src 'self'; object-src 'none'; base-uri 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://player.vimeo.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' https://dhygzobemt712.cloudfront.net; frame-src https://player.vimeo.com; connect-src 'self'; object-src 'none'; base-uri 'self'">
   <meta http-equiv="X-Frame-Options" content="DENY">
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=()">
@@ -74,6 +74,9 @@
     </div>
     <div class="overlay"></div>
   </div>
+
+  <div id="smooth-wrapper">
+    <div id="smooth-content">
 
   <header id="home" class="header-link">
     <a href="https://www.instagram.com/drincatuic/" target="_blank" class="social-button">
@@ -386,7 +389,7 @@
     </section>
   </article>
 
-  <article id="program" class="body-content">
+  <article id="qna" class="body-content">
     <section class="body-section">
       <h1 class="body-section">Q&A </h1>
       <ul class="expand-list">
@@ -456,7 +459,7 @@
           </div>
           <div class="social-button--label">@drincatuic</div>
         </a>
-        <a href="https://linktr.ee/drincatuic" target="_blank" class="social-button">
+        <a href="https://linktr.ee/drinc_uic" target="_blank" class="social-button">
           <img class="footer-img" src="./images/linktree-white.svg" alt="Linktree Logo">
           <div class="social-button--background" style="background-color: #43e660;"></div>
           <div class="social-button--label">Linktree</div>
@@ -468,6 +471,9 @@
       </p>
     </div>
   </div>
+
+  </div><!-- /#smooth-content -->
+  </div><!-- /#smooth-wrapper -->
 
   <!-- Image Modal -->
   <div id="imageModal" class="container modal">
@@ -490,6 +496,72 @@
   <script src="js/expandable.min.js"></script>
   <script src="js/scrollNav.js"></script>
   <script src="js/config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/ScrollSmoother.min.js"></script>
+
+  <script>
+ document.addEventListener("DOMContentLoaded", (event) => {
+  gsap.registerPlugin(ScrollTrigger,ScrollSmoother)
+
+  // ScrollSmoother — smooth scroll
+  let smoother;
+  try {
+    smoother = ScrollSmoother.create({
+      smooth: 1.5,
+      effects: true,
+      smoothTouch: 0.1,
+    });
+  } catch (e) {
+    console.warn("ScrollSmoother not available:", e.message);
+  }
+
+  // Hijack anchor links so ScrollSmoother controls the scroll
+  if (smoother) {
+    document.querySelectorAll('a[href^="#"]').forEach((link) => {
+      link.addEventListener("click", (e) => {
+        const id = link.getAttribute("href");
+        const target = document.querySelector(id);
+        if (!target) return;
+        e.preventDefault();
+        smoother.scrollTo(target, true, "top top");
+        history.pushState(null, "", id);
+      });
+    });
+  }
+
+  // Scroll-driven rotation for hero background images
+  let currentRotation = 0;
+  const SPEED_MULTIPLIER = 0.2;
+  const RESET_THRESHOLD = 100;  // px from top — start resetting below this
+  const DECAY_RATE = 0.04;      // lerp factor per frame (0→1, higher = faster reset)
+
+  const darkImg = document.querySelector(".bg-image.dark-bg");
+  const lightImg = document.querySelector(".bg-image.light-bg");
+  const rotateDark = gsap.quickTo(darkImg, "rotation", { duration: 0.8, ease: "power2.out" });
+  const rotateLight = gsap.quickTo(lightImg, "rotation", { duration: 0.8, ease: "power2.out" });
+
+  ScrollTrigger.create({
+    onUpdate: (self) => {
+      const velocity = self.getVelocity();
+      const scrollY = self.scroll();
+
+      if (scrollY <= RESET_THRESHOLD) {
+        // Near top: lerp rotation back to 0
+        currentRotation += (0 - currentRotation) * DECAY_RATE;
+        // Snap to exactly 0 when close enough to avoid endless micro-tween
+        if (Math.abs(currentRotation) < 0.05) currentRotation = 0;
+      } else {
+        currentRotation += velocity * SPEED_MULTIPLIER * 0.016;
+      }
+
+      rotateDark(currentRotation);
+      rotateLight(currentRotation);
+    },
+  });
+ });
+
+</script>
 
 </body>
 

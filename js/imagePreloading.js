@@ -51,7 +51,7 @@ function preloadImages(array, waitForOtherResources, timeout) {
 function preloadGalleryImages() {
   // First, preload the visible images (initial view)
   const gridImages = document.querySelectorAll(
-    ".image-grid img, .image-grid-span img"
+    ".image-grid img, .image-grid-span img, .polaroid-grid img"
   );
   const priorityImages = [];
   const secondaryImages = [];
@@ -135,7 +135,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Observe all grid images for lazy loading their full-res versions
   const gridImages = document.querySelectorAll(
-    ".image-grid img, .image-grid-span img"
+    ".image-grid img, .image-grid-span img, .polaroid-grid img"
   );
   gridImages.forEach((img) => {
     if (img.getAttribute("loading") === "lazy") {

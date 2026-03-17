@@ -373,7 +373,6 @@ function form() {
 
       if (validateForm()) {
         addRegister();
-        clearForm();
       }
     });
   }

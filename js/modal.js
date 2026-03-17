@@ -14,6 +14,8 @@ if (modal) {
       modal.classList.add("show");
     };
     document.body.style.overflow = "hidden";
+    const smoother = typeof ScrollSmoother !== "undefined" && ScrollSmoother.get();
+    if (smoother) smoother.paused(true);
 
     const preventScroll = (e) => {
       e.preventDefault();
@@ -31,6 +33,8 @@ if (modal) {
       modalImg.src = "";
     }, 300);
     document.body.style.overflow = "";
+    const smoother = typeof ScrollSmoother !== "undefined" && ScrollSmoother.get();
+    if (smoother) smoother.paused(false);
 
     // Remove wheel event prevention
     if (modal.preventScrollHandler) {
