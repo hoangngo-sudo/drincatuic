@@ -16,7 +16,7 @@
  * Falls back to the original CSS-class approach when GSAP is not loaded.
  */
 
-function scrollNav() {
+export default function scrollNav() {
   const nav = document.querySelector(".sticky-nav");
   if (!nav) return null;
 

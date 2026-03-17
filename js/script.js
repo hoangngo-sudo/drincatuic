@@ -298,6 +298,13 @@ function form() {
     // Set button to loading state
     setButtonLoading(true);
 
+    const client = window.supabaseClient;
+    if (!client) {
+      setButtonLoading(false);
+      alert("Registration is temporarily unavailable. Please try again later.");
+      return;
+    }
+
     // Map checkbox values to full descriptive sentences
     const serviceTextMap = {
       'praise': 'I want to participate in praise and worship',
@@ -333,7 +340,7 @@ function form() {
     }
 
     // Insert into Supabase
-    const { data, error } = await supabaseClient
+    const { data, error } = await client
       .from("registrations")
       .insert([register]);
 
@@ -427,5 +434,3 @@ function handleSidebar() {
 }
 
 document.addEventListener("DOMContentLoaded", handleSidebar);
-
-// --------------------------------------------------//
