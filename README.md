@@ -59,23 +59,39 @@ graph TD
         GSAP["GSAP 3.14.1<br/>cdn.jsdelivr.net"]
     end
 
-    subgraph "index.html"
+    subgraph "Webpack Entries"
+        IDXE["js/entries/index.js"]
+        REGE["js/entries/registration.js"]
+    end
+
+    subgraph "Source Modules"
         RESET1[reset.css] --> STYLES[styles.css]
-        SCRIPT[script.min.js]
-        SLIDER[slider.min.js]
-        IMGPRE[imagePreloading.min.js]
-        GRIDHOV[gridHover.min.js]
+        SCRIPT[script.js]
+        SLIDER[slider.js]
+        IMGPRE[imagePreloading.js]
+        GRIDHOV[gridHover.js]
         MODAL[modal.js]
-        EXPAND[expandable.min.js]
+        EXPAND[expandable.js]
         SCROLLNAV[scrollNav.js]
         CONFIG1[config.js]
     end
 
-    subgraph "registration.html"
+    subgraph "Templates"
         RESET2[reset.css] --> FORMCSS[form.min.css]
-        SCRIPT2[script.min.js]
-        CONFIG2[config.js]
+        IDXHTML[index.html]
+        REGHTML[registration.html]
     end
+
+    IDXE --> SCRIPT
+    IDXE --> SLIDER
+    IDXE --> IMGPRE
+    IDXE --> GRIDHOV
+    IDXE --> MODAL
+    IDXE --> EXPAND
+    IDXE --> SCROLLNAV
+
+    REGE --> CONFIG2[config.js]
+    REGE --> SCRIPT2[script.js]
 
     CONFIG1 --> SUPA
     CONFIG2 --> SUPA
@@ -86,13 +102,37 @@ graph TD
 | Dependency | Purpose |
 |---|---|
 | Vanilla HTML5 / CSS3 / ES6+ | Core |
+| Webpack 5 + Babel Loader | Bundle and compile JS modules |
 | [Supabase JS v2](https://supabase.com/docs/reference/javascript) | Registration form backend |
 | [GSAP 3.14.1](https://greensock.com/gsap/) | ScrollSmoother + ScrollTrigger for smooth scrolling and scroll-driven animations |
 | [Vimeo Player API](https://developer.vimeo.com/) | Embedded event videos |
 | WF Visual Sans | Variable web font (woff2) |
 | GitHub Pages | Static hosting via CNAME |
 
-No build tools, bundlers, or package managers — all hand-written with manually minified copies.
+JS modules are bundled through webpack entries with `runtimeChunk` manifest extraction and production content-hashed outputs.
+
+## Build with Webpack
+
+```bash
+npm install
+npm run build
+```
+
+Before local builds, create a `.env` file from `.env.example` and set:
+
+- `SUPABASE_URL`
+- `SUPABASE_PUBLIC_KEY`
+
+For local development:
+
+```bash
+npm start
+```
+
+Webpack outputs built files to `dist/` and generates both pages from templates:
+
+- `index.html` using the `index` entry
+- `registration.html` using the `registration` entry
 
 ## Project Structure
 
