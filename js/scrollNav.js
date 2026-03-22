@@ -27,8 +27,9 @@ export default function scrollNav() {
     // Let GSAP own the centering so CSS translateX doesn't fight y animations
     gsap.set(nav, { xPercent: -50, x: 0, y: 0, opacity: 1 });
 
+    // Match opacity duration with Y duration so it doesn't vanish prematurely
     const tweenY       = gsap.quickTo(nav, "y",       { duration: 0.8, ease: "power2.out" });
-    const tweenOpacity = gsap.quickTo(nav, "opacity",  { duration: 0.2, ease: "power2.out" });
+    const tweenOpacity = gsap.quickTo(nav, "opacity",  { duration: 0.8, ease: "power2.out" });
 
     const hideY = -(nav.offsetHeight + 32); // slide fully above viewport
     let hidden = false;
