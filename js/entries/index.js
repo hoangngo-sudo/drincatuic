@@ -4,6 +4,7 @@ import "../imagePreloading.js";
 import "../gridHover.js";
 import "../modal.js";
 import "../expandable.js";
+import initGsapButtons from "../gsapButton.js";
 import scrollNav from "../scrollNav.js";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
@@ -13,6 +14,7 @@ gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
 
 document.addEventListener("DOMContentLoaded", () => {
   const scrollNavCtrl = scrollNav();
+  const gsapBtnCtrl = initGsapButtons();
 
   let smoother;
   try {
@@ -41,9 +43,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let currentRotation = 0;
   const SPEED_MULTIPLIER = 0.1;
-  const RESET_THRESHOLD = 100;
+  const RESET_THRESHOLD = 40;
   const DECAY_RATE = 0.04;
-  const NAV_VELOCITY_DEAD_ZONE = 300;
+  const NAV_VELOCITY_DEAD_ZONE = 100;
 
   const darkImg = document.querySelector(".bg-image.dark-bg");
   const lightImg = document.querySelector(".bg-image.light-bg");
