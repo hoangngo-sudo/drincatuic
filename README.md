@@ -6,7 +6,7 @@ A static event website for student Christian fellowship group. Promotes the spri
 
 ## Demo
 
-https://github.com/user-attachments/assets/ba87f52a-c74e-42e2-a227-8b6d756eecef
+https://github.com/user-attachments/assets/9df883d5-5220-47a6-8a07-66a975d0f0c5
 
 ## Architecture
 
