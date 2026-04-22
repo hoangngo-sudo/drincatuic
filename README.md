@@ -2,7 +2,7 @@
 
 A static event website for student Christian fellowship group. Promotes the spring student retreat _"Falling in Love with Jesus"_ with a photo-rich landing page, smooth-scrolling animations, and a Supabase-backed registration form.
 
-**Live site**: [drincatuic.org](https://drincatuic.org)
+**Live site**: [https://hoangngo-sudo.github.io/drincatuic/](https://hoangngo-sudo.github.io/drincatuic/)
 
 ## Demo
 
