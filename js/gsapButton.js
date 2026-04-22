@@ -1,8 +1,9 @@
 // gsapButton.js — GSAP spring-physics hover/tap animations for all interactive buttons
-// Uses global `gsap` from CDN (do NOT import gsap here — it's already on window)
 
+// .social-button excluded: footer icons use bespoke CSS :active press states.
+// The elastic spring return was visually wrong for static icon links on mobile.
 const BUTTON_SELECTORS = [
-  '.button', '.social-button', '.prev-btn', '.next-btn',
+  '.button', '.prev-btn', '.next-btn',
   '.expand-trigger', '.modal-close'
 ].join(', ');
 
@@ -21,6 +22,10 @@ export default function initGsapButtons() {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     return { destroy() {} };
   }
+
+  // Only attach hover animations on devices with a true hover pointer (mouse/trackpad).
+  // Touch-only devices fire phantom mouseenter on tap — gate them out here.
+  const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
   const buttons = document.querySelectorAll(BUTTON_SELECTORS);
   const cleanups = [];
@@ -58,21 +63,25 @@ export default function initGsapButtons() {
       gsap.to(el, { ...REST_STATE, ease: EASE, duration: DURATION_HOVER, overwrite: "auto" });
     };
 
-    // Desktop
-    el.addEventListener("mouseenter", onEnter);
-    el.addEventListener("mouseleave", onLeave);
-    el.addEventListener("mousedown", onDown);
-    el.addEventListener("mouseup", onUp);
+    // Desktop (hover-capable devices only) — prevents phantom hover on touch taps
+    if (canHover) {
+      el.addEventListener("mouseenter", onEnter);
+      el.addEventListener("mouseleave", onLeave);
+      el.addEventListener("mousedown", onDown);
+      el.addEventListener("mouseup", onUp);
+    }
 
-    // Mobile — passive so we never block scrolling or link navigation
+    // Touch
     el.addEventListener("touchstart", onTouchStart, { passive: true });
     el.addEventListener("touchend", onTouchEnd, { passive: true });
 
     cleanups.push(() => {
-      el.removeEventListener("mouseenter", onEnter);
-      el.removeEventListener("mouseleave", onLeave);
-      el.removeEventListener("mousedown", onDown);
-      el.removeEventListener("mouseup", onUp);
+      if (canHover) {
+        el.removeEventListener("mouseenter", onEnter);
+        el.removeEventListener("mouseleave", onLeave);
+        el.removeEventListener("mousedown", onDown);
+        el.removeEventListener("mouseup", onUp);
+      }
       el.removeEventListener("touchstart", onTouchStart);
       el.removeEventListener("touchend", onTouchEnd);
       gsap.set(el, REST_STATE);

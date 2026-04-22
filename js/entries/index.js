@@ -21,7 +21,9 @@ document.addEventListener("DOMContentLoaded", () => {
     smoother = ScrollSmoother.create({
       smooth: 1.5,
       effects: true,
-      smoothTouch: 0.1,
+      // smoothTouch disabled: native touch scroll runs on the compositor thread
+      // at hardware speed. A JS rAF loop cannot keep pace and causes jitter.
+      smoothTouch: 0,
     });
   } catch (e) {
     console.warn("ScrollSmoother not available:", e.message);
