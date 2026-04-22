@@ -17,6 +17,7 @@ module.exports = (_, argv) => {
     output: {
       path: path.resolve(__dirname, "dist"),
       filename: isProd ? "js/[name].[contenthash:8].js" : "js/[name].js",
+      publicPath: "./",
       clean: true,
     },
     module: {
@@ -58,7 +59,6 @@ module.exports = (_, argv) => {
           },
           { from: "assets", to: "assets" },
           { from: "favicon.ico", to: "favicon.ico" },
-          { from: "CNAME", to: "CNAME", toType: "file" },
         ],
       }),
       new webpack.DefinePlugin({
