@@ -75,6 +75,12 @@ module.exports = (_, argv) => {
       },
     },
     devtool: "source-map",
+    performance: {
+      hints: isProd ? "warning" : false,
+      // Only check JS/CSS bundles — images/video are copied as-is and cannot be split
+      assetFilter: (filename) =>
+        !(/\.(png|jpe?g|gif|webp|svg|ico|mp4|mov|woff2?)$/i.test(filename)),
+    },
     devServer: {
       static: {
         directory: path.resolve(__dirname, "dist"),
@@ -82,6 +88,17 @@ module.exports = (_, argv) => {
       open: true,
       hot: true,
       port: 8080,
+      setupMiddlewares(middlewares, devServer) {
+        // Chrome DevTools (v129+) probes this endpoint to discover workspace config.
+        // Returning a 200 prevents the 404 noise and the resulting CSP violation report.
+        devServer.app.get(
+          "/.well-known/appspecific/com.chrome.devtools.json",
+          (req, res) => {
+            res.json({});
+          }
+        );
+        return middlewares;
+      },
     },
     externals: {
       gsap: "gsap",
