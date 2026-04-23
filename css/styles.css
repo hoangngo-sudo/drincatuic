@@ -10,8 +10,6 @@
   font-family: 'WF Visual Sans', sans-serif;
   font-size: 18px;
 
-
-  /* Color palette */
   --primary-color: #E91E63;
   --primary-dark-color: #ff80ab;
   --secondary-color: #000;
@@ -709,7 +707,7 @@ a, button,
   .social-button:hover .social-button--background { opacity: 1; }
   .social-button:hover .social-button--label {
     opacity: 1;
-    color: var(--secondary-color);
+    color: #000;
     transform: translateY(0);
   }
 }
@@ -730,7 +728,7 @@ a, button,
   opacity: 0;
 }
 
-/* Label text below icon — slides up + fades in on hover */
+/* Label text below icon — hidden at rest, shown immediately on hover */
 .social-button--label {
   color: var(--tertiary-color);
   text-align: center;
@@ -742,9 +740,13 @@ a, button,
   margin-top: 1.5rem;
   opacity: 0;
   font-size: 0.8rem;
-  /* Starts 4px below; eases up to position on hover (Emil label slide-up micro-detail) */
   transform: translateY(4px);
-  transition: opacity 200ms ease-out, color 200ms ease, transform 200ms ease-out;
+}
+
+/* Header social button sits on the page background — label must follow secondary color
+   so it reads correctly in both light (black) and dark (white) mode */
+.header-link .social-button--label {
+  color: var(--secondary-color);
 }
 
 /* -----------------------------------------------
@@ -1544,7 +1546,7 @@ ul.contact-info li {
 @media (hover: hover) and (pointer: fine) {
   .social-button:hover .social-button--label {
     opacity: 1;
-    color: var(--selection-text);
+    color: #000;
     transform: translateY(0);
   }
 
@@ -1666,8 +1668,15 @@ ul.contact-info li {
     opacity: 1;
     /* Cancel the desktop slide-up offset so label sits in natural position */
     transform: none;
-    /* Footer background is always dark — hardcode white so it reads in both modes */
+    /* Footer background is always dark — white text reads in both modes.
+       .header-link .social-button--label overrides this for the header context. */
     color: #fff;
+  }
+
+  /* Header sits on page background; override the white to follow secondary color
+     (black in light mode, white in dark mode) so the label is always legible */
+  .header-link .social-button--label {
+    color: var(--secondary-color);
   }
 
   /* Clean press state: scale-down + brand color flash on touch */
