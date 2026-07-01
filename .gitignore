@@ -5,3 +5,6 @@ dist/
 node_modules
 docs
 .github/prompts
+.github/skills
+images/bonfire.MP4
+images/sumoballgame.MP4
