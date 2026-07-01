@@ -1,5 +1,5 @@
 /**
- * scrollNav – GSAP-driven navbar hide/show controller.
+ * scrollNav: GSAP-driven navbar hide/show controller.
  *
  * Behaviour:
  *   • Scroll DOWN past threshold → navbar slides up & hides

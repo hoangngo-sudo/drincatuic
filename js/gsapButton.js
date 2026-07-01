@@ -1,21 +1,25 @@
-// gsapButton.js — GSAP spring-physics hover/tap animations for all interactive buttons
-
+// gsapButton.js: Eased hover/tap animations for all interactive buttons
+// Follows Emil's design principles:
+//   - Hover: ease (fast start, slow end), 200ms, subtle scale
+//   - Press: scale(0.97) per button press principle, 150ms
+//   - No y-axis offsets — keep interaction simple
 // .social-button excluded: footer icons use bespoke CSS :active press states.
-// The elastic spring return was visually wrong for static icon links on mobile.
+
 const BUTTON_SELECTORS = [
   '.button', '.prev-btn', '.next-btn',
   '.expand-trigger', '.modal-close'
 ].join(', ');
 
-// Spring config: stiffness 300, damping 15
-// Mapped to GSAP elastic ease — amplitude 1, period 0.3 ≈ spring(300, 15)
-const EASE = "elastic.out(1, 0.3)";
+// Hover enter/leave: ease-out for responsive feel, settles naturally
+const EASE = "power2.out";
+// Tap press: snappier ease for instant press feedback
+const TAP_EASE = "power1.out";
 
-const HOVER_STATE = { scale: 1.05, y: -2 };
-const TAP_STATE   = { scale: 0.9,  y: 1  };
-const REST_STATE  = { scale: 1,    y: 0  };
+const HOVER_STATE = { scale: 1.05 };
+const TAP_STATE   = { scale: 0.97 };
+const REST_STATE  = { scale: 1    };
 
-const DURATION_HOVER = 0.6;
+const DURATION_HOVER = 0.2;
 const DURATION_TAP   = 0.15;
 
 export default function initGsapButtons() {
@@ -24,7 +28,7 @@ export default function initGsapButtons() {
   }
 
   // Only attach hover animations on devices with a true hover pointer (mouse/trackpad).
-  // Touch-only devices fire phantom mouseenter on tap — gate them out here.
+  // Touch-only devices fire phantom mouseenter on tap; gate them out here.
   const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
   const buttons = document.querySelectorAll(BUTTON_SELECTORS);
@@ -45,25 +49,25 @@ export default function initGsapButtons() {
     };
 
     const onDown = () => {
-      gsap.to(el, { ...TAP_STATE, ease: EASE, duration: DURATION_TAP, overwrite: "auto" });
+      gsap.to(el, { ...TAP_STATE, ease: TAP_EASE, duration: DURATION_TAP, overwrite: "auto" });
     };
 
     const onUp = () => {
-      // Spring back to hover state if still hovering, otherwise rest
+      // Return to hover state if still hovering, otherwise rest
       const target = hovering ? HOVER_STATE : REST_STATE;
       gsap.to(el, { ...target, ease: EASE, duration: DURATION_HOVER, overwrite: "auto" });
     };
 
-    // --- Touch: press-down on touchstart, spring back on touchend ---
+    // --- Touch: press-down on touchstart, eased return on touchend ---
     const onTouchStart = () => {
-      gsap.to(el, { ...TAP_STATE, ease: EASE, duration: DURATION_TAP, overwrite: "auto" });
+      gsap.to(el, { ...TAP_STATE, ease: TAP_EASE, duration: DURATION_TAP, overwrite: "auto" });
     };
 
     const onTouchEnd = () => {
       gsap.to(el, { ...REST_STATE, ease: EASE, duration: DURATION_HOVER, overwrite: "auto" });
     };
 
-    // Desktop (hover-capable devices only) — prevents phantom hover on touch taps
+    // Desktop (hover-capable devices only): prevents phantom hover on touch taps
     if (canHover) {
       el.addEventListener("mouseenter", onEnter);
       el.addEventListener("mouseleave", onLeave);

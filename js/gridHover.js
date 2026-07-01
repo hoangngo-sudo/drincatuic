@@ -88,64 +88,28 @@
       );
 
       if (isTouchDevice()) {
-        // Touch device: tap to show info, tap again to open modal
-        let infoVisible = false;
-
-        // Helper function to open modal directly
-        const openModalFromTouch = () => {
-          const modal = document.getElementById("imageModal");
-          if (modal) {
-            const modalImg = modal.querySelector(".modal-img");
-            const fullSrc = img.getAttribute("data-src") || img.src;
-            
-            if (modalImg) {
-              modalImg.src = fullSrc;
-              modalImg.alt = img.alt || "Image";
-              modalImg.onload = () => {
-                modal.classList.add("show");
-              };
-              document.body.style.overflow = "hidden";
-            }
-          }
-        };
-
+        // Touch device: one tap opens the high-res image directly
+        // (bypasses the info overlay — no two-tap flow on mobile)
         item.addEventListener(
           "click",
           function (e) {
-            if (!infoVisible) {
-              // First tap: show info overlay
-              e.preventDefault();
-              e.stopPropagation();
+            e.stopPropagation();
 
-              // Hide other open overlays
-              document.querySelectorAll(".grid-item.show-info").forEach((el) => {
-                if (el !== item) {
-                  el.classList.remove("show-info");
-                  el.classList.add("hide-info");
-                }
-              });
+            const modal = document.getElementById("imageModal");
+            if (!modal) return;
+            const modalImg = modal.querySelector(".modal-img");
+            if (!modalImg) return;
 
-              item.classList.remove("hide-info");
-              item.classList.add("show-info");
-              infoVisible = true;
-            } else {
-              // Second tap: open modal directly
-              e.preventDefault();
-              e.stopPropagation();
-              openModalFromTouch();
-            }
+            const fullSrc = img.getAttribute("data-src") || img.src;
+            modalImg.src = fullSrc;
+            modalImg.alt = img.alt || "Image";
+            modalImg.onload = () => {
+              modal.classList.add("show");
+            };
+            document.body.style.overflow = "hidden";
           },
           true
         );
-
-        // Close on tap outside
-        document.addEventListener("click", function (e) {
-          if (!item.contains(e.target) && infoVisible) {
-            item.classList.remove("show-info");
-            item.classList.add("hide-info");
-            infoVisible = false;
-          }
-        });
       } else {
         // Mouse device: directional hover effect
         item.addEventListener(

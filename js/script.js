@@ -44,6 +44,12 @@ function form() {
   const submitBtn = document.querySelector(".btn");
   const successMessage = document.querySelector("#successMessage");
   const successText = document.querySelector("#successText");
+  const nameInput = document.getElementById("name");
+  const emailInput = document.getElementById("email");
+  const phoneInput = document.getElementById("phone");
+  const acknowledgeCheckbox = document.getElementById("acknowledge");
+  const willPayRadio = document.getElementById("will-pay");
+  const alreadyPaidRadio = document.getElementById("already-paid");
 
   // Function to show success message with customized text
   const showSuccessMessage = (name) => {
@@ -128,9 +134,6 @@ function form() {
   };
 
   // Add event listeners to payment radio buttons
-  const willPayRadio = document.getElementById("will-pay");
-  const alreadyPaidRadio = document.getElementById("already-paid");
-
   if (willPayRadio) {
     willPayRadio.addEventListener("change", () => resetErrorStyling("payment"));
   }
@@ -142,7 +145,6 @@ function form() {
   }
 
   // Add event listener to acknowledgement checkbox
-  const acknowledgeCheckbox = document.getElementById("acknowledge");
   if (acknowledgeCheckbox) {
     acknowledgeCheckbox.addEventListener("change", function () {
       if (this.checked) {
@@ -155,14 +157,6 @@ function form() {
   const validateForm = () => {
     let containsErrors = false;
 
-    // Get the form inputs
-    const nameInput = document.getElementById("name");
-    const emailInput = document.getElementById("email");
-    const phoneInput = document.getElementById("phone");
-    const acknowledgeCheckbox = document.getElementById("acknowledge");
-    const willPayRadio = document.getElementById("will-pay");
-    const alreadyPaidRadio = document.getElementById("already-paid");
-    const payment = document.querySelector(".question-div");
     const paymentElements = Array.from(
       document.querySelectorAll(".question-div")
     ).find((element) => element.textContent.includes("Payment"));
@@ -286,13 +280,6 @@ function form() {
 
   // Function to add register to the list
   const addRegister = async () => {
-    const nameInput = document.getElementById("name");
-    const emailInput = document.getElementById("email");
-    const phoneInput = document.getElementById("phone");
-    const acknowledgeCheckbox = document.getElementById("acknowledge");
-    const willPayRadio = document.getElementById("will-pay");
-    const alreadyPaidRadio = document.getElementById("already-paid");
-
     if (!nameInput || !emailInput || !phoneInput) return;
 
     // Set button to loading state

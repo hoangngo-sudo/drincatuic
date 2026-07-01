@@ -8,7 +8,7 @@
 
 :root {
   font-family: 'WF Visual Sans', sans-serif;
-  font-size: 18px;
+  font-size: 16px;
 
   --primary-color: #E91E63;
   --primary-dark-color: #ff80ab;
@@ -27,7 +27,8 @@
   --footer-copyright: #E91E63;
   --glass-bg: rgba(255, 255, 255, 0.08);  /* frosted-glass panel fill (nav, scroll mouse, expandable) */
   --nav-shadow: 0 0 0 0.6px var(--border-color),
-                0 5px 15px rgba(0, 0, 0, 0.12);  /* nav pill box-shadow; dark mode drops the outer shadow */
+                0 2px 4px rgba(0, 0, 0, 0.04),
+                0 8px 20px rgba(0, 0, 0, 0.08);  /* nav pill box-shadow: layered for natural depth; dark mode drops outer shadows */
   --slider-control-bg: #fff;               /* slider button & dot default fill */
 
   /* Polaroid collage */
@@ -70,7 +71,8 @@
   --selection-text: #000;
 
   --glass-bg: rgba(0, 0, 0, 0.08);
-  --nav-shadow: 0 0 0 0.6px var(--border-color);
+  --nav-shadow: 0 0 0 0.6px var(--border-color),
+                0 1px 3px rgba(0, 0, 0, 0.15);  /* subtle elevation hint in dark mode */
   --slider-control-bg: var(--tertiary-color);
 
   --polaroid-frame-bg: #1e1e1e;
@@ -118,13 +120,6 @@ body {
   55%, 100% { opacity: 0; transform: translateX(30px); }
 }
 
-/* transform: translateY replaces top animation (D→S: compositor-only, no layout) */
-@keyframes mouse-scroll {
-  0%   { transform: translateY(0);    opacity: 1; }
-  80%  {                              opacity: 1; }
-  100% { transform: translateY(10px); opacity: 0; }
-}
-
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -140,7 +135,7 @@ body {
    Reusable helpers used across multiple components.
    ----------------------------------------------- */
 
-/* Prevents CSS transitions — used by JS when setting initial element positions */
+/* Prevents CSS transitions: used by JS when setting initial element positions */
 .no-transition {
   transition: none !important;
 }
@@ -178,10 +173,10 @@ body {
 }
 
 /* -----------------------------------------------
-   Typography — Body Section
-   .body-section is shared across h1–h3, p, a, and
+   Typography: Body Section
+   .body-section is shared across h1 to h3, p, a, and
    <section> elements. Element qualifiers are
-   intentional — each element type gets distinct sizing.
+   intentional: each element type gets distinct sizing.
    ----------------------------------------------- */
 
 /* Shared z-index lift for all .body-section elements */
@@ -225,7 +220,7 @@ p.body-section {
 }
 
 /* -----------------------------------------------
-   Layout — Hero Background
+   Layout: Hero Background
    Two overlapping images swap via opacity for dark/light mode.
    Default shows dark-bg to avoid white flash before JS loads.
    ----------------------------------------------- */
@@ -259,7 +254,7 @@ body:not(.dark-mode) .dark-bg { opacity: 0; }
 body:not(.dark-mode) .light-bg { opacity: 1; }
 
 /* -----------------------------------------------
-   Layout — Content Sections
+   Layout: Content Sections
    ----------------------------------------------- */
 
 /* Centered flex container for each content area */
@@ -272,7 +267,7 @@ body:not(.dark-mode) .light-bg { opacity: 1; }
   padding-bottom: 0;
 }
 
-/* First viewport hero area — taller with bottom padding for scroll room */
+/* First viewport hero area: taller with bottom padding for scroll room */
 .body-content--firstviewport {
   min-height: 85vh;
   padding-bottom: 8.5rem;
@@ -345,11 +340,11 @@ a, button,
   }
 }
 
-/* When theme toggle sits inside nav — circular, no text padding */
+/* When theme toggle sits inside nav: circular, no text padding */
 .nav-link.theme-btn {
   padding: 0;
-  width: 60px;
-  height: 60px;
+  width: 44px;
+  height: 44px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -360,7 +355,7 @@ a, button,
 
 /* -----------------------------------------------
    Hamburger Block
-   Mobile menu toggle — hidden on desktop,
+   Mobile menu toggle: hidden on desktop,
    shown at ≤768px via media query.
    ----------------------------------------------- */
 
@@ -478,8 +473,8 @@ a, button,
 
 /* Larger theme toggle when rendered inside sidebar */
 .sidebar-links .theme-btn {
-  height: 80px;
-  width: 80px;
+  height: 56px;
+  width: 56px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -518,8 +513,8 @@ a, button,
 
 .theme-btn {
   position: relative;
-  height: 60px;
-  width: 60px;
+  height: 44px;
+  width: 44px;
   padding: 0;
   margin: 0;
   transition: color 0.2s ease;
@@ -534,8 +529,8 @@ a, button,
 .theme-icon {
   transition: fill 0.3s ease;
   fill: var(--secondary-color);
-  width: 30px;
-  height: 30px;
+  width: 22px;
+  height: 22px;
   display: block;
   flex-shrink: 0;
   margin: auto;
@@ -580,7 +575,7 @@ a, button,
 }
 
 /* -----------------------------------------------
-   Button Block — RSVP CTA
+   Button Block: RSVP CTA
    Pill-shaped link button with frosted-glass border.
    On hover: scales up, fills with primary color,
    reveals 5 floating letter images (J-e-s-u-s)
@@ -593,9 +588,9 @@ a, button,
   box-shadow: 0 0 0 0.6px var(--border-color);
   backdrop-filter: url(#frosted);
   -webkit-backdrop-filter: blur(10px);
-  padding: 1rem 2rem;
+  padding: 0.6rem 1.25rem;
   border-radius: 3rem;
-  margin: 2rem 0;
+  margin: 1.25rem 0;
   transition: color 0.4s, background-color 0.4s, box-shadow 0.4s;
   display: inline-block;
   text-align: center;
@@ -605,7 +600,7 @@ a, button,
   /* will-change removed: GSAP manages this dynamically during hover/tap tweens */
 }
 
-/* Glow pseudo-element behind button — fades in on hover */
+/* Glow pseudo-element behind button: fades in on hover */
 .button::after {
   content: '';
   width: 100%;
@@ -629,7 +624,7 @@ a, button,
   z-index: 10;
 }
 
-/* Floating letter images — hidden by default, revealed on hover */
+/* Floating letter images: hidden by default, revealed on hover */
 .button img {
   position: absolute;
   top: 50%;
@@ -649,7 +644,7 @@ a, button,
 .button__u  { width: 2rem; transform: translate(-2rem, -1rem) rotate(-10deg);   filter: blur(0.2px); }
 .button__s2 { width: 4rem; transform: translate(-1.5rem, -1rem) rotate(10deg);  filter: blur(0.2px); }
 
-/* Hover: all button hover effects gated to pointer:fine — prevents sticky
+/* Hover: all button hover effects gated to pointer:fine: prevents sticky
    hover-on-tap on touch devices (iOS/Android keep :hover after touch lift) */
 @media (hover: hover) and (pointer: fine) {
   .button:hover::after { opacity: 1; }
@@ -669,7 +664,7 @@ a, button,
   .button:hover .button__s2 { transform: translate(0.5rem, -1.5rem) scale(1.2); }
 }
 
-/* Touch press: scale-down tap feedback — no hover on touch devices */
+/* Touch press: scale-down tap feedback: no hover on touch devices */
 @media (hover: none) {
   .button:active {
     color: var(--secondary-color);
@@ -698,7 +693,7 @@ a, button,
   padding: 2rem 0;
   margin: 0;
   height: auto;
-  /* CSS-driven press state — GSAP no longer manages social-button transforms */
+  /* CSS-driven press state: GSAP no longer manages social-button transforms */
   transition: transform 150ms cubic-bezier(0.215, 0.61, 0.355, 1);
 }
 
@@ -718,7 +713,7 @@ a, button,
   position: absolute;
   z-index: 1;
   cursor: pointer;
-  /* 200ms ease-out: matches Emil's 150–250ms micro-interaction range */
+  /* 200ms ease-out: matches the 150-250ms micro-interaction range */
   transition: opacity 200ms ease-out;
   box-sizing: border-box;
   top: 0;
@@ -728,7 +723,7 @@ a, button,
   opacity: 0;
 }
 
-/* Label text below icon — hidden at rest, shown immediately on hover */
+/* Label text below icon: hidden at rest, shown immediately on hover */
 .social-button--label {
   color: var(--tertiary-color);
   text-align: center;
@@ -743,64 +738,16 @@ a, button,
   transform: translateY(4px);
 }
 
-/* Header social button sits on the page background — label must follow secondary color
+/* Header social button sits on the page background: label must follow secondary color
    so it reads correctly in both light (black) and dark (white) mode */
 .header-link .social-button--label {
   color: var(--secondary-color);
 }
 
 /* -----------------------------------------------
-   Scroll Mouse Block
-   Animated scroll-down indicator at left edge of hero.
-   Uses --glass-bg for theme-aware inner background.
-   Hidden at ≤768px (see media queries).
-   ----------------------------------------------- */
-
-.scroll-mouse-container {
-  position: absolute;
-  top: 50vh;
-  left: 2%;
-  width: 60px;
-  height: 1rem;
-  margin-left: -30px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transition: opacity 0.3s ease;
-  z-index: var(--z-content);
-}
-
-.scroll-mouse-container .scroll-mouse-inner {
-  width: 30px;
-  height: 50px;
-  position: relative;
-  border-radius: 34px;
-  background-color: var(--glass-bg);
-  box-shadow: 0 0 0 0.6px var(--border-color);
-}
-
-.scroll-mouse-container .scroll-mouse-inner .scroll-mouse-wheel {
-  position: absolute;
-  top: 10%;
-  left: 50%;
-  width: 12px;
-  height: 12px;
-  margin-left: -6px;
-  border-radius: 50%;
-  background-color: var(--secondary-color);
-  animation: mouse-scroll 0.9s infinite;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .scroll-mouse-container .scroll-mouse-inner .scroll-mouse-wheel {
-    animation: none;
-  }
-}
-
-/* -----------------------------------------------
    Image Grid Block
    Responsive CSS Grid galleries for event photos.
-   Two aspect ratios share a common base layout —
+   Two aspect ratios share a common base layout :
    only --row-heights differs between variants.
    Columns adjust from 4→2 at ≤768px (media queries).
    ----------------------------------------------- */
@@ -822,18 +769,18 @@ a, button,
   overflow: hidden;
 }
 
-/* 5:4 portrait ratio — group photos */
+/* 5:4 portrait ratio: group photos */
 .image-grid {
   --row-heights: calc((100vw / var(--num-cols)) * 4 / 5);
   /* will-change removed: .image-grid does not animate; permanent layer wastes GPU memory */
 }
 
-/* 16:9 landscape ratio — wide/panoramic shots */
+/* 16:9 landscape ratio: wide/panoramic shots */
 .image-grid-span {
   --row-heights: calc((100vw / var(--num-cols)) * 9 / 16);
 }
 
-/* Grid Item — individual photo/video cell */
+/* Grid Item: individual photo/video cell */
 .grid-item {
   position: relative;
   overflow: hidden;
@@ -864,7 +811,7 @@ a, button,
   border: 0;
 }
 
-/* Span helpers — let items occupy multiple grid tracks */
+/* Span helpers: let items occupy multiple grid tracks */
 .image-grid-col-2 { grid-column: span 2; }
 .image-grid-row-2 { grid-row: span 2; }
 
@@ -875,7 +822,7 @@ a, button,
    3-col desktop → 1-col mobile.
    ----------------------------------------------- */
 
-/* Grid container — 80% width, tight gap for scattered overlap */
+/* Grid container: 80% width, tight gap for scattered overlap */
 .polaroid-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -887,7 +834,7 @@ a, button,
   overflow: visible;
 }
 
-/* Card wrapper — rotation + hover transitions */
+/* Card wrapper: rotation + hover transitions */
 .polaroid-card {
   position: relative;
   transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1),
@@ -898,7 +845,7 @@ a, button,
   margin: 1rem;
 }
 
-/* Repeating rotation + offset pattern — scattered, overlapping look */
+/* Repeating rotation + offset pattern: scattered, overlapping look */
 .polaroid-card:nth-child(6n+1) { transform: rotate(-3.5deg) translate(-4px, 2px); }
 .polaroid-card:nth-child(6n+2) { transform: rotate(2.8deg) translate(3px, -3px); }
 .polaroid-card:nth-child(6n+3) { transform: rotate(-1.5deg) translate(-2px, 5px); }
@@ -922,7 +869,7 @@ a, button,
   }
 }
 
-/* Polaroid frame — white border, rounded corners, soft shadow */
+/* Polaroid frame: white border, rounded corners, soft shadow */
 .polaroid-frame {
   position: relative;
   background: var(--polaroid-frame-bg);
@@ -939,7 +886,7 @@ a, button,
   box-shadow: var(--polaroid-shadow-hover);
 }
 
-/* Image inside frame — default 5:4 ratio */
+/* Image inside frame: default 5:4 ratio */
 .polaroid-frame > img {
   width: 100%;
   aspect-ratio: 5 / 4;
@@ -949,7 +896,7 @@ a, button,
   content-visibility: auto;
 }
 
-/* Subtle zoom on hover — disabled */
+/* Subtle zoom on hover: disabled */
 /* .polaroid-card:hover .polaroid-frame > img,
 .polaroid-card.hover .polaroid-frame > img,
 .polaroid-card.show-info .polaroid-frame > img {
@@ -970,7 +917,7 @@ a, button,
    (inspired by Hakim El Hattab).
    ----------------------------------------------- */
 
-/* Dark overlay panel — hidden by default */
+/* Dark overlay panel: hidden by default */
 .grid-item-info {
   position: absolute;
   top: 0;
@@ -996,7 +943,7 @@ a, button,
   cursor: pointer;
 }
 
-/* Overlay text — directional transform is set/animated by JS */
+/* Overlay text: directional transform is set/animated by JS */
 .grid-item-info p {
   position: relative;
   z-index: 2;
@@ -1019,7 +966,7 @@ a, button,
   color: rgba(255, 255, 255, 0.8);
 }
 
-/* Active state — shared by mouse hover (.hover) and touch tap (.show-info) */
+/* Active state: shared by mouse hover (.hover) and touch tap (.show-info) */
 .grid-item.hover .grid-item-info,
 .grid-item.show-info .grid-item-info {
   visibility: visible;
@@ -1031,7 +978,7 @@ a, button,
   opacity: 1;
 }
 
-/* Staggered text reveal — subtitle enters 50ms after title (mouse only) */
+/* Staggered text reveal: subtitle enters 50ms after title (mouse only) */
 .grid-item.hover .grid-item-info p {
   transition-delay: 0.05s;
 }
@@ -1041,7 +988,7 @@ a, button,
   transform: none;
 }
 
-/* Subtle zoom on active image — excludes polaroid cards */
+/* Subtle zoom on active image: excludes polaroid cards */
 .grid-item:not(.polaroid-card).hover img,
 .grid-item:not(.polaroid-card).show-info img {
   transform: scale(1.05);
@@ -1093,16 +1040,22 @@ a, button,
   position: fixed;
   top: 1.25rem;
   right: 1.25rem;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
   border-radius: 50%;
-  background: none;
-  box-shadow: 0 0 0 0.6px var(--border-color);
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, backdrop-filter 0.3s ease;
+}
+
+/* Dark mode: swap to dark-tinted glass over the always-dark modal overlay */
+.dark-mode .modal-close {
+  background: rgba(255, 255, 255, 0.08);
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -1132,7 +1085,7 @@ a, button,
    Slider Block
    Poster carousel with prev/next buttons and dot indicators.
    Uses --slider-control-bg token for dark/light theming
-   of buttons and dots — no dark-mode overrides needed.
+   of buttons and dots: no dark-mode overrides needed.
    ----------------------------------------------- */
 
 .slider {
@@ -1179,7 +1132,7 @@ a, button,
   z-index: 1;
 }
 
-/* Circular prev/next buttons — positioned outside slider edges */
+/* Circular prev/next buttons: positioned outside slider edges */
 .slider button {
   position: absolute;
   top: 50%;
@@ -1214,7 +1167,7 @@ a, button,
 .prev-btn { left: -60px; }
 .next-btn { right: -60px; }
 
-/* Dot indicators — centered below slider content */
+/* Dot indicators: centered below slider content */
 .dots {
   display: flex;
   justify-content: center;
@@ -1233,7 +1186,7 @@ a, button,
   transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
 }
 
-/* Active state — primary color fill */
+/* Active state: primary color fill */
 .dot.active {
   background-color: var(--primary-color);
   border-color: var(--primary-color);
@@ -1251,7 +1204,7 @@ a, button,
 }
 
 /* -----------------------------------------------
-   Expandable Block — Accordion Q&A
+   Expandable Block: Accordion Q&A
    Clicking .expand-trigger toggles .active on
    .expand-list-item, revealing .expand-target-short
    via animated max-height. Uses --glass-bg token
@@ -1277,7 +1230,7 @@ a, button,
   display: none;
 }
 
-/* Trigger bar — clickable header with +++ / −−− indicator */
+/* Trigger bar: clickable header with +++ / −−− indicator */
 .expand-trigger {
   position: relative;
   display: flex;
@@ -1333,7 +1286,7 @@ a, button,
   align-items: center;
 }
 
-/* Hover highlight — fills trigger with primary color */
+/* Hover highlight: fills trigger with primary color */
 .anchor-background {
   position: absolute;
   top: 0;
@@ -1356,7 +1309,7 @@ a, button,
   }
 }
 
-/* Expandable content panel — animated open/close via max-height */
+/* Expandable content panel: animated open/close via max-height */
 .expand-target-short {
   max-height: 0;
   overflow: hidden;
@@ -1437,7 +1390,7 @@ a, button,
   );
 }
 
-/* Footer content wrapper — wraps to column on mobile */
+/* Footer content wrapper: wraps to column on mobile */
 .footer-content {
   display: flex;
   flex-wrap: wrap;
@@ -1466,7 +1419,7 @@ section.footer-section {
   min-width: min(300px, 100%);
 }
 
-/* Footer text — white on dark background (merged from two duplicate selectors) */
+/* Footer text: white on dark background (merged from two duplicate selectors) */
 .footer-section,
 li.footer-section,
 ul.contact-info {
@@ -1542,7 +1495,7 @@ ul.contact-info li {
   padding: clamp(1rem, 3vw, 2rem) 0;
 }
 
-/* Footer-specific hover — gated to pointer:fine devices only */
+/* Footer-specific hover: gated to pointer:fine devices only */
 @media (hover: hover) and (pointer: fine) {
   .social-button:hover .social-button--label {
     opacity: 1;
@@ -1571,7 +1524,7 @@ ul.contact-info li {
   z-index: 2;
 }
 
-/* Merged from two duplicate selectors — removed invalid max-width: auto */
+/* Merged from two duplicate selectors: removed invalid max-width: auto */
 .madewithlove-bar--text {
   color: #fff;
   font-size: 0.9rem;
@@ -1590,9 +1543,9 @@ ul.contact-info li {
 
 /* -----------------------------------------------
    Responsive Breakpoints
-   1024px — increase footer top padding for diagonal
-   768px  — mobile layout (hamburger, 2-col grid)
-   480px  — fine-tune mobile spacing
+   1024px: increase footer top padding for diagonal
+   768px: mobile layout (hamburger, 2-col grid)
+   480px: fine-tune mobile spacing
    ----------------------------------------------- */
 
 @media screen and (max-width: 1024px) {
@@ -1607,7 +1560,7 @@ ul.contact-info li {
   .hamburger { display: block; }
   .menu-sidebar { display: block; }
 
-  /* Grid: single column on mobile — one image at a time */
+  /* Grid: single column on mobile: one image at a time */
   .image-grid,
   .image-grid-span {
     --num-cols: 1;
@@ -1642,21 +1595,18 @@ ul.contact-info li {
     padding-bottom: 4rem;
   }
 
-  /* Hide scroll indicator on small screens */
-  .scroll-mouse-container { display: none; }
-
   /* Hide slider arrows on touch-sized screens */
   .slider .prev-btn,
   .slider .next-btn {
     display: none !important;
   }
 
-  /* Hide floating letter images — no hover on touch */
+  /* Hide floating letter images: no hover on touch */
   .button img { display: none; }
 
   /* Social buttons: show label always on mobile for navigation clarity.
      Background stays hidden at rest; flashes brand color on :active press.
-     Label is always visible — users need to know what the icons link to. */
+     Label is always visible: users need to know what the icons link to. */
   .social-button--background {
     display: block;
     opacity: 0;
@@ -1668,7 +1618,7 @@ ul.contact-info li {
     opacity: 1;
     /* Cancel the desktop slide-up offset so label sits in natural position */
     transform: none;
-    /* Footer background is always dark — white text reads in both modes.
+    /* Footer background is always dark: white text reads in both modes.
        .header-link .social-button--label overrides this for the header context. */
     color: #fff;
   }
@@ -1703,7 +1653,7 @@ ul.contact-info li {
 }
 
 @media screen and (max-width: 480px) {
-  /* Grid: 1-col (inherits from 768px breakpoint — kept for explicit intent) */
+  /* Grid: 1-col (inherits from 768px breakpoint: kept for explicit intent) */
   .image-grid,
   .image-grid-span {
     --num-cols: 1;
@@ -1739,9 +1689,5 @@ ul.contact-info li {
   .fade-in.hidden {
     opacity: 0;
     transform: none;
-  }
-
-  .scroll-mouse-container .scroll-mouse-wheel {
-    animation: none;
   }
 }
