@@ -20,20 +20,6 @@ module.exports = (_, argv) => {
       publicPath: "./",
       clean: true,
     },
-    module: {
-      rules: [
-        {
-          test: /\.js$/,
-          exclude: /node_modules/,
-          use: {
-            loader: "babel-loader",
-            options: {
-              presets: [["@babel/preset-env", { targets: "defaults" }]],
-            },
-          },
-        },
-      ],
-    },
     plugins: [
       new HtmlWebpackPlugin({
         template: "./index.html",
@@ -77,7 +63,6 @@ module.exports = (_, argv) => {
     devtool: "source-map",
     performance: {
       hints: isProd ? "warning" : false,
-      // Only check JS/CSS bundles — images/video are copied as-is and cannot be split
       assetFilter: (filename) =>
         !(/\.(png|jpe?g|gif|webp|svg|ico|mp4|mov|woff2?)$/i.test(filename)),
     },
