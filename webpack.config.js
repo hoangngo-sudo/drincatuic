@@ -26,12 +26,18 @@ module.exports = (_, argv) => {
         filename: "index.html",
         chunks: ["runtime", "index"],
         inject: "body",
+        templateParameters: {
+          isDev: !isProd,
+        },
       }),
       new HtmlWebpackPlugin({
         template: "./registration.html",
         filename: "registration.html",
         chunks: ["runtime", "registration"],
         inject: "body",
+        templateParameters: {
+          isDev: !isProd,
+        },
       }),
       new CopyWebpackPlugin({
         patterns: [

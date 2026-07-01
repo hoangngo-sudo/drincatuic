@@ -3,8 +3,11 @@
 
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <!-- CSP: allows localhost for webpack dev server & local APIs; production should remove localhost -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' http://localhost:* https://cdn.jsdelivr.net https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: http://localhost:*; font-src 'self' https://dhygzobemt712.cloudfront.net; frame-src 'none'; connect-src 'self' http://localhost:* https://ssrbglntylfokegxipao.supabase.co https://cdn.jsdelivr.net https://cloudflareinsights.com; object-src 'none'; base-uri 'self'">
+  <!--
+    Development CSP includes http://localhost:* for webpack-dev-server HMR.
+    Production CSP omits localhost. Controlled by webpack mode via isDev.
+  -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'<% if (isDev) { %> http://localhost:*<% } %> https://cdn.jsdelivr.net https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:<% if (isDev) { %> http://localhost:*<% } %>; font-src 'self' https://dhygzobemt712.cloudfront.net; frame-src 'none'; connect-src 'self'<% if (isDev) { %> http://localhost:*<% } %> https://ssrbglntylfokegxipao.supabase.co https://cdn.jsdelivr.net https://cloudflareinsights.com; object-src 'none'; base-uri 'self'">
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=()">
   <meta name="referrer" content="strict-origin-when-cross-origin">
@@ -20,7 +23,7 @@
   </header> -->
   <div class="form">
     <div class="title">
-      <h1>Registration - Student Retreat</h1>
+      <h1>Registration Form</h1>
       <p>
         On <strong>Saturday, March 22</strong> through <strong>Monday, March 24, 2025</strong>, we will be having a
         spring retreat! Our theme and aim is Falling in Love with Jesus! The cost is $50 to cover the food and lodging

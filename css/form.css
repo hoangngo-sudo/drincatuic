@@ -21,26 +21,21 @@
   --color-border-input: #DCD7D7;
   --color-success:      #10b981;
 
-  --space-3xs: clamp(0.25rem, 0.21rem + 0.22vw, 0.375rem);
-  --space-2xs: clamp(0.5rem, 0.43rem + 0.33vw, 0.6875rem);
-  --space-xs: clamp(0.75rem, 0.64rem + 0.54vw, 1.0625rem);
-  --space-s: clamp(1rem, 0.87rem + 0.65vw, 1.375rem);
-  --space-m: clamp(1.5rem, 1.30rem + 0.98vw, 2.0625rem);
-  --space-l: clamp(2rem, 1.74rem + 1.30vw, 2.75rem);
-  --space-xl: clamp(3rem, 2.59rem + 2.07vw, 4.1875rem);
-  --space-2xl: clamp(4rem, 3.46rem + 2.72vw, 5.5625rem);
-
-  --space-2xs-xs: clamp(0.5rem, 0.30rem + 0.98vw, 1.0625rem);
-  --space-xs-s: clamp(0.75rem, 0.53rem + 1.09vw, 1.375rem);
-  --space-s-m: clamp(1rem, 0.63rem + 1.85vw, 2.0625rem);
-  --space-m-l: clamp(1.5rem, 1.07rem + 2.17vw, 2.75rem);
-  --space-l-xl: clamp(2rem, 1.24rem + 3.80vw, 4.1875rem);
+  --space-3xs: 0.25rem;
+  --space-2xs: clamp(0.5rem, 1.5vw, 0.75rem);
+  --space-xs:  clamp(0.75rem, 2vw, 1rem);
+  --space-s:   clamp(1rem, 2.5vw, 1.5rem);
+  --space-m:   clamp(1.5rem, 3vw, 2rem);
+  --space-l:   clamp(2rem, 4vw, 3rem);
+  --space-xl:  clamp(3rem, 5vw, 4rem);
+  --space-2xl: clamp(4rem, 6vw, 5.5rem);
 }
 
 body {
   font-style: normal;
-  line-height: 1.5rem;
+  line-height: 1.75;
   background-color: var(--color-bg-page);
+  -webkit-font-smoothing: antialiased;
 }
 
 .form {
@@ -48,7 +43,7 @@ body {
   flex-direction: column;
   gap: var(--space-s);
   max-width: min(40rem, 100% - var(--space-m) * 2);
-  margin: var(--space-l-xl) auto;
+  margin: var(--space-xl) auto;
   padding: 0;
   box-sizing: border-box;
 }
@@ -71,20 +66,20 @@ body {
 }
 
 .title h1 {
-  font-size: clamp(1.8rem, 6vw, 3rem);
+  font-size: clamp(1.8rem, 5vw, 3rem);
   text-align: left;
   color: var(--color-brand);
-  font-weight: 600;
-  line-height: clamp(2.2rem, 7vw, 4rem);
-  margin-bottom: var(--space-s-m);
+  font-weight: 800;
+  line-height: clamp(2rem, 5vw, 3rem);
+  padding-bottom: 1rem;
 }
 
 .title p {
   font-size: 1rem;
   text-align: left;
-  line-height: clamp(2rem, 5vw, 2.5rem);
-  font-weight: 350;
-  margin-bottom: var(--space-2xs-xs);
+  line-height: 1.75;
+  font-weight: 300;
+  margin-bottom: var(--space-2xs);
 }
 
 .name-field,
@@ -104,13 +99,13 @@ body {
 .name label,
 .email label,
 .phone label {
-  font-weight: 400;
+  font-weight: 300;
 }
 
 .question-div {
   margin-bottom: 0;
   font-size: 1rem;
-  line-height: clamp(2rem, 5vw, 2.5rem);
+  line-height: 1.75;
 }
 
 .input-field input {
@@ -139,14 +134,14 @@ body {
 }
 
 label {
-  font-weight: 350;
+  font-weight: 300;
   font-size: 1rem;
-  line-height: clamp(1.8rem, 4vw, 2rem);
+  line-height: 1.75;
 }
 
 input,
 input::placeholder {
-  font-weight: 350;
+  font-weight: 300;
 }
 
 .checkbox-div,
@@ -171,6 +166,7 @@ input::placeholder {
   color: white;
   border: none;
   border-radius: 5px;
+  font-size: 1rem;
   padding: var(--space-2xs) var(--space-m);
   cursor: pointer;
 }
@@ -230,7 +226,7 @@ input::placeholder {
 
 .error-message {
   color: red;
-  font-size: 0.8rem;
+  font-size: 0.875rem;
   margin-top: var(--space-3xs);
   display: block;
 }
@@ -248,7 +244,7 @@ input::placeholder {
 
 .success-message p {
   font-size: 1rem;
-  line-height: 1.8;
+  line-height: 1.75;
   color: var(--color-success);
   margin: 0;
   font-weight: 500;

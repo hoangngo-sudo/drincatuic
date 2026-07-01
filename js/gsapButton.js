@@ -58,7 +58,7 @@ export default function initGsapButtons() {
       gsap.to(el, { ...target, ease: EASE, duration: DURATION_HOVER, overwrite: "auto" });
     };
 
-    // --- Touch: press-down on touchstart, eased return on touchend ---
+    // Touch: press-down on touchstart, eased return on touchend
     const onTouchStart = () => {
       gsap.to(el, { ...TAP_STATE, ease: TAP_EASE, duration: DURATION_TAP, overwrite: "auto" });
     };

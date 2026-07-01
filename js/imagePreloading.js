@@ -108,8 +108,6 @@ setTimeout(preloadGalleryImages, 500); // Short delay to prioritize critical res
 setTimeout(preloadSliderImages, 2000); // Delay slider preload
 
 document.addEventListener("DOMContentLoaded", () => {
-  preloadGalleryImages();
-
   // Add lazy load functionality to images that come into view
   const lazyImageOptions = {
     root: null,

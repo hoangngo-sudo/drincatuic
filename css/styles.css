@@ -193,7 +193,6 @@ p.body-section,
 a.body-section {
   color: var(--secondary-color);
   text-align: left;
-  line-height: 2.2rem;
   box-sizing: content-box;
 }
 
@@ -207,16 +206,19 @@ h1.body-section {
 h2.body-section {
   font-size: clamp(1.5rem, 4vw, 2.2rem);
   font-weight: 700;
+  line-height: 1.3;
 }
 
 h3.body-section {
   font-size: clamp(1.1rem, 3vw, 1.35rem);
   font-weight: 600;
+  line-height: 1.75;
 }
 
 p.body-section {
   font-size: 1rem;
   font-weight: 400;
+  line-height: 1.6;
 }
 
 /* -----------------------------------------------
@@ -1358,7 +1360,7 @@ a, button,
 
 .footer-container {
   position: relative;
-  margin-top: 3rem;
+  margin-top: clamp(1rem, 3vw, 3rem);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1380,27 +1382,27 @@ a, button,
   display: block;
   width: 100%;
   height: 100%;
-  max-height: 100%;
-  /* Responsive clip-path: diagonal angle flattens as viewport narrows */
+  /* Consistent diagonal: tied to viewport width so angle stays the same
+     on mobile as on desktop. Caps at 60px drop so it never gets too steep. */
   clip-path: polygon(
-    0 clamp(5%, calc(2% + (10vw - 48px) / 10), 12%),
+    0 min(60px, 10vw),
     100% 0,
     100% 100%,
     0 100%
   );
 }
 
-/* Footer content wrapper: wraps to column on mobile */
+/* Footer content wrapper: stacked column layout matching Q&A width */
 .footer-content {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   align-items: flex-start;
-  flex-direction: row;
+  flex-direction: column;
   position: relative;
-  padding-top: clamp(4rem, 10vw, 8rem);
+  padding-top: clamp(2.5rem, 10vw, 8rem);
   width: 100%;
-  max-width: min(66.67rem, 100% - 2rem);
+  max-width: min(39rem, 100% - 2rem);
   margin: 0 auto;
   z-index: 1;
   gap: clamp(1rem, 3vw, 2rem);
@@ -1411,12 +1413,11 @@ a, button,
 }
 
 section.footer-section {
-  margin: 0 auto 1rem clamp(1rem, 3vw, 2rem);
-  max-width: min(600px, 100%);
+  margin: 0 auto 1rem auto;
+  max-width: 100%;
   text-align: left;
   padding: clamp(0.5rem, 2vw, 1rem);
   width: 100%;
-  min-width: min(300px, 100%);
 }
 
 /* Footer text: white on dark background (merged from two duplicate selectors) */
@@ -1434,6 +1435,8 @@ ul.contact-info {
 /* Cherry blossom bullet for contact list items */
 ul li::before {
   content: "🌸";
+  color: var(--primary-color);
+  margin-right: 0.4rem;
 }
 
 h1.footer-section {
@@ -1446,7 +1449,7 @@ h1.footer-section {
 p.footer-section {
   font-size: 1rem;
   font-weight: 400;
-  line-height: 2.2;
+  line-height: 1.75;
   margin-bottom: 1rem;
 }
 
@@ -1484,15 +1487,23 @@ ul.contact-info li {
   transition: filter 0.3s ease;
 }
 
-/* Social link row in footer */
+/* Social link row in footer: left-aligned with contact text */
 .social-buttons {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   gap: 0;
-  margin-top: auto;
+  width: 100%;
+  margin-top: 0;
   padding: clamp(1rem, 3vw, 2rem) 0;
+}
+
+/* Center social buttons on mobile */
+@media screen and (max-width: 768px) {
+  .social-buttons {
+    justify-content: center;
+  }
 }
 
 /* Footer-specific hover: gated to pointer:fine devices only */
@@ -1550,7 +1561,7 @@ ul.contact-info li {
 
 @media screen and (max-width: 1024px) {
   .footer-content {
-    padding-top: clamp(8rem, 15vw, 12rem);
+    padding-top: clamp(4rem, 15vw, 8rem);
   }
 }
 
@@ -1570,11 +1581,12 @@ ul.contact-info li {
   .image-grid-col-2 { grid-column: span 1; }
   .image-grid-row-2 { grid-row:    span 1; }
 
-  /* Footer: stack vertically with more top padding */
+  /* Footer: stack vertically with proportional top padding */
   .footer-content {
     flex-direction: column;
     align-items: center;
-    padding-top: 10rem;
+    padding-top: clamp(3rem, 20vw, 8rem);
+    max-width: min(39rem, 100% - 2rem);
   }
 
   section.footer-section {
@@ -1659,9 +1671,9 @@ ul.contact-info li {
     --num-cols: 1;
   }
 
-  /* Extra footer padding for shallower SVG diagonal on narrow screens */
+  /* Proportional footer padding for narrow screens */
   .footer-content {
-    padding-top: 13rem;
+    padding-top: clamp(2.5rem, 20vw, 8rem);
   }
 }
 
