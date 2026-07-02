@@ -72,12 +72,13 @@ graph TD
         GRIDHOV[gridHover.js]
         MODAL[modal.js]
         EXPAND[expandable.js]
+        GSAPBTN[gsapButton.js]
         SCROLLNAV[scrollNav.js]
         CONFIG1[config.js]
     end
 
     subgraph "Templates"
-        RESET2[reset.css] --> FORMCSS[form.min.css]
+        RESET2[reset.css] --> FORMCSS[form.css]
         IDXHTML[index.html]
         REGHTML[registration.html]
     end
@@ -88,6 +89,7 @@ graph TD
     IDXE --> GRIDHOV
     IDXE --> MODAL
     IDXE --> EXPAND
+    IDXE --> GSAPBTN
     IDXE --> SCROLLNAV
 
     REGE --> CONFIG2[config.js]
@@ -102,14 +104,14 @@ graph TD
 | Dependency | Purpose |
 |---|---|
 | Vanilla HTML5 / CSS3 / ES6+ | Core |
-| Webpack 5 + Babel Loader | Bundle and compile JS modules |
+| Webpack 5 | JS module bundling, chunking, and template injection |
 | [Supabase JS v2](https://supabase.com/docs/reference/javascript) | Registration form backend |
 | [GSAP 3.14.1](https://greensock.com/gsap/) | ScrollSmoother + ScrollTrigger for smooth scrolling and scroll-driven animations |
 | [Vimeo Player API](https://developer.vimeo.com/) | Embedded event videos |
 | WF Visual Sans | Variable web font (woff2) |
 | GitHub Pages | Static hosting via CNAME |
 
-JS modules are bundled through webpack entries with `runtimeChunk` manifest extraction and production content-hashed outputs.
+JS modules are bundled through webpack entries with `runtimeChunk` manifest extraction and production content-hashed outputs. The Content-Security-Policy meta tag is dynamically generated via webpack's `HtmlWebpackPlugin` template parameters — development builds include `localhost:*` for HMR, production builds omit it.
 
 ## Build with Webpack
 
@@ -143,9 +145,7 @@ Webpack outputs built files to `dist/` and generates both pages from templates:
 ├── css/
 │   ├── reset.css           # Modified Eric Meyer reset
 │   ├── styles.css          # Main page styles
-│   ├── styles.min.css      # Minified variant
-│   ├── form.css            # Registration form styles
-│   └── form.min.css        # Minified variant
+│   └── form.css            # Registration form styles
 ├── js/
 │   ├── script.js           # Theme, form handler, sidebar
 │   ├── config.js           # Supabase client init
@@ -154,8 +154,8 @@ Webpack outputs built files to `dist/` and generates both pages from templates:
 │   ├── gridHover.js        # Directional hover effects
 │   ├── modal.js            # Fullscreen image viewer
 │   ├── expandable.js       # Accordion Q&A
+│   ├── gsapButton.js       # GSAP-driven button hover/tap animations
 │   ├── scrollNav.js        # Scroll-responsive navbar
-│   └── *.min.js            # Minified variants
 ├── images/                 # Thumbnails (Small) + originals/
 └── assets/                 # Hero BGs, RSVP letter images, favicon
 ```
@@ -185,6 +185,7 @@ graph TB
         MODAL_JS[modal.js]
         SLIDER_JS[slider.js]
         EXPAND_JS[expandable.js]
+        GSAPBTN[gsapButton.js]
         GSAP_INLINE[Inline GSAP Script]
     end
 
@@ -193,10 +194,14 @@ graph TB
     NAV --> SCROLLNAV_JS
     POLAROID --> HOVER
     POLAROID --> MODAL_JS
-    POLAROID -.->|"selectors not updated"| PRELOAD
+    POLAROID --> PRELOAD
     SLIDER_UI --> SLIDER_JS
     ACCORDION --> EXPAND_JS
     FORM_UI --> FORM_JS
+    HERO --> GSAPBTN
+    SLIDER_UI --> GSAPBTN
+    ACCORDION --> GSAPBTN
+    MODAL_UI --> GSAPBTN
     BG --> GSAP_INLINE
     MODAL_JS --> |pause/resume ScrollSmoother| GSAP_INLINE
 ```
