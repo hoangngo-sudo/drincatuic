@@ -415,6 +415,8 @@ function handleSidebar() {
 
   if (sidebarLinks.length > 0) {
     sidebarLinks.forEach((link) => {
+      // Don't close sidebar when clicking the theme toggle
+      if (link.classList.contains("theme-btn")) return;
       link.addEventListener("click", closeSidebar);
     });
   }

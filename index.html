@@ -28,14 +28,6 @@
       <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
       <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" result="frosted" />
       <feComposite in="SourceGraphic" in2="frosted" operator="atop"/>
-      <feDisplacementMap id="disp" in="frosted" in2="blur" scale="1" xChannelSelector="R" yChannelSelector="G">
-        <animate attributeName="scale" to="3" dur="0.2s" begin="nav-glass.mouseover" fill="freeze"/>
-        <animate attributeName="scale" to="1" dur="0.2s" begin="nav-glass.mouseout" fill="freeze"/>
-        <animate attributeName="scale" to="3" dur="0.2s" begin="expand-trigger.mouseover" fill="freeze"/>
-        <!-- <animate attributeName="scale" to="1" dur="0.2s" begin="expand-trigger.mouseout" fill="freeze"/>
-        <animate attributeName="scale" to="3" dur="0.2s" begin="expand-target-short.mouseover" fill="freeze"/>
-        <animate attributeName="scale" to="1" dur="0.2s" begin="expand-target-short.mouseout" fill="freeze"/> -->
-      </feDisplacementMap>
     </filter>
   </svg>
   <div class="nav-container">
@@ -104,7 +96,7 @@
         Falling in <span class="highlight-pink">love</span> with <span class="highlight-pink">Jesus</span>
       </h1>
       <p class="body-section">
-        Are you looking for a place to deepen your faith and learn about the love of God who sacrifice his son for our eternal life ? Join us in our spring student retreat to refresh, rekindle, and renew our faith spirit.
+        Are you looking for a place to deepen your faith and learn about the love of God who sacrifice his son for our eternal life? Join us in our spring student retreat to refresh, rekindle, and renew our faith spirit.
       </p>
       <a href="registration.html" class="button">
         <span class="button-text">RSVP</span>

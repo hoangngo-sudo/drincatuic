@@ -130,10 +130,10 @@ body {
   to   { opacity: 1; transform: scale(1); }
 }
 
-/* -----------------------------------------------
-   Utility Classes
-   Reusable helpers used across multiple components.
-   ----------------------------------------------- */
+/* 
+  Utility Classes
+  Reusable helpers used across multiple components.
+*/
 
 /* Prevents CSS transitions: used by JS when setting initial element positions */
 .no-transition {
@@ -172,12 +172,12 @@ body {
   font-weight: 600;
 }
 
-/* -----------------------------------------------
-   Typography: Body Section
-   .body-section is shared across h1 to h3, p, a, and
-   <section> elements. Element qualifiers are
-   intentional: each element type gets distinct sizing.
-   ----------------------------------------------- */
+/*
+  Typography: Body Section
+  .body-section is shared across h1 to h3, p, a, and
+  <section> elements. Element qualifiers are
+  intentional: each element type gets distinct sizing.
+*/
 
 /* Shared z-index lift for all .body-section elements */
 .body-section {
@@ -221,11 +221,11 @@ p.body-section {
   line-height: 1.6;
 }
 
-/* -----------------------------------------------
-   Layout: Hero Background
-   Two overlapping images swap via opacity for dark/light mode.
-   Default shows dark-bg to avoid white flash before JS loads.
-   ----------------------------------------------- */
+/*
+  Layout: Hero Background
+  Two overlapping images swap via opacity for dark/light mode.
+  Default shows dark-bg to avoid white flash before JS loads.
+*/
 
 .bg-container {
   position: absolute;
@@ -255,9 +255,9 @@ p.body-section {
 body:not(.dark-mode) .dark-bg { opacity: 0; }
 body:not(.dark-mode) .light-bg { opacity: 1; }
 
-/* -----------------------------------------------
-   Layout: Content Sections
-   ----------------------------------------------- */
+/*
+  Layout: Content Sections
+*/
 
 /* Centered flex container for each content area */
 .body-content {
@@ -293,12 +293,12 @@ a, button,
   touch-action: manipulation;
 }
 
-/* -----------------------------------------------
-   Nav Block
-   Frosted-glass pill nav, centered-fixed at top.
-   Uses --glass-bg and --nav-shadow tokens so
-   dark/light theming needs zero overrides here.
-   ----------------------------------------------- */
+/*
+  Nav Block
+  Frosted-glass pill nav, centered-fixed at top.
+  Uses --glass-bg and --nav-shadow tokens so
+  dark/light theming needs zero overrides here.
+*/
 
 .nav-container {
   position: relative;
@@ -355,11 +355,11 @@ a, button,
   border-radius: 50%;
 }
 
-/* -----------------------------------------------
+/*
    Hamburger Block
    Mobile menu toggle: hidden on desktop,
    shown at ≤768px via media query.
-   ----------------------------------------------- */
+*/
 
 .hamburger {
   display: none;
@@ -386,11 +386,11 @@ a, button,
   transition: fill 0.2s ease;
 }
 
-/* -----------------------------------------------
-   Sidebar Block
-   Full-screen mobile nav panel, slides in from right.
-   Layered above .overlay (z-sidebar > z-overlay).
-   ----------------------------------------------- */
+/*
+  Sidebar Block
+  Full-screen mobile nav panel, slides in from right.
+  Layered above .overlay (z-sidebar > z-overlay).
+*/
 
 .menu-sidebar {
   position: fixed;
@@ -412,51 +412,32 @@ a, button,
   transform: translateX(0);
 }
 
-.sidebar-close {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  cursor: pointer;
-  z-index: var(--z-hamburger);
-  padding: 10px;
-  transition: transform 0.2s var(--ease-out-quart);
-  touch-action: manipulation;
-}
-
-.sidebar-close svg {
-  width: 2.5rem;
-  height: 2.5rem;
-  fill: var(--secondary-color);
-  transition: fill 0.2s ease;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .sidebar-close:hover {
-    transform: scale(1.1);
-  }
-
-  .sidebar-close:hover svg {
-    fill: var(--primary-color);
+/* Prevent default tap highlight flash on all touch elements */
+@media (hover: none) and (pointer: coarse) {
+  * {
+    -webkit-tap-highlight-color: transparent;
   }
 }
 
 .sidebar-header {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-start;
   height: 100%;
-  padding: 1.5rem;
+  padding: 5rem 1.5rem 1.5rem;
+  pointer-events: none;
 }
 
 .sidebar-links {
   display: flex;
   flex-direction: column;
-  padding: 2rem;
-  gap: 2.5rem;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
+  padding: 0;
+  gap: 1.5rem;
+  align-items: flex-end;
+  justify-content: flex-start;
+  width: auto;
+  pointer-events: auto;
 }
 
 .sidebar-link {
@@ -464,13 +445,13 @@ a, button,
   text-decoration: none;
   font-size: clamp(1.5rem, 4vw, 2rem);
   font-weight: 600;
-  text-align: center;
-  justify-content: center;
+  text-align: right;
   transition: 0.2s ease;
   position: relative;
   z-index: var(--z-buttons);
-  width: 100%;
-  padding: 1rem 0;
+  width: auto;
+  padding: 0.75rem 0.5rem;
+  touch-action: manipulation;
 }
 
 /* Larger theme toggle when rendered inside sidebar */
@@ -480,10 +461,14 @@ a, button,
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 0;
 }
 
-.sidebar-link:hover {
-  color: var(--primary-color);
+/* Only apply hover on devices that support it (prevents sticky hover on touch) */
+@media (hover: hover) and (pointer: fine) {
+  .sidebar-link:hover {
+    color: var(--primary-color);
+  }
 }
 
 /* Translucent backdrop behind open sidebar */
@@ -506,12 +491,12 @@ a, button,
   visibility: visible;
 }
 
-/* -----------------------------------------------
-   Theme Toggle Block
-   Dark/light mode switch icon.
-   Renders inside both nav (desktop) and sidebar (mobile).
-   JS toggles .dark-mode on body; icon swap is pure CSS.
-   ----------------------------------------------- */
+/*
+  Theme Toggle Block
+  Dark/light mode switch icon.
+  Renders inside both nav (desktop) and sidebar (mobile).
+  JS toggles .dark-mode on body; icon swap is pure CSS.
+*/
 
 .theme-btn {
   position: relative;
@@ -576,13 +561,13 @@ a, button,
   flex: 0 0 auto;
 }
 
-/* -----------------------------------------------
-   Button Block: RSVP CTA
-   Pill-shaped link button with frosted-glass border.
-   On hover: scales up, fills with primary color,
-   reveals 5 floating letter images (J-e-s-u-s)
-   that scatter outward via absolute positioning.
-   ----------------------------------------------- */
+/*
+  Button Block: RSVP CTA
+  Pill-shaped link button with frosted-glass border.
+  On hover: scales up, fills with primary color,
+  reveals 5 floating letter images (J-e-s-u-s)
+  that scatter outward via absolute positioning.
+*/
 
 .button {
   color: var(--primary-color);
@@ -602,22 +587,26 @@ a, button,
   /* will-change removed: GSAP manages this dynamically during hover/tap tweens */
 }
 
-/* Glow pseudo-element behind button: fades in on hover */
-.button::after {
-  content: '';
-  width: 100%;
-  height: 100%;
-  background: var(--primary-color);
-  position: absolute;
-  left: 0;
-  top: 0;
-  right: auto;
-  margin: 0;
-  border-radius: 3rem;
-  filter: blur(12px);
-  z-index: -1;
-  opacity: 0;
-  transition: opacity 0.4s;
+/* Glow pseudo-element behind button: fades in on hover (desktop only) */
+@media (hover: hover) and (pointer: fine) {
+  .button::after {
+    content: '';
+    width: 100%;
+    height: 100%;
+    background: var(--primary-color);
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: auto;
+    margin: 0;
+    border-radius: 3rem;
+    filter: blur(12px);
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+
+  .button:hover::after { opacity: 1; }
 }
 
 /* Button label text stays above floating images */
@@ -649,8 +638,6 @@ a, button,
 /* Hover: all button hover effects gated to pointer:fine: prevents sticky
    hover-on-tap on touch devices (iOS/Android keep :hover after touch lift) */
 @media (hover: hover) and (pointer: fine) {
-  .button:hover::after { opacity: 1; }
-
   .button:hover {
     color: var(--secondary-color);
     background-color: var(--btn-hover);
@@ -674,11 +661,11 @@ a, button,
   }
 }
 
-/* -----------------------------------------------
-   Social Button Block (BEM)
-   Icon with reveal-on-hover colored background and label.
-   Used in header (Instagram link) and footer (social links).
-   ----------------------------------------------- */
+/*
+  Social Button Block (BEM)
+  Icon with reveal-on-hover colored background and label.
+  Used in header (Instagram link) and footer (social links).
+*/
 
 .social-button {
   font-size: 1rem;
@@ -746,13 +733,13 @@ a, button,
   color: var(--secondary-color);
 }
 
-/* -----------------------------------------------
-   Image Grid Block
-   Responsive CSS Grid galleries for event photos.
-   Two aspect ratios share a common base layout :
-   only --row-heights differs between variants.
-   Columns adjust from 4→2 at ≤768px (media queries).
-   ----------------------------------------------- */
+/*
+  Image Grid Block
+  Responsive CSS Grid galleries for event photos.
+  Two aspect ratios share a common base layout :
+  only --row-heights differs between variants.
+  Columns adjust from 4→2 at ≤768px (media queries).
+*/
 
 /* Shared grid base for both 5:4 and 16:9 galleries */
 .image-grid,
@@ -774,7 +761,6 @@ a, button,
 /* 5:4 portrait ratio: group photos */
 .image-grid {
   --row-heights: calc((100vw / var(--num-cols)) * 4 / 5);
-  /* will-change removed: .image-grid does not animate; permanent layer wastes GPU memory */
 }
 
 /* 16:9 landscape ratio: wide/panoramic shots */
@@ -805,7 +791,7 @@ a, button,
   content-visibility: auto;
 }
 
-/* Force iframes (Vimeo embeds) to fill their grid cell */
+/* Force iframes to fill their grid cell */
 .grid-item iframe {
   width: 100% !important;
   height: 100% !important;
@@ -817,12 +803,12 @@ a, button,
 .image-grid-col-2 { grid-column: span 2; }
 .image-grid-row-2 { grid-row: span 2; }
 
-/* -----------------------------------------------
-   Polaroid Collage Grid Block
-   Polaroid-style photo cards with white frames,
-   subtle shadows, and organic rotation.
-   3-col desktop → 1-col mobile.
-   ----------------------------------------------- */
+/*
+  Polaroid Collage Grid Block
+  Polaroid-style photo cards with white frames,
+  subtle shadows, and organic rotation.
+  3-col desktop → 1-col mobile.
+*/
 
 /* Grid container: 80% width, tight gap for scattered overlap */
 .polaroid-grid {
@@ -860,8 +846,7 @@ a, button,
 .polaroid-card.show-info {
   transform: rotate(0deg);
   z-index: 2;
-  /* transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1),
-              z-index 0s; */
+  /* transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1), z-index 0s; */
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -910,14 +895,14 @@ a, button,
   aspect-ratio: 16 / 9;
 }
 
-/* -----------------------------------------------
-   Grid Hover Overlay
-   Directional animated info overlay on grid images.
-   JS adds .hover (mouse) or .show-info (touch)
-   to .grid-item. Text elements receive a directional
-   translate offset from JS for enter/leave effects
-   (inspired by Hakim El Hattab).
-   ----------------------------------------------- */
+/*
+  Grid Hover Overlay
+  Directional animated info overlay on grid images.
+  JS adds .hover (mouse) or .show-info (touch)
+  to .grid-item. Text elements receive a directional
+  translate offset from JS for enter/leave effects
+  (inspired by Hakim El Hattab).
+*/
 
 /* Dark overlay panel: hidden by default */
 .grid-item-info {
@@ -996,12 +981,12 @@ a, button,
   transform: scale(1.05);
 }
 
-/* -----------------------------------------------
-   Modal Block
-   Fullscreen image viewer with blurred backdrop.
-   Opens when user clicks a grid image to show
-   full-resolution version (loaded from data-src).
-   ----------------------------------------------- */
+/*
+  Modal Block
+  Fullscreen image viewer with blurred backdrop.
+  Opens when user clicks a grid image to show
+  full-resolution version (loaded from data-src).
+*/
 
 .modal {
   display: none;
@@ -1083,12 +1068,12 @@ a, button,
   object-fit: contain;
 }
 
-/* -----------------------------------------------
-   Slider Block
-   Poster carousel with prev/next buttons and dot indicators.
-   Uses --slider-control-bg token for dark/light theming
-   of buttons and dots: no dark-mode overrides needed.
-   ----------------------------------------------- */
+/*
+  Slider Block
+  Poster carousel with prev/next buttons and dot indicators.
+  Uses --slider-control-bg token for dark/light theming
+  of buttons and dots: no dark-mode overrides needed.
+*/
 
 .slider {
   position: relative;
@@ -1205,13 +1190,13 @@ a, button,
   }
 }
 
-/* -----------------------------------------------
-   Expandable Block: Accordion Q&A
-   Clicking .expand-trigger toggles .active on
-   .expand-list-item, revealing .expand-target-short
-   via animated max-height. Uses --glass-bg token
-   so dark/light theming needs zero overrides.
-   ----------------------------------------------- */
+/*
+  Expandable Block: Accordion Q&A
+  Clicking .expand-trigger toggles .active on
+  .expand-list-item, revealing .expand-target-short
+  via animated max-height. Uses --glass-bg token
+  so dark/light theming needs zero overrides.
+*/
 
 .expand-list {
   width: 100%;
@@ -1337,26 +1322,28 @@ a, button,
   clip-path: inset(0 -100px -100px -100px);
 }
 
-/* -----------------------------------------------
-   Download Link
-   ----------------------------------------------- */
+/*
+  Download Link
+*/
 
 .download-link {
   color: var(--primary-color);
-  text-decoration: none;
+  text-decoration: underline;
+  text-underline-offset: 2px;
   display: inline-block;
   position: relative;
 }
 
 .download-link:hover {
   text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
-/* -----------------------------------------------
-   Footer Block
-   Diagonal-topped section with SVG polygon background,
-   contact info, and social media links.
-   ----------------------------------------------- */
+/*
+  Footer Block
+  Diagonal-topped section with SVG polygon background,
+  contact info, and social media links.
+*/
 
 .footer-container {
   position: relative;
@@ -1420,7 +1407,7 @@ section.footer-section {
   width: 100%;
 }
 
-/* Footer text: white on dark background (merged from two duplicate selectors) */
+/* Footer text: white on dark background */
 .footer-section,
 li.footer-section,
 ul.contact-info {
@@ -1462,13 +1449,15 @@ ul.contact-info li {
 
 .footer-section a {
   color: var(--primary-dark-color);
-  text-decoration: none;
+  text-decoration: underline;
+  text-underline-offset: 2px;
   font-size: 1rem;
   font-weight: 500;
 }
 
 .footer-section a:hover {
   text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 .footer-link {
@@ -1519,10 +1508,10 @@ ul.contact-info li {
   }
 }
 
-/* -----------------------------------------------
-   Made With Love Block (BEM)
-   Copyright bar pinned to bottom of footer.
-   ----------------------------------------------- */
+/*
+  Made With Love Block (BEM)
+  Copyright bar pinned to bottom of footer.
+*/
 
 .madewithlove-bar {
   position: relative;
@@ -1552,12 +1541,12 @@ ul.contact-info li {
   color: #fff;
 }
 
-/* -----------------------------------------------
-   Responsive Breakpoints
-   1024px: increase footer top padding for diagonal
-   768px: mobile layout (hamburger, 2-col grid)
-   480px: fine-tune mobile spacing
-   ----------------------------------------------- */
+/*
+  Responsive Breakpoints
+  1024px: increase footer top padding for diagonal
+  768px: mobile layout (hamburger, 2-col grid)
+  480px: fine-tune mobile spacing
+*/
 
 @media screen and (max-width: 1024px) {
   .footer-content {
@@ -1677,10 +1666,10 @@ ul.contact-info li {
   }
 }
 
-/* -----------------------------------------------
-   Reduced Motion
-   Disable all animations for users who prefer less motion.
-   ----------------------------------------------- */
+/*
+  Reduced Motion
+  Disable all animations for users who prefer less motion.
+*/
 
 @media (prefers-reduced-motion: reduce) {
   *,
