@@ -584,8 +584,9 @@ a, button,
   border-radius: 3rem;
   margin: 1.25rem 0;
   transition: color 0.4s, background-color 0.4s, box-shadow 0.4s;
-  display: inline-block;
-  text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   height: auto;
   width: auto;
   position: relative;
@@ -618,6 +619,15 @@ a, button,
 .button-text {
   position: relative;
   z-index: 10;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.button-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
 }
 
 /* Floating letter images: hidden by default, revealed on hover/touch.
@@ -630,9 +640,15 @@ a, button,
   transform: translate(-50%, -50%);
   margin: auto;
   pointer-events: none;
-  transition: opacity 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
-              transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: opacity 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+              transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
   opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button img {
+    transition: none;
+  }
 }
 
 /* Each letter: unique size, rotation, and hover offset */
@@ -645,26 +661,32 @@ a, button,
 /* Hover: all button hover effects gated to pointer:fine: prevents sticky
    hover-on-tap on touch devices (iOS/Android keep :hover after touch lift) */
 @media (hover: hover) and (pointer: fine) {
-  .button:hover {
+  .button:hover,
+  .button.hover {
     color: var(--secondary-color);
     background-color: var(--btn-hover);
   }
 
-  .button:hover img { opacity: 1; }
+  .button:hover img,
+  .button.hover img { opacity: 1; }
 
   /* Hover: scatter letters outward from center */
-  .button:hover .button__J  { transform: translate(-4.5rem, -0.5rem) scale(1.2); }
-  .button:hover .button__e  { transform: translate(-3rem, -2.5rem) scale(1.2); }
-  .button:hover .button__s  { transform: translate(-1.2rem, 0.1rem) scale(1.2); }
-  .button:hover .button__u  { transform: translate(-0.5rem, -2.5rem) scale(1.2); }
-  .button:hover .button__s2 { transform: translate(0.5rem, -1.5rem) scale(1.2); }
+  .button:hover .button__J,
+  .button.hover .button__J  { transform: translate(-4.5rem, -0.5rem) scale(1.2); }
+  .button:hover .button__e,
+  .button.hover .button__e  { transform: translate(-3rem, -2.5rem) scale(1.2); }
+  .button:hover .button__s,
+  .button.hover .button__s  { transform: translate(-1.2rem, 0.1rem) scale(1.2); }
+  .button:hover .button__u,
+  .button.hover .button__u  { transform: translate(-0.5rem, -2.5rem) scale(1.2); }
+  .button:hover .button__s2,
+  .button.hover .button__s2 { transform: translate(0.5rem, -1.5rem) scale(1.2); }
 }
 
-/* Touch press: scale-down tap feedback (GSAP handles letter animations) */
+/* Touch press: subtle scale-down only */
 @media (hover: none) {
   .button:active {
-    color: var(--secondary-color);
-    background-color: var(--btn-hover);
+    transform: scale(0.97);
   }
 }
 
@@ -693,7 +715,7 @@ a, button,
   transition: transform 150ms cubic-bezier(0.215, 0.61, 0.355, 1);
 }
 
-/* Touch press feedback: prevents sticky hover from repeated tapping */
+/* Touch press feedback */
 @media (hover: none) and (pointer: coarse) {
   .social-button:active {
     transform: scale(0.95);
@@ -767,7 +789,7 @@ a, button,
   Responsive CSS Grid galleries for event photos.
   Two aspect ratios share a common base layout :
   only --row-heights differs between variants.
-  Columns adjust from 4→2 at ≤768px (media queries).
+  Columns adjust from 4→2 at ≤768px.
 */
 
 /* Shared grid base for the 16:9 gallery */
@@ -885,7 +907,6 @@ a, button,
 .polaroid-card.show-info {
   transform: rotate(0deg);
   z-index: 2;
-  /* transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1), z-index 0s; */
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -932,8 +953,7 @@ a, button,
   Directional animated info overlay on grid images.
   JS adds .hover (mouse) or .show-info (touch)
   to .grid-item. Text elements receive a directional
-  translate offset from JS for enter/leave effects
-  (inspired by Hakim El Hattab).
+  translate offset from JS for enter/leave effects.
 */
 
 /* Dark overlay panel: hidden by default */
@@ -996,12 +1016,12 @@ a, button,
   opacity: 1;
 }
 
-/* Staggered text reveal: subtitle enters 80ms after title (mouse only) */
+/* Staggered text reveal: subtitle enters 80ms after title */
 .grid-item.hover .grid-item-info p {
   transition-delay: 0.08s;
 }
 
-/* Touch devices: reset directional transform (no cursor direction to track) */
+/* Touch devices: reset directional transform */
 .grid-item.show-info .grid-item-info p {
   transform: none;
 }
@@ -1075,7 +1095,7 @@ a, button,
   transition: background-color 0.3s ease, border-color 0.3s ease, transform 100ms ease-out;
 }
 
-/* Focus ring for keyboard users (Emil: visible focus indicators) */
+/* Focus ring for keyboard users */
 .modal-close:focus-visible {
   outline: 2px solid var(--primary-color);
   outline-offset: 2px;
@@ -1261,7 +1281,7 @@ a, button,
   display: none;
 }
 
-/* Trigger bar: clickable header with +++ / −−− indicator */
+/* Trigger bar */
 .expand-trigger {
   position: relative;
   display: flex;
@@ -1701,23 +1721,36 @@ ul.contact-info li {
     color: var(--secondary-color);
   }
 
-  /* Polaroid grid: single column, centered, keep rotation */
+  /* Polaroid grid: single column aligning with text content edge */
   .polaroid-grid {
     grid-template-columns: 1fr;
     gap: 2rem;
-    max-width: 400px;
+    max-width: min(39rem, 100% - 2rem);
     margin: 0 auto;
     justify-items: center;
     width: 100%;
+    padding: 1rem clamp(1rem, 4vw, 2rem) clamp(2rem, 5vw, 5rem);
+    box-sizing: border-box;
   }
 
-  /* Video grid: edge-to-edge on small screens */
+  /* Grid items fill the padded container */
+  .polaroid-grid .grid-item {
+    width: 100%;
+  }
+
+  /* Polaroid frames fill their grid cells */
+  .polaroid-frame {
+    width: 100%;
+  }
+
+  /* Image grid: match text section alignment */
   .image-grid-span {
     width: 100%;
-    max-width: 100%;
-    margin: 0;
-    padding-left: 0;
-    padding-right: 0;
+    max-width: min(39rem, 100% - 2rem);
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 clamp(1rem, 4vw, 2rem);
+    box-sizing: border-box;
   }
 }
 
@@ -1739,8 +1772,7 @@ ul.contact-info li {
 */
 
 /* Focus-visible: visible keyboard focus ring for all interactive elements.
-   Uses the primary brand color — overrides browser defaults only for
-   keyboard users (mouse users see no outline). */
+   Uses the primary brand color. */
 .nav-link:focus-visible,
 .sidebar-link:focus-visible,
 .hamburger:focus-visible,

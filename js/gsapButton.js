@@ -59,51 +59,59 @@ export default function initGsapButtons() {
     };
 
     // Touch: press-down on touchstart, eased return on touchend
-    const isButton = el.classList.contains('button');
-    const LETTER_SELECTOR = '.button__J, .button__e, .button__s, .button__u, .button__s2';
-
-    /* Deltas from CSS rest transform → CSS hover transform (in px at 16px root)
-       to keep touch and hover letter positions identical */
-    const LETTER_SCATTER = {
-      '.button__J':  { x: -48, y: 8, scale: 1.2, opacity: 1 },
-      '.button__e':  { x: -24, y: -24, scale: 1.2, opacity: 1 },
-      '.button__s':  { x: 13, y: 18, scale: 1.2, opacity: 1 },
-      '.button__u':  { x: 24, y: -24, scale: 1.2, opacity: 1 },
-      '.button__s2': { x: 32, y: -8, scale: 1.2, opacity: 1 },
-    };
-
-    const LETTER_REST = { x: 0, y: 0, scale: 1, opacity: 0 };
-
     const onTouchStart = () => {
       gsap.to(el, { ...TAP_STATE, ease: TAP_EASE, duration: DURATION_TAP, overwrite: "auto" });
-
-      // Animate floating letter images on the RSVP button
-      if (isButton) {
-        el.querySelectorAll(LETTER_SELECTOR).forEach((img) => {
-          const key = '.' + img.classList[0];
-          const state = LETTER_SCATTER[key] || LETTER_REST;
-          gsap.to(img, { ...state, ease: "back.out(3)", duration: 0.35, overwrite: "auto" });
-        });
-      }
     };
 
     const onTouchEnd = () => {
       gsap.to(el, { ...REST_STATE, ease: EASE, duration: DURATION_HOVER, overwrite: "auto" });
-
-      // Return letter images to hidden rest state, then clear inline props
-      // so CSS :hover can resume on desktop when switching from touch
-      if (isButton) {
-        el.querySelectorAll(LETTER_SELECTOR).forEach((img) => {
-          gsap.to(img, {
-            ...LETTER_REST,
-            ease: EASE,
-            duration: 0.2,
-            overwrite: "auto",
-            onComplete: () => gsap.set(img, { clearProps: "all" }),
-          });
-        });
-      }
     };
+
+    // RSVP button: delay navigation until letter animation finishes
+    const isRsvpBtn = el.classList.contains('button') && el.tagName === 'A' && el.getAttribute('href');
+    const LETTER_SELECTOR = '.button__J, .button__e, .button__s, .button__u, .button__s2';
+    const LETTER_ANIM_DURATION = 0.25; // seconds — standard UI duration per Emil guidelines (150-250ms)
+    const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    let navigating = false;
+
+    const navigateTo = () => {
+      window.location.href = el.getAttribute('href');
+    };
+
+    const triggerRsvpLetters = () => {
+      if (navigating) return;
+      navigating = true;
+
+      // Skip animation for reduced motion
+      if (REDUCED_MOTION) {
+        navigateTo();
+        return;
+      }
+
+      // Scale up button
+      gsap.to(el, { scale: 1.05, ease: "power2.out", duration: 0.2 });
+
+      // Clear GSAP inline styles on letters so CSS transitions take over
+      el.querySelectorAll(LETTER_SELECTOR).forEach((img) => {
+        gsap.set(img, { clearProps: "all" });
+      });
+      el.classList.add('hover'); // triggers CSS letter animation
+
+      // Navigate after animation completes
+      setTimeout(navigateTo, LETTER_ANIM_DURATION * 1000);
+    };
+
+    const onRsvpClick = (e) => {
+      if (navigating) return;
+      e.preventDefault();
+      triggerRsvpLetters();
+    };
+
+    // Attach RSVP click interceptor
+    if (isRsvpBtn) {
+      el.addEventListener('click', onRsvpClick);
+    }
 
     // Desktop (hover-capable devices only): prevents phantom hover on touch taps
     if (canHover) {
@@ -118,6 +126,10 @@ export default function initGsapButtons() {
     el.addEventListener("touchend", onTouchEnd, { passive: true });
 
     cleanups.push(() => {
+      if (isRsvpBtn) {
+        el.removeEventListener('click', onRsvpClick);
+        el.removeEventListener('touchstart', onRsvpTouchStart);
+      }
       if (canHover) {
         el.removeEventListener("mouseenter", onEnter);
         el.removeEventListener("mouseleave", onLeave);
