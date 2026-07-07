@@ -275,7 +275,7 @@ section.body-section {
   box-sizing: border-box;
   color: var(--secondary-color);
   text-align: left;
-  font-size: clamp(0.95rem, 2.5vw, 1rem);
+  font-size: clamp(0.85rem, 2.5vw, 0.9rem);
   font-weight: 400;
   line-height: 1.6;
 }
@@ -542,9 +542,9 @@ a, button,
 .dark-mode .dark-icon { display: none; }
 .dark-mode .light-icon { display: block; }
 
-/* -----------------------------------------------
-   Header Block
-   ----------------------------------------------- */
+/* 
+  Header Block
+*/
 
 .header-link {
   position: relative;
@@ -1095,8 +1095,8 @@ a, button,
 
 .modal-close svg {
   fill: currentColor;
-  width: 24px;
-  height: 24px;
+  width: 18px;
+  height: 18px;
 }
 
 .modal-img {
@@ -1287,19 +1287,32 @@ a, button,
   border-radius: 0.2rem 0.2rem 0 0;
 }
 
-/* Expand/collapse text icon */
-.expand-trigger::after {
-  content: '+++';
-  font-size: 1.5rem;
-  font-weight: 600;
-  line-height: 1;
-  transition: transform 0.3s ease;
+/* Expand/collapse icon container */
+.expand-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  padding-right: 0.25rem;
+  color: var(--secondary-color);
 }
 
-.expand-list-item.active .expand-trigger::after {
-  content: '−−−';
-  transform: rotate(0deg);
+.expand-icon--plus {
+  display: block;
+}
+
+.expand-icon--minus {
+  display: none;
+}
+
+.expand-list-item.active .expand-icon--plus {
+  display: none;
+}
+
+.expand-list-item.active .expand-icon--minus {
+  display: block;
 }
 
 /* Label wrapper inside trigger */
