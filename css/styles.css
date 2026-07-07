@@ -20,7 +20,6 @@
 
   /* Semantic tokens */
   --nav-bg: #00000061;
-  --highlight: #E91E63;
   --btn-hover: #E91E63;
   --selection-bg: #E91E63;
   --selection-text: #000;
@@ -30,6 +29,7 @@
                 0 2px 4px rgba(0, 0, 0, 0.04),
                 0 8px 20px rgba(0, 0, 0, 0.08);  /* nav pill box-shadow: layered for natural depth; dark mode drops outer shadows */
   --slider-control-bg: #fff;               /* slider button & dot default fill */
+  --control-size: 44px;                    /* circular button size */
 
   /* Polaroid collage */
   --polaroid-frame-bg: #efefef;
@@ -44,7 +44,6 @@
   --z-overlay: 400;
   --z-sidebar: 500;
   --z-nav: 600;
-  --z-hamburger: 700;
   --z-modal: 1000;
 
   /* Easing tokens */
@@ -65,7 +64,6 @@
   --footer-copyright: #353535;
 
   --nav-bg: #ffffff61;
-  --highlight: #ff4081;
   --btn-hover: #ff4081;
   --selection-bg: #ff4081;
   --selection-text: #000;
@@ -100,24 +98,6 @@ body {
 ::selection {
   color: var(--selection-text);
   background: var(--selection-bg);
-}
-
-@keyframes push-in-animation {
-  0%, 100% { transform: none; }
-  15% { transform: scale(0.75); }
-  30% { transform: scale(1.1); }
-}
-
-@keyframes push-left-animation {
-  0% { opacity: 0; transform: translateX(30px); }
-  15% { opacity: 1; transform: translateX(-10px); }
-  100% { opacity: 1; transform: none; }
-}
-
-@keyframes push-right-animation {
-  0% { opacity: 1; transform: none; }
-  20% { opacity: 1; transform: translateX(-10px); }
-  55%, 100% { opacity: 0; transform: translateX(30px); }
 }
 
 @keyframes fadeIn {
@@ -201,22 +181,25 @@ h1.body-section {
   font-size: clamp(1.8rem, 5vw, 3rem);
   font-weight: 800;
   padding-bottom: 1rem;
+  text-wrap: balance;
 }
 
 h2.body-section {
   font-size: clamp(1.5rem, 4vw, 2.2rem);
   font-weight: 700;
   line-height: 1.3;
+  text-wrap: balance;
 }
 
 h3.body-section {
   font-size: clamp(1.1rem, 3vw, 1.35rem);
   font-weight: 600;
   line-height: 1.75;
+  text-wrap: balance;
 }
 
 p.body-section {
-  font-size: 1rem;
+  font-size: clamp(0.95rem, 2.5vw, 1rem);
   font-weight: 400;
   line-height: 1.6;
 }
@@ -230,7 +213,7 @@ p.body-section {
 .bg-container {
   position: absolute;
   left: 55%;
-  top: 8%;
+  top: 9%;
   width: 100%;
   height: 60vh;
   z-index: var(--z-background);
@@ -285,6 +268,18 @@ section.body-section {
   text-align: left;
 }
 
+.section-label {
+  max-width: min(39rem, 100% - 2rem);
+  margin: 0 auto;
+  padding: 0 clamp(1rem, 4vw, 2rem);
+  box-sizing: border-box;
+  color: var(--secondary-color);
+  text-align: left;
+  font-size: clamp(0.95rem, 2.5vw, 1rem);
+  font-weight: 400;
+  line-height: 1.6;
+}
+
 /* Prevent double-tap zoom on all interactive elements */
 a, button,
 .button, .nav-link, .social-button, .expand-trigger,
@@ -312,7 +307,7 @@ a, button,
   transform: translateX(-50%);
   background-color: var(--glass-bg);
   box-shadow: var(--nav-shadow);
-  backdrop-filter: url(#frosted);
+  backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border-radius: 3rem;
   padding: 0.5rem 0.7rem;
@@ -327,7 +322,7 @@ a, button,
   color: var(--secondary-color);
   text-decoration: none;
   font-weight: 400;
-  font-size: 1rem;
+  font-size: clamp(0.9rem, 2.5vw, 1rem);
   transition: color 0.2s ease, background-color 0.2s ease;
   padding: 0.5rem 1rem;
   border-radius: 2rem;
@@ -364,12 +359,20 @@ a, button,
 .hamburger {
   display: none;
   cursor: pointer;
-  z-index: var(--z-hamburger);
+  z-index: calc(var(--z-sidebar) + 2);
   position: fixed;
   top: 1rem;
   left: 1rem;
   padding: 10px;
   touch-action: manipulation;
+  pointer-events: auto;
+}
+
+/* Touch press feedback for hamburger */
+@media (hover: none) and (pointer: coarse) {
+  .hamburger:active svg {
+    fill: var(--primary-color);
+  }
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -401,15 +404,17 @@ a, button,
   background-color: var(--background-color);
   transform: translateX(100%);
   will-change: transform;
-  backdrop-filter: url(#frosted);
+  backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   z-index: var(--z-sidebar);
   transition: transform 0.45s var(--ease-out-quart);
   display: none;
+  pointer-events: none;
 }
 
 .menu-sidebar.active {
   transform: translateX(0);
+  /* Don't set pointer-events:auto here ,the sidebar covers the hamburger. */
 }
 
 /* Prevent default tap highlight flash on all touch elements */
@@ -482,6 +487,7 @@ a, button,
   z-index: var(--z-overlay);
   opacity: 0;
   visibility: hidden;
+  pointer-events: none;
   transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1),
               visibility 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -489,6 +495,7 @@ a, button,
 .overlay.active {
   opacity: 1;
   visibility: visible;
+  pointer-events: auto;
 }
 
 /*
@@ -504,6 +511,7 @@ a, button,
   width: 44px;
   padding: 0;
   margin: 0;
+  color: var(--secondary-color);
   transition: color 0.2s ease;
   display: flex;
   justify-content: center;
@@ -514,10 +522,8 @@ a, button,
 }
 
 .theme-icon {
-  transition: fill 0.3s ease;
-  fill: var(--secondary-color);
-  width: 22px;
-  height: 22px;
+  width: 18px;
+  height: 18px;
   display: block;
   flex-shrink: 0;
   margin: auto;
@@ -526,8 +532,8 @@ a, button,
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .theme-icon:hover {
-    fill: var(--primary-color);
+  .theme-btn:hover {
+    color: var(--primary-color);
   }
 }
 
@@ -552,7 +558,6 @@ a, button,
 .header-img {
   position: relative;
   z-index: 2;
-  cursor: pointer;
   height: 4rem;
   width: 4rem;
   object-fit: cover;
@@ -573,7 +578,7 @@ a, button,
   color: var(--primary-color);
   text-decoration: none;
   box-shadow: 0 0 0 0.6px var(--border-color);
-  backdrop-filter: url(#frosted);
+  backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   padding: 0.6rem 1.25rem;
   border-radius: 3rem;
@@ -615,7 +620,9 @@ a, button,
   z-index: 10;
 }
 
-/* Floating letter images: hidden by default, revealed on hover */
+/* Floating letter images: hidden by default, revealed on hover/touch.
+   CSS transition is the baseline; GSAP overrides inline during touch animation
+   then clears props so CSS hover can resume. */
 .button img {
   position: absolute;
   top: 50%;
@@ -653,7 +660,7 @@ a, button,
   .button:hover .button__s2 { transform: translate(0.5rem, -1.5rem) scale(1.2); }
 }
 
-/* Touch press: scale-down tap feedback: no hover on touch devices */
+/* Touch press: scale-down tap feedback (GSAP handles letter animations) */
 @media (hover: none) {
   .button:active {
     color: var(--secondary-color);
@@ -668,22 +675,29 @@ a, button,
 */
 
 .social-button {
-  font-size: 1rem;
-  line-height: 1;
-  text-align: center;
+  font-size: clamp(0.95rem, 2.5vw, 1rem);
   position: relative;
   cursor: pointer;
   box-sizing: border-box;
   background-color: transparent;
   outline: none;
   text-decoration: none;
-  display: inline-block;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
   width: 8rem;
-  padding: 2rem 0;
+  padding: 1.75rem 1.25rem 1.5rem;
   margin: 0;
   height: auto;
-  /* CSS-driven press state: GSAP no longer manages social-button transforms */
   transition: transform 150ms cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+/* Touch press feedback: prevents sticky hover from repeated tapping */
+@media (hover: none) and (pointer: coarse) {
+  .social-button:active {
+    transform: scale(0.95);
+  }
 }
 
 /* Gate hover rules: prevents phantom triggers on touch-tap */
@@ -696,35 +710,50 @@ a, button,
   }
 }
 
-/* Full-size colored backdrop, hidden until hover/active */
+/* Suppress social-card hover during theme toggle repaint.
+   JS adds .theme-transitioning to <body> for 150ms after each
+   theme-btn click. We force hover styles back to rest state
+   AND kill transitions so the suppression is instantaneous. */
+.theme-transitioning .social-button--background,
+.theme-transitioning .social-button--label {
+  transition: none !important;
+}
+.theme-transitioning .social-button--background { opacity: 0 !important; }
+.theme-transitioning .social-button--label {
+  opacity: 0 !important;
+  transform: translateY(4px) !important;
+  color: var(--tertiary-color) !important;
+}
+
+/* Full-size colored backdrop, hidden until hover/active.
+   transition-delay prevents accidental flash during theme repaints.
+   Uses inset (top/right/bottom/left:0) instead of width/height:100%
+   to guarantee full coverage when parent has height:auto. */
 .social-button--background {
   background-color: var(--primary-color);
   position: absolute;
   z-index: 1;
-  cursor: pointer;
-  /* 200ms ease-out: matches the 150-250ms micro-interaction range */
-  transition: opacity 200ms ease-out;
+  transition: opacity 100ms ease-out;
   box-sizing: border-box;
   top: 0;
+  right: 0;
+  bottom: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
   opacity: 0;
 }
 
-/* Label text below icon: hidden at rest, shown immediately on hover */
+/* Label text below icon: hidden at rest, fades in on hover.
+   Spacing from icon is controlled by parent flex gap. */
 .social-button--label {
   color: var(--tertiary-color);
   text-align: center;
   justify-content: center;
   position: relative;
   z-index: 2;
-  cursor: pointer;
   box-sizing: border-box;
-  margin-top: 1.5rem;
   opacity: 0;
-  font-size: 0.8rem;
-  transform: translateY(4px);
+  font-size: clamp(0.75rem, 2vw, 0.8rem);
+  transition: opacity 100ms ease-out;
 }
 
 /* Header social button sits on the page background: label must follow secondary color
@@ -741,8 +770,7 @@ a, button,
   Columns adjust from 4→2 at ≤768px (media queries).
 */
 
-/* Shared grid base for both 5:4 and 16:9 galleries */
-.image-grid,
+/* Shared grid base for the 16:9 gallery */
 .image-grid-span {
   --gap: 0.125rem;
   --num-cols: 4;
@@ -758,14 +786,13 @@ a, button,
   overflow: hidden;
 }
 
-/* 5:4 portrait ratio: group photos */
-.image-grid {
-  --row-heights: calc((100vw / var(--num-cols)) * 4 / 5);
-}
-
 /* 16:9 landscape ratio: wide/panoramic shots */
 .image-grid-span {
   --row-heights: calc((100vw / var(--num-cols)) * 9 / 16);
+  width: 60%;
+  max-width: 60%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* Grid Item: individual photo/video cell */
@@ -776,7 +803,6 @@ a, button,
   box-sizing: border-box;
 }
 
-.image-grid .grid-item,
 .image-grid-span .grid-item {
   width: 100%;
   height: 100%;
@@ -793,15 +819,28 @@ a, button,
 
 /* Force iframes to fill their grid cell */
 .grid-item iframe {
-  width: 100% !important;
-  height: 100% !important;
+  width: 100%;
+  height: 100%;
   max-width: 100%;
   border: 0;
 }
 
 /* Span helpers: let items occupy multiple grid tracks */
 .image-grid-col-2 { grid-column: span 2; }
+.image-grid-col-4 { grid-column: span 4; }
 .image-grid-row-2 { grid-row: span 2; }
+
+/* Video wrapper: fill the full grid cell, maintain 16:9 ratio */
+.video-wrapper {
+  position: relative;
+  overflow: hidden;
+}
+
+.video-wrapper iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
 
 /*
   Polaroid Collage Grid Block
@@ -816,8 +855,8 @@ a, button,
   grid-template-columns: repeat(3, 1fr);
   gap: 0rem;
   padding: 1rem 0 clamp(2rem, 5vw, 5rem);
-  width: 80%;
-  max-width: 80%;
+  width: 60%;
+  max-width: 60%;
   margin: 0 auto;
   overflow: visible;
 }
@@ -825,12 +864,12 @@ a, button,
 /* Card wrapper: rotation + hover transitions */
 .polaroid-card {
   position: relative;
-  transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1),
-              z-index 0s 0.3s;
+  isolation: isolate;
+  transition: transform 200ms cubic-bezier(0.23, 1, 0.32, 1);
   cursor: pointer;
   border-radius: 5px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.24);
-  margin: 1rem;
+  margin: 0.5rem;
 }
 
 /* Repeating rotation + offset pattern: scattered, overlapping look */
@@ -883,13 +922,6 @@ a, button,
   content-visibility: auto;
 }
 
-/* Subtle zoom on hover: disabled */
-/* .polaroid-card:hover .polaroid-frame > img,
-.polaroid-card.hover .polaroid-frame > img,
-.polaroid-card.show-info .polaroid-frame > img {
-  transform: scale(1.03);
-} */
-
 /* 16:9 wide variant */
 .polaroid-grid--wide .polaroid-frame > img {
   aspect-ratio: 16 / 9;
@@ -925,8 +957,7 @@ a, button,
   -webkit-backdrop-filter: blur(2px);
   backdrop-filter: blur(2px);
   visibility: hidden;
-  transition: visibility 0.3s cubic-bezier(0.23, 1, 0.32, 1),
-              opacity 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+  transition: opacity 200ms cubic-bezier(0.23, 1, 0.32, 1);
   cursor: pointer;
 }
 
@@ -936,8 +967,8 @@ a, button,
   z-index: 2;
   opacity: 0;
   margin: 0;
-  transition: opacity 0.3s cubic-bezier(0.23, 1, 0.32, 1),
-              transform 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+  transition: opacity 200ms cubic-bezier(0.23, 1, 0.32, 1),
+              transform 200ms cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .grid-item-info p:first-child {
@@ -965,9 +996,9 @@ a, button,
   opacity: 1;
 }
 
-/* Staggered text reveal: subtitle enters 50ms after title (mouse only) */
+/* Staggered text reveal: subtitle enters 80ms after title (mouse only) */
 .grid-item.hover .grid-item-info p {
-  transition-delay: 0.05s;
+  transition-delay: 0.08s;
 }
 
 /* Touch devices: reset directional transform (no cursor direction to track) */
@@ -1027,36 +1058,45 @@ a, button,
   position: fixed;
   top: 1.25rem;
   right: 1.25rem;
-  width: 44px;
-  height: 44px;
+  width: var(--control-size);
+  height: var(--control-size);
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  border: 0.6px solid var(--border-color);
+  outline: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: var(--secondary-color);
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  transition: background-color 0.3s ease, box-shadow 0.3s ease, backdrop-filter 0.3s ease;
+  background-color: var(--slider-control-bg);
+  transition: background-color 0.3s ease, border-color 0.3s ease, transform 100ms ease-out;
 }
 
-/* Dark mode: swap to dark-tinted glass over the always-dark modal overlay */
-.dark-mode .modal-close {
-  background: rgba(255, 255, 255, 0.08);
+/* Focus ring for keyboard users (Emil: visible focus indicators) */
+.modal-close:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
 }
 
 @media (hover: hover) and (pointer: fine) {
   .modal-close:hover {
     background-color: var(--primary-color);
-    box-shadow: 0 0 0 0.6px var(--primary-color);
+    border-color: var(--primary-color);
   }
 }
 
+/* Press feedback: fast subtle scale-down on click/tap */
+.modal-close:active {
+  transform: scale(0.92);
+}
+
 .modal-close svg {
-  fill: var(--secondary-color);
+  fill: currentColor;
   width: 24px;
   height: 24px;
-  transition: fill 0.3s ease;
 }
 
 .modal-img {
@@ -1124,8 +1164,8 @@ a, button,
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  width: 50px;
-  height: 50px;
+  width: var(--control-size);
+  height: var(--control-size);
   border-radius: 50%;
   background-color: var(--slider-control-bg);
   border: 0.6px solid var(--border-color);
@@ -1136,7 +1176,7 @@ a, button,
   justify-content: center;
   cursor: pointer;
   z-index: 5;
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, opacity 0.3s ease;
   padding: 0;
 }
 
@@ -1144,15 +1184,22 @@ a, button,
   .slider button:hover {
     background-color: var(--primary-color);
     border-color: var(--primary-color);
+    color: #000;
+  }
+
+  .slider button:hover svg {
+    opacity: 1;
   }
 }
 
 .slider button svg {
-  fill: var(--secondary-color);
+  fill: currentColor;
+  opacity: 0.4;
+  transition: opacity 0.3s ease;
 }
 
-.prev-btn { left: -60px; }
-.next-btn { right: -60px; }
+.prev-btn { left: 0.5rem; }
+.next-btn { right: 0.5rem; }
 
 /* Dot indicators: centered below slider content */
 .dots {
@@ -1177,9 +1224,6 @@ a, button,
 .dot.active {
   background-color: var(--primary-color);
   border-color: var(--primary-color);
-}
-
-.dot.active {
   transform: scale(1.2);
 }
 
@@ -1228,7 +1272,7 @@ a, button,
   cursor: pointer;
   color: var(--secondary-color);
   font-weight: 600;
-  font-size: 1.1rem;
+  font-size: clamp(1rem, 2.5vw, 1.1rem);
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
   background-color: var(--glass-bg);
   box-shadow: 0 0 0 0.6px var(--border-color);
@@ -1431,17 +1475,18 @@ h1.footer-section {
   font-size: clamp(1.8rem, 5vw, 3rem);
   font-weight: 800;
   padding-bottom: 1rem;
+  text-wrap: balance;
 }
 
 p.footer-section {
-  font-size: 1rem;
+  font-size: clamp(0.95rem, 2.5vw, 1rem);
   font-weight: 400;
   line-height: 1.75;
   margin-bottom: 1rem;
 }
 
 ul.contact-info li {
-  font-size: 1rem;
+  font-size: clamp(0.95rem, 2.5vw, 1rem);
   margin-bottom: 1.1rem;
   font-weight: 400;
   line-height: 1.6;
@@ -1451,7 +1496,7 @@ ul.contact-info li {
   color: var(--primary-dark-color);
   text-decoration: underline;
   text-underline-offset: 2px;
-  font-size: 1rem;
+  font-size: clamp(0.95rem, 2.5vw, 1rem);
   font-weight: 500;
 }
 
@@ -1476,7 +1521,7 @@ ul.contact-info li {
   transition: filter 0.3s ease;
 }
 
-/* Social link row in footer: left-aligned with contact text */
+/* Social link row in footer: left-aligned with contact text content (after 🌸 bullet) */
 .social-buttons {
   display: flex;
   flex-wrap: wrap;
@@ -1486,12 +1531,13 @@ ul.contact-info li {
   width: 100%;
   margin-top: 0;
   padding: clamp(1rem, 3vw, 2rem) 0;
+  padding-left: 1.8rem;
 }
 
-/* Center social buttons on mobile */
 @media screen and (max-width: 768px) {
   .social-buttons {
     justify-content: center;
+    padding-left: 0;
   }
 }
 
@@ -1561,7 +1607,6 @@ ul.contact-info li {
   .menu-sidebar { display: block; }
 
   /* Grid: single column on mobile: one image at a time */
-  .image-grid,
   .image-grid-span {
     --num-cols: 1;
   }
@@ -1602,8 +1647,8 @@ ul.contact-info li {
     display: none !important;
   }
 
-  /* Hide floating letter images: no hover on touch */
-  .button img { display: none; }
+  /* Floating letter images: show on touch via .button.active class added by GSAP */
+  .button img { opacity: 0; }
 
   /* Social buttons: show label always on mobile for navigation clarity.
      Background stays hidden at rest; flashes brand color on :active press.
@@ -1650,12 +1695,21 @@ ul.contact-info li {
     max-width: 400px;
     margin: 0 auto;
     justify-items: center;
+    width: 100%;
+  }
+
+  /* Video grid: edge-to-edge on small screens */
+  .image-grid-span {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding-left: 0;
+    padding-right: 0;
   }
 }
 
 @media screen and (max-width: 480px) {
   /* Grid: 1-col (inherits from 768px breakpoint: kept for explicit intent) */
-  .image-grid,
   .image-grid-span {
     --num-cols: 1;
   }
@@ -1670,6 +1724,21 @@ ul.contact-info li {
   Reduced Motion
   Disable all animations for users who prefer less motion.
 */
+
+/* Focus-visible: visible keyboard focus ring for all interactive elements.
+   Uses the primary brand color — overrides browser defaults only for
+   keyboard users (mouse users see no outline). */
+.nav-link:focus-visible,
+.sidebar-link:focus-visible,
+.hamburger:focus-visible,
+.theme-btn:focus-visible,
+.social-button:focus-visible,
+.button:focus-visible,
+.madewithlove-bar--link:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
 
 @media (prefers-reduced-motion: reduce) {
   *,

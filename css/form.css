@@ -17,7 +17,6 @@
   --color-brand-hover:  #8f45dd;
   --color-bg-page:      #ede7f6;
   --color-bg-card:      #FDFEFE;
-  --color-bg-entry:     rgba(248, 244, 253, 0.7);
   --color-border-input: #DCD7D7;
   --color-success:      #10b981;
 
@@ -169,59 +168,6 @@ input::placeholder {
   font-size: 1rem;
   padding: var(--space-2xs) var(--space-m);
   cursor: pointer;
-}
-
-.registration-list {
-  background-color: transparent;
-  border-radius: 8px;
-  margin-top: 0;
-}
-
-.registration-list h3 {
-  color: var(--color-brand);
-  font-size: 1.2rem;
-  margin-bottom: var(--space-xs);
-  font-weight: 500;
-}
-
-.registration-entry {
-  padding: var(--space-xs);
-  margin-bottom: var(--space-xs);
-  border-left: 3px solid var(--color-brand);
-  background-color: var(--color-bg-entry);
-  border-radius: 4px;
-  transition: transform 0.3s ease;
-}
-
-.registration-list .registration-entry:last-child {
-  margin-bottom: 0;
-}
-
-.entry-header {
-  display: flex;
-  align-items: flex-start;
-  margin-bottom: var(--space-3xs);
-}
-
-.tick {
-  margin-right: var(--space-3xs);
-  width: 1.5rem;
-  height: 1.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.registration-entry p {
-  margin: 0;
-  line-height: 1.4;
-}
-
-.registration-entry .services {
-  font-size: 0.9rem;
-  font-style: italic;
-  color: #666;
-  margin-top: var(--space-3xs);
 }
 
 .error-message {

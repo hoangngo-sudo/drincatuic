@@ -16,5 +16,3 @@ if (!SUPABASE_URL || !SUPABASE_PUBLIC_KEY) {
 }
 
 window.supabaseClient = supabaseClient;
-
-export { SUPABASE_URL, SUPABASE_PUBLIC_KEY, supabaseClient };

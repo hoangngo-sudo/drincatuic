@@ -63,30 +63,4 @@ export default function scrollNav() {
     return { show, hide, forceShow, get isHidden() { return hidden; } };
   }
 
-  /* ── Fallback: no GSAP → original CSS-class approach ── */
-  let lastScrollY = window.scrollY;
-  let ticking = false;
-  const THRESHOLD = 1;
-
-  const onScroll = () => {
-    if (ticking) return;
-    ticking = true;
-    requestAnimationFrame(() => {
-      const currentScrollY = window.scrollY;
-      const delta = currentScrollY - lastScrollY;
-      if (currentScrollY <= THRESHOLD) {
-        nav.classList.remove("nav-hidden");
-      } else if (delta > THRESHOLD) {
-        nav.classList.add("nav-hidden");
-      } else if (delta < -THRESHOLD) {
-        nav.classList.remove("nav-hidden");
-      }
-      lastScrollY = currentScrollY;
-      ticking = false;
-    });
-  };
-
-  window.addEventListener("scroll", onScroll, { passive: true });
-  nav.addEventListener("focusin", () => nav.classList.remove("nav-hidden"));
-  return null;
 }

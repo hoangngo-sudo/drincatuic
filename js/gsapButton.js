@@ -59,12 +59,48 @@ export default function initGsapButtons() {
     };
 
     // Touch: press-down on touchstart, eased return on touchend
+    const isButton = el.classList.contains('button');
+    const LETTER_SELECTOR = '.button__J, .button__e, .button__s, .button__u, .button__s2';
+
+    const LETTER_SCATTER = {
+      '.button__J':  { x: -72, y: -8, scale: 1.2, opacity: 1 },
+      '.button__e':  { x: -48, y: -40, scale: 1.2, opacity: 1 },
+      '.button__s':  { x: -19, y: 2, scale: 1.2, opacity: 1 },
+      '.button__u':  { x: -8, y: -40, scale: 1.2, opacity: 1 },
+      '.button__s2': { x: 8, y: -24, scale: 1.2, opacity: 1 },
+    };
+
+    const LETTER_REST = { x: 0, y: 0, scale: 1, opacity: 0 };
+
     const onTouchStart = () => {
       gsap.to(el, { ...TAP_STATE, ease: TAP_EASE, duration: DURATION_TAP, overwrite: "auto" });
+
+      // Animate floating letter images on the RSVP button
+      if (isButton) {
+        el.querySelectorAll(LETTER_SELECTOR).forEach((img) => {
+          const key = '.' + img.classList[0];
+          const state = LETTER_SCATTER[key] || LETTER_REST;
+          gsap.to(img, { ...state, ease: "back.out(3)", duration: 0.35, overwrite: "auto" });
+        });
+      }
     };
 
     const onTouchEnd = () => {
       gsap.to(el, { ...REST_STATE, ease: EASE, duration: DURATION_HOVER, overwrite: "auto" });
+
+      // Return letter images to hidden rest state, then clear inline props
+      // so CSS :hover can resume on desktop when switching from touch
+      if (isButton) {
+        el.querySelectorAll(LETTER_SELECTOR).forEach((img) => {
+          gsap.to(img, {
+            ...LETTER_REST,
+            ease: EASE,
+            duration: 0.2,
+            overwrite: "auto",
+            onComplete: () => gsap.set(img, { clearProps: "all" }),
+          });
+        });
+      }
     };
 
     // Desktop (hover-capable devices only): prevents phantom hover on touch taps

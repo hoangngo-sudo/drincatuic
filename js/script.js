@@ -2,7 +2,41 @@ function theme() {
   let themeButtons = document.querySelectorAll(".theme-btn");
   let darkmode = localStorage.getItem("darkmode");
 
-  const toggleThemeMode = () => {
+  const toggleThemeMode = (e) => {
+    if (e) e.preventDefault();
+
+    // Direct suppression: force social card hover styles to rest
+    // via inline !important so no CSS cascade can defeat it.
+    const bg = document.querySelector('.header-link .social-button--background');
+    const label = document.querySelector('.header-link .social-button--label');
+    const suppress = (el) => {
+      if (!el) return;
+      el.style.setProperty('transition', 'none', 'important');
+      el.style.setProperty('opacity', '0', 'important');
+    };
+    const restore = (el) => {
+      if (!el) return;
+      el.style.removeProperty('transition');
+      el.style.removeProperty('opacity');
+    };
+
+    suppress(bg);
+    suppress(label);
+    // If label was suppressed, also kill transform/color from hover
+    if (label) {
+      label.style.setProperty('transform', 'translateY(4px)', 'important');
+      label.style.setProperty('color', '', 'important'); // reset to inherit
+    }
+
+    setTimeout(() => {
+      restore(bg);
+      restore(label);
+      if (label) {
+        label.style.removeProperty('transform');
+        label.style.removeProperty('color');
+      }
+    }, 200);
+
     const currDarkmode = localStorage.getItem("darkmode");
     if (currDarkmode !== "active") {
       enableDarkMode();
@@ -41,6 +75,7 @@ document.addEventListener("DOMContentLoaded", theme);
 
 function form() {
   const form = document.querySelector(".form");
+  if (!form) return; // Only runs on registration page
   const submitBtn = document.querySelector(".btn");
   const successMessage = document.querySelector("#successMessage");
   const successText = document.querySelector("#successText");
@@ -388,6 +423,7 @@ function handleSidebar() {
     menuSidebar.classList.add("active");
     overlay.classList.add("active");
     overlay.style.visibility = "visible";
+    hamburger.style.zIndex = "999";
   };
 
   // Function to close the sidebar
@@ -395,6 +431,8 @@ function handleSidebar() {
     menuSidebar.classList.remove("active");
     overlay.classList.remove("active");
     overlay.style.visibility = "hidden";
+    // Restore hamburger z-index
+    hamburger.style.zIndex = "";
   };
 
   // Add click event to hamburger icon

@@ -41,8 +41,6 @@
 
     // Track mouse movement for directional effect
     if (!isTouchDevice()) {
-      document.body.classList.add("mouse-device");
-
       document.addEventListener("mousemove", function (event) {
         if (lastMouseX !== null && lastMouseY !== null) {
           const deltaX = event.pageX - lastMouseX;
@@ -68,8 +66,6 @@
           pointerDirectionY = 0;
         }, 50)
       );
-    } else {
-      document.body.classList.add("touch-device");
     }
 
     // Process each grid item

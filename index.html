@@ -23,31 +23,35 @@
 </head>
 
 <body>
-  <svg width="0" height="0" style="position:absolute">
-    <filter id="frosted">
-      <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
-      <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" result="frosted" />
-      <feComposite in="SourceGraphic" in2="frosted" operator="atop"/>
-    </filter>
-  </svg>
   <div class="nav-container">
 
-    <nav class="sticky-nav" id="nav-glass">
+    <nav class="sticky-nav">
       <a href="#home" class="nav-link">Home</a>
       <a href="#program" class="nav-link">Program</a>
       <a href="#contact" class="nav-link">Contact</a>
       <a class="nav-link theme-btn" aria-label="Toggle dark/light mode">
         <!-- dark-icon -->
-        <svg class="theme-icon dark-icon" xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24"><!-- Icon from Material Design Icons by Pictogrammers - https://github.com/Templarian/MaterialDesign/blob/master/LICENSE --><path fill="currentColor" d="m17.75 4.09l-2.53 1.94l.91 3.06l-2.63-1.81l-2.63 1.81l.91-3.06l-2.53-1.94L12.44 4l1.06-3l1.06 3zm3.5 6.91l-1.64 1.25l.59 1.98l-1.7-1.17l-1.7 1.17l.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85c-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14c.4-.4.82-.76 1.27-1.08c.75-.53 1.93.36 1.85 1.19c-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82c-2.81 3.14-2.7 7.96.31 10.98c3.02 3.01 7.84 3.12 10.98.31"/></svg>
+        <svg class="theme-icon dark-icon" xmlns="http://www.w3.org/2000/svg" width="18px" height="18px" viewBox="0 0 18 18">
+          <path fill-rule="evenodd" clip-rule="evenodd" fill="currentColor" opacity="0.4" d="M8.54419 1.47446C8.70875 1.73227 8.70028 2.06417 8.52278 2.31324C7.88003 3.21522 7.5 4.31129 7.5 5.49999C7.5 8.53778 9.96222 11 13 11C14.0509 11 15.029 10.7009 15.8667 10.1868C16.1275 10.0267 16.4594 10.0412 16.7053 10.2233C16.9513 10.4054 17.0619 10.7186 16.9848 11.0148C16.0904 14.4535 12.9735 17 9.25 17C4.83179 17 1.25 13.4182 1.25 8.99999C1.25 5.08452 4.06262 1.83364 7.77437 1.14073C8.07502 1.0846 8.37963 1.21666 8.54419 1.47446Z"/>
+          <path fill="currentColor" d="M12.743 4.49198L11.797 4.17699L11.481 3.22999C11.379 2.92399 10.872 2.92399 10.77 3.22999L10.454 4.17699L9.508 4.49198C9.355 4.54298 9.25101 4.68598 9.25101 4.84798C9.25101 5.00998 9.355 5.15299 9.508 5.20399L10.454 5.51898L10.77 6.46599C10.821 6.61899 10.964 6.72199 11.125 6.72199C11.286 6.72199 11.43 6.61799 11.48 6.46599L11.796 5.51898L12.742 5.20399C12.895 5.15299 12.999 5.00998 12.999 4.84798C12.999 4.68598 12.896 4.54298 12.743 4.49198Z"/>
+          <path fill="currentColor" d="M14.25 8.5C14.664 8.5 15 8.1642 15 7.75C15 7.3358 14.664 7 14.25 7C13.836 7 13.5 7.3358 13.5 7.75C13.5 8.1642 13.836 8.5 14.25 8.5Z"/>
+        </svg>
 
         <!-- light-icon -->
-        <svg class="theme-icon light-icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#1f1f1f">
-          <path d="M12 18a6 6 0 0 1-6-6a6 6 0 0 1 6-6a6 6 0 0 1 6 6a6 6 0 0 1-6 6m8-2.69L23.31 12L20 8.69V4h-4.69L12 .69L8.69 4H4v4.69L.69 12L4 15.31V20h4.69L12 23.31L15.31 20H20z"/>
+        <svg class="theme-icon light-icon" xmlns="http://www.w3.org/2000/svg" width="18px" height="18px" viewBox="0 0 18 18">
+          <path fill="currentColor" d="m16.25,11.5H1.75c-.4141,0-.75.3359-.75.75s.3359.75.75.75h14.5c.4141,0,.75-.3359.75-.75s-.3359-.75-.75-.75Z"/>
+          <path fill="currentColor" d="m14.25,14.5H3.75c-.4141,0-.75.3359-.75.75s.3359.75.75.75h10.5c.4141,0,.75-.3359.75-.75s-.3359-.75-.75-.75Z"/>
+          <path fill="currentColor" opacity="0.4" d="m1.75,10h1.25c.4141,0,.75-.3359.75-.75s-.3359-.75-.75-.75h-1.25c-.4141,0-.75.3359-.75.75s.3359.75.75.75Z"/>
+          <path fill="currentColor" opacity="0.4" d="m4.2266,5.5376c.1465.146.3384.2192.5303.2192s.3843-.0732.5308-.2197c.2925-.2935.2925-.7681-.0005-1.061l-.8838-.8828c-.293-.292-.7681-.2925-1.061.0005-.2925.2935-.2925.7681.0005,1.061l.8838.8828Z"/>
+          <path fill="currentColor" opacity="0.4" d="m13.2432,5.7568c.1919,0,.3838-.0732.5303-.2197l.8828-.8828c.293-.293.293-.7676,0-1.0605s-.7676-.293-1.0605,0l-.8828.8828c-.293.293-.293.7676,0,1.0605.1465.1465.3384.2197.5303.2197Z"/>
+          <path fill="currentColor" opacity="0.4" d="m14.25,9.25c0,.4141.3359.75.75.75h1.25c.4141,0,.75-.3359.75-.75s-.3359-.75-.75-.75h-1.25c-.4141,0-.75.3359-.75.75Z"/>
+          <path fill="currentColor" opacity="0.4" d="m9,4c.4141,0,.75-.3359.75-.75v-1.25c0-.4141-.3359-.75-.75-.75s-.75.3359-.75.75v1.25c0,.4141.3359.75.75.75Z"/>
+          <path fill="currentColor" opacity="0.4" d="m5.5,10h7c.4141,0,.75-.3359.75-.75,0-2.3433-1.9067-4.25-4.25-4.25s-4.25,1.9067-4.25,4.25c0,.4141.3359.75.75.75Z"/>
         </svg>
       </a>
     </nav>
 
-    <div class="hamburger">
+    <div class="hamburger" aria-label="Toggle navigation menu" tabindex="0" role="button">
       <svg class="hamburger-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
         <path d="M3 4H21V6H3V4ZM3 11H15V13H3V11ZM3 18H21V20H3V18Z"></path>
       </svg>
@@ -61,11 +65,22 @@
           <a href="#contact" class="sidebar-link">Contact</a>
           <a class="sidebar-link theme-btn" aria-label="Toggle dark/light mode">
             <!-- dark-icon -->
-            <svg class="theme-icon dark-icon" xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24"><!-- Icon from Material Design Icons by Pictogrammers - https://github.com/Templarian/MaterialDesign/blob/master/LICENSE --><path fill="currentColor" d="m17.75 4.09l-2.53 1.94l.91 3.06l-2.63-1.81l-2.63 1.81l.91-3.06l-2.53-1.94L12.44 4l1.06-3l1.06 3zm3.5 6.91l-1.64 1.25l.59 1.98l-1.7-1.17l-1.7 1.17l.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85c-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14c.4-.4.82-.76 1.27-1.08c.75-.53 1.93.36 1.85 1.19c-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82c-2.81 3.14-2.7 7.96.31 10.98c3.02 3.01 7.84 3.12 10.98.31"/></svg>
+            <svg class="theme-icon dark-icon" xmlns="http://www.w3.org/2000/svg" width="18px" height="18px" viewBox="0 0 18 18">
+              <path fill-rule="evenodd" clip-rule="evenodd" fill="currentColor" opacity="0.4" d="M8.54419 1.47446C8.70875 1.73227 8.70028 2.06417 8.52278 2.31324C7.88003 3.21522 7.5 4.31129 7.5 5.49999C7.5 8.53778 9.96222 11 13 11C14.0509 11 15.029 10.7009 15.8667 10.1868C16.1275 10.0267 16.4594 10.0412 16.7053 10.2233C16.9513 10.4054 17.0619 10.7186 16.9848 11.0148C16.0904 14.4535 12.9735 17 9.25 17C4.83179 17 1.25 13.4182 1.25 8.99999C1.25 5.08452 4.06262 1.83364 7.77437 1.14073C8.07502 1.0846 8.37963 1.21666 8.54419 1.47446Z"/>
+              <path fill="currentColor" d="M12.743 4.49198L11.797 4.17699L11.481 3.22999C11.379 2.92399 10.872 2.92399 10.77 3.22999L10.454 4.17699L9.508 4.49198C9.355 4.54298 9.25101 4.68598 9.25101 4.84798C9.25101 5.00998 9.355 5.15299 9.508 5.20399L10.454 5.51898L10.77 6.46599C10.821 6.61899 10.964 6.72199 11.125 6.72199C11.286 6.72199 11.43 6.61799 11.48 6.46599L11.796 5.51898L12.742 5.20399C12.895 5.15299 12.999 5.00998 12.999 4.84798C12.999 4.68598 12.896 4.54298 12.743 4.49198Z"/>
+              <path fill="currentColor" d="M14.25 8.5C14.664 8.5 15 8.1642 15 7.75C15 7.3358 14.664 7 14.25 7C13.836 7 13.5 7.3358 13.5 7.75C13.5 8.1642 13.836 8.5 14.25 8.5Z"/>
+            </svg>
             
             <!-- light-icon -->
-            <svg class="theme-icon light-icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#1f1f1f"><!-- Icon from Material Design Icons by Pictogrammers - https://github.com/Templarian/MaterialDesign/blob/master/LICENSE -->
-              <path d="M12 18a6 6 0 0 1-6-6a6 6 0 0 1 6-6a6 6 0 0 1 6 6a6 6 0 0 1-6 6m8-2.69L23.31 12L20 8.69V4h-4.69L12 .69L8.69 4H4v4.69L.69 12L4 15.31V20h4.69L12 23.31L15.31 20H20z"/>
+            <svg class="theme-icon light-icon" xmlns="http://www.w3.org/2000/svg" width="18px" height="18px" viewBox="0 0 18 18">
+              <path fill="currentColor" d="m16.25,11.5H1.75c-.4141,0-.75.3359-.75.75s.3359.75.75.75h14.5c.4141,0,.75-.3359.75-.75s-.3359-.75-.75-.75Z"/>
+              <path fill="currentColor" d="m14.25,14.5H3.75c-.4141,0-.75.3359-.75.75s.3359.75.75.75h10.5c.4141,0,.75-.3359.75-.75s-.3359-.75-.75-.75Z"/>
+              <path fill="currentColor" opacity="0.4" d="m1.75,10h1.25c.4141,0,.75-.3359.75-.75s-.3359-.75-.75-.75h-1.25c-.4141,0-.75.3359-.75.75s.3359.75.75.75Z"/>
+              <path fill="currentColor" opacity="0.4" d="m4.2266,5.5376c.1465.146.3384.2192.5303.2192s.3843-.0732.5308-.2197c.2925-.2935.2925-.7681-.0005-1.061l-.8838-.8828c-.293-.292-.7681-.2925-1.061.0005-.2925.2935-.2925.7681.0005,1.061l.8838.8828Z"/>
+              <path fill="currentColor" opacity="0.4" d="m13.2432,5.7568c.1919,0,.3838-.0732.5303-.2197l.8828-.8828c.293-.293.293-.7676,0-1.0605s-.7676-.293-1.0605,0l-.8828.8828c-.293.293-.293.7676,0,1.0605.1465.1465.3384.2197.5303.2197Z"/>
+              <path fill="currentColor" opacity="0.4" d="m14.25,9.25c0,.4141.3359.75.75.75h1.25c.4141,0,.75-.3359.75-.75s-.3359-.75-.75-.75h-1.25c-.4141,0-.75.3359-.75.75Z"/>
+              <path fill="currentColor" opacity="0.4" d="m9,4c.4141,0,.75-.3359.75-.75v-1.25c0-.4141-.3359-.75-.75-.75s-.75.3359-.75.75v1.25c0,.4141.3359.75.75.75Z"/>
+              <path fill="currentColor" opacity="0.4" d="m5.5,10h7c.4141,0,.75-.3359.75-.75,0-2.3433-1.9067-4.25-4.25-4.25s-4.25,1.9067-4.25,4.25c0,.4141.3359.75.75.75Z"/>
             </svg>
           </a>
         </div>
@@ -78,7 +93,7 @@
     <div id="smooth-content">
 
   <header id="home" class="header-link">
-    <a href="https://www.instagram.com/drincatuic/" target="_blank" class="social-button">
+    <a href="https://www.instagram.com/drincatuic/" target="_blank" rel="noopener noreferrer" class="social-button" aria-label="Visit Drinc on Instagram (opens in new tab)">
       <img class="header-img" src="./images/icon/android-192x192.png" alt="DRINC Logo">
       <div class="social-button--background"></div>
       <div class="social-button--label">@drincatuic</div>
@@ -99,7 +114,7 @@
         Are you looking for a place to deepen your faith and learn about the love of God who sacrifice his son for our eternal life? Join us in our spring student retreat to refresh, rekindle, and renew our faith spirit.
       </p>
       <a href="registration.html" class="button">
-        <span class="button-text">RSVP</span>
+        <span class="button-text">RSVP here</span>
         <img src="./assets/J1_0000 (resized).png" alt="" class="button__J">
         <img src="./assets/e2_0000 (resized).png" alt="" class="button__e">
         <img src="./assets/s2_0000 (resized).png" alt="" class="button__s">
@@ -114,9 +129,7 @@
 
 
   <div>
-    <p
-      style="color: var(--secondary-color); line-height: 1.4; text-align: left; font-size: 0.8rem; font-weight: 400; font-style: italic; box-sizing: content-box; z-index: 1; position: relative;">
-      5:4 ratio images</p>
+    <p class="section-label">5:4 ratio images</p>
     <article class="polaroid-grid">
       <div class="polaroid-card grid-item">
         <div class="polaroid-frame">
@@ -173,7 +186,7 @@
           <img src="./images/IMG_4092 (Small).JPG" alt="pic of group" loading="lazy" decoding="async"
             data-src="./images/original/IMG_4092.JPG">
           <div class="grid-item-info">
-            <p>We had some fun with bubble ball fights</p>
+            <p>We had fun with bubble ball fights</p>
             <p>Click to view</p>
           </div>
         </div>
@@ -183,7 +196,7 @@
           <img src="./images/IMG_4117 (Small).JPG" alt="pic of group" loading="lazy" decoding="async"
             data-src="./images/original/IMG_4117.JPG">
           <div class="grid-item-info">
-            <p>We had some fun with bubble ball fights</p>
+            <p>We had fun with bubble ball fights</p>
             <p>Click to view</p>
           </div>
         </div>
@@ -252,9 +265,7 @@
   </div>
 
   <div>
-    <p
-      style="color: var(--secondary-color); line-height: 1.4; text-align: left; font-size: 0.8rem; font-weight: 400; font-style: italic; box-sizing: content-box; z-index: 1; position: relative;">
-      16:9 ratio images</p>
+    <p class="section-label">16:9 ratio images</p>
     <article class="polaroid-grid polaroid-grid--wide">
       <div class="polaroid-card grid-item">
         <div class="polaroid-frame">
@@ -291,7 +302,7 @@
           <img src="./images/IMG_3945 (Small).JPG" alt="pic of group" loading="lazy" decoding="async"
             data-src="./images/original/IMG_3945.JPG">
           <div class="grid-item-info">
-            <p>Captured moment with our club leaders.</p>
+            <p>A moment with our club leaders</p>
             <p>Click to view</p>
           </div>
         </div>
@@ -330,20 +341,18 @@
   </div>
 
   <div>
-    <p
-      style="color: var(--secondary-color); line-height: 1.4; text-align: left; font-size: 0.8rem; font-weight: 400; font-style: italic; box-sizing: content-box; z-index: 1; position: relative;">videos 
-    </p>
+    <p class="section-label">videos</p>
     <article class="image-grid-span">
-      <div class="grid-item image-grid-col-2 image-grid-row-2" style="position: relative; overflow: hidden;">
+      <div class="grid-item image-grid-col-2 image-grid-row-2 video-wrapper">
         <iframe
           src="https://player.vimeo.com/video/1069801061?h=56307c5675&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
           frameborder="0" allow="autoplay; fullscreen; encrypted-media; storage-access"
-          style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; max-width: 100%; overflow: hidden;">
+          style="overflow: hidden;">
         </iframe>
         <script src="https://player.vimeo.com/api/player.js"></script>
       </div>
 
-      <div class="grid-item image-grid-col-2 image-grid-row-2" style="position: relative; overflow: hidden;">
+      <div class="grid-item image-grid-col-2 image-grid-row-2 video-wrapper">
         <iframe
           src="https://player.vimeo.com/video/1077156923?h=24a76eb9ae&amp;title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
           frameborder="0" allow="autoplay; fullscreen; encrypted-media; storage-access"></iframe>
@@ -368,8 +377,12 @@
             height="900">
         </div>
 
-        <button class="prev-btn"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="m313-440 224 224-57 56-320-320 320-320 57 56-224 224h487v80H313Z"/></svg></button>
-        <button class="next-btn"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M647-440H160v-80h487L423-744l57-56 320 320-320 320-57-56 224-224Z"/></svg></button>
+        <button class="prev-btn"><svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="18px" height="18px" viewBox="0 0 18 18" fill="currentColor">
+  <path d="M13.094 2.44202C12.535 2.13302 11.852 2.15401 11.313 2.49701L3.38904 7.52197C2.88004 7.84497 2.57703 8.397 2.57703 9C2.57703 9.603 2.88104 10.155 3.38904 10.478L11.313 15.503C11.599 15.684 11.924 15.774 12.25 15.774C12.54 15.774 12.831 15.702 13.094 15.557C13.653 15.249 14 14.662 14 14.024V3.97601C14 3.33801 13.653 2.74902 13.094 2.44202Z"></path>
+</svg></button>
+        <button class="next-btn"><svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="18px" height="18px" viewBox="0 0 18 18" fill="currentColor">
+  <path d="M14.611 7.52196L6.687 2.49699C6.147 2.15499 5.46401 2.134 4.90601 2.442C4.34701 2.75 4 3.33696 4 3.97496V14.024C4 14.662 4.34701 15.25 4.90601 15.557C5.16901 15.702 5.46 15.774 5.75 15.774C6.076 15.774 6.402 15.683 6.688 15.502L14.611 10.478C15.12 10.155 15.423 9.60298 15.423 8.99998C15.423 8.39698 15.119 7.84496 14.611 7.52196Z"></path>
+</svg></button>
         
         <div class="dots"></div>
 
@@ -439,7 +452,7 @@
       </section>
 
       <div class="social-buttons">
-        <a href="https://www.instagram.com/drincatuic/" target="_blank" class="social-button">
+        <a href="https://www.instagram.com/drincatuic/" target="_blank" rel="noopener noreferrer" class="social-button" aria-label="Visit Drinc on Instagram (opens in new tab)">
           <img class="footer-img" src="./images/instagram-white.svg" alt="Instagram Logo">
           <div class="social-button--background"
             style="background: radial-gradient(circle farthest-corner at 35% 90%, #fec564, transparent 50%), radial-gradient(circle farthest-corner at 0 140%, #fec564, transparent 50%), radial-gradient(ellipse farthest-corner at 0 -25%, #5258cf, transparent 50%), radial-gradient(ellipse farthest-corner at 20% -50%, #5258cf, transparent 50%), radial-gradient(ellipse farthest-corner at 100% 0, #893dc2, transparent 50%), radial-gradient(ellipse farthest-corner at 60% -20%, #893dc2, transparent 50%), radial-gradient(ellipse farthest-corner at 100% 100%, #d9317a, transparent), linear-gradient(#6559ca, #bc318f 30%, #e33f5f 50%, #f77638 70%, #fec66d 100%);
@@ -447,7 +460,7 @@
           </div>
           <div class="social-button--label">@drincatuic</div>
         </a>
-        <a href="https://linktr.ee/drinc_uic" target="_blank" class="social-button">
+        <a href="https://linktr.ee/drinc_uic" target="_blank" rel="noopener noreferrer" class="social-button" aria-label="Visit Drinc on Linktree (opens in new tab)">
           <img class="footer-img" src="./images/linktree-white.svg" alt="Linktree Logo">
           <div class="social-button--background" style="background-color: #43e660;"></div>
           <div class="social-button--label">Linktree</div>
@@ -455,7 +468,7 @@
       </div>
     </footer>
     <div class="madewithlove-bar">
-      <p class="madewithlove-bar--text">&copy; 2025 Made with love by <a class="madewithlove-bar--link" href="https://www.instagram.com/hoaang.ngo/" target="_blank">Hoang</a>
+      <p class="madewithlove-bar--text">&copy; 2025 Made with love by <a class="madewithlove-bar--link" href="https://www.instagram.com/hoaang.ngo/" target="_blank" rel="noopener noreferrer" aria-label="Visit Hoang on Instagram (opens in new tab)">Hoang</a>
       </p>
     </div>
   </div>
@@ -465,12 +478,12 @@
 
   <!-- Image Modal -->
   <div id="imageModal" class="container modal">
-    <span class="modal-close">
+    <button class="modal-close" aria-label="Close modal">
       <!-- close-icon -->
-      <svg xmlns="https://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="">
+      <svg xmlns="https://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
         <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" />
       </svg>
-    </span>
+    </button>
     <div class="modal-content">
       <img class="modal-img" src="" alt="">
     </div>
