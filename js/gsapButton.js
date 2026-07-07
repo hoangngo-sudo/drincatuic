@@ -62,12 +62,14 @@ export default function initGsapButtons() {
     const isButton = el.classList.contains('button');
     const LETTER_SELECTOR = '.button__J, .button__e, .button__s, .button__u, .button__s2';
 
+    /* Deltas from CSS rest transform → CSS hover transform (in px at 16px root)
+       to keep touch and hover letter positions identical */
     const LETTER_SCATTER = {
-      '.button__J':  { x: -72, y: -8, scale: 1.2, opacity: 1 },
-      '.button__e':  { x: -48, y: -40, scale: 1.2, opacity: 1 },
-      '.button__s':  { x: -19, y: 2, scale: 1.2, opacity: 1 },
-      '.button__u':  { x: -8, y: -40, scale: 1.2, opacity: 1 },
-      '.button__s2': { x: 8, y: -24, scale: 1.2, opacity: 1 },
+      '.button__J':  { x: -48, y: 8, scale: 1.2, opacity: 1 },
+      '.button__e':  { x: -24, y: -24, scale: 1.2, opacity: 1 },
+      '.button__s':  { x: 13, y: 18, scale: 1.2, opacity: 1 },
+      '.button__u':  { x: 24, y: -24, scale: 1.2, opacity: 1 },
+      '.button__s2': { x: 32, y: -8, scale: 1.2, opacity: 1 },
     };
 
     const LETTER_REST = { x: 0, y: 0, scale: 1, opacity: 0 };
