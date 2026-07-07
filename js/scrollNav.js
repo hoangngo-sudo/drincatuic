@@ -22,16 +22,17 @@ export default function scrollNav() {
   const nav = document.querySelector(".sticky-nav");
   if (!nav) return null;
 
-  /* ── GSAP available → use quickTo tweeners ── */
+  /* Use GSAP quickTo tweeners when the GSAP library is available for efficient frame-synchronised animations. */
   if (gsap) {
-    // Let GSAP own the centering so CSS translateX doesn't fight y animations
+    /* Set the initial centering transform with GSAP so CSS translateX does not conflict with the y-axis animations. */
     gsap.set(nav, { xPercent: -50, x: 0, y: 0, opacity: 1 });
 
-    // Match opacity duration with Y duration so it doesn't vanish prematurely
+    /* Create quickTo tweeners for y position and opacity, matching their durations so the navbar does not vanish before it has fully slid out of view. */
     const tweenY       = gsap.quickTo(nav, "y",       { duration: 0.6, ease: "power2.out" });
     const tweenOpacity = gsap.quickTo(nav, "opacity",  { duration: 0.6, ease: "power2.out" });
 
-    const hideY = -(nav.offsetHeight + 32); // slide fully above viewport
+    /* Calculate the y-offset needed to slide the navbar fully above the viewport, including a 32-pixel buffer. */
+    const hideY = -(nav.offsetHeight + 32);
     let hidden = false;
 
     function hide() {
@@ -57,7 +58,7 @@ export default function scrollNav() {
       nav.style.pointerEvents = "auto";
     }
 
-    // Accessibility: reveal navbar when a nav link receives keyboard focus
+    /* Reveal the navbar whenever a navigation link receives keyboard focus to ensure it remains accessible to keyboard users. */
     nav.addEventListener("focusin", forceShow);
 
     return { show, hide, forceShow, get isHidden() { return hidden; } };

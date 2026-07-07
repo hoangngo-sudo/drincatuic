@@ -7,6 +7,7 @@ if (!SUPABASE_URL || !SUPABASE_PUBLIC_KEY) {
     "Supabase environment variables are missing; registration submission is disabled."
   );
 } else if (window.supabase && typeof window.supabase.createClient === "function") {
+	/* Initialize the Supabase client with the URL and public key from the environment. */
 	supabaseClient = window.supabase.createClient(
 		SUPABASE_URL,
 		SUPABASE_PUBLIC_KEY

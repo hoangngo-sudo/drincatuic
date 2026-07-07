@@ -21,8 +21,8 @@ document.addEventListener("DOMContentLoaded", () => {
     smoother = ScrollSmoother.create({
       smooth: 1.5,
       effects: true,
-      // smoothTouch disabled: native touch scroll runs on the compositor thread
-      // at hardware speed. A JS rAF loop cannot keep pace and causes jitter.
+      /* Smooth touch scrolling is disabled because native touch scroll runs on the compositor thread at hardware speed,
+         and a JavaScript requestAnimationFrame loop cannot keep pace, which causes visible jitter. */
       smoothTouch: 0,
     });
   } catch (e) {

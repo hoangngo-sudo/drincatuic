@@ -3,6 +3,7 @@
  * Uses IntersectionObserver — native loading="lazy" handles the thumbnail load;
  * this preloads the high-res version for instant modal display on click.
  */
+
 function setupLazyFullResPreload() {
   const observer = new IntersectionObserver(
     (entries) => {

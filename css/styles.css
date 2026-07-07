@@ -18,25 +18,25 @@
   --border-color: #00000070;
   --svg-color: #000;
 
-  /* Semantic tokens */
+  /* Semantic tokens: these values are reused across components and update automatically when the theme switches between light and dark mode. */
   --nav-bg: #00000061;
   --btn-hover: #E91E63;
   --selection-bg: #E91E63;
   --selection-text: #000;
   --footer-copyright: #E91E63;
-  --glass-bg: rgba(255, 255, 255, 0.08);  /* frosted-glass panel fill (nav, scroll mouse, expandable) */
+  --glass-bg: rgba(255, 255, 255, 0.08);
   --nav-shadow: 0 0 0 0.6px var(--border-color),
                 0 2px 4px rgba(0, 0, 0, 0.04),
-                0 8px 20px rgba(0, 0, 0, 0.08);  /* nav pill box-shadow: layered for natural depth; dark mode drops outer shadows */
-  --slider-control-bg: #fff;               /* slider button & dot default fill */
-  --control-size: 44px;                    /* circular button size */
+                0 8px 20px rgba(0, 0, 0, 0.08);
+  --slider-control-bg: #fff;
+  --control-size: 44px;
 
-  /* Polaroid collage */
+  /* Polaroid collage tokens for the white frame, soft shadow, and hover shadow effects. */
   --polaroid-frame-bg: #efefef;
   --polaroid-shadow: 0 3px 12px rgba(0, 0, 0, 0.10), 0 1px 4px rgba(0, 0, 0, 0.06);
   --polaroid-shadow-hover: 0 10px 28px rgba(0, 0, 0, 0.16), 0 2px 6px rgba(0, 0, 0, 0.08);
 
-  /* Z-index scale */
+  /* Z-index scale to enforce a consistent stacking order across all components. */
   --z-background: 0;
   --z-content: 100;
   --z-header: 200;
@@ -46,13 +46,13 @@
   --z-nav: 600;
   --z-modal: 1000;
 
-  /* Easing tokens */
+  /* Easing tokens: reusable cubic-bezier curves used across all animations and transitions in the project. */
   --ease-out-quart: cubic-bezier(0.165, 0.84, 0.44, 1);
   --ease-out-quint: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out-cubic: cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 
-/* Dark mode */
+/* Dark mode overrides: swap all color tokens when the .dark-mode class is applied to the body element, and update the background color for the full page. */
 .dark-mode {
   --primary-color: #ff4081;
   --primary-dark-color: #ff4081;
@@ -70,7 +70,7 @@
 
   --glass-bg: rgba(0, 0, 0, 0.08);
   --nav-shadow: 0 0 0 0.6px var(--border-color),
-                0 1px 3px rgba(0, 0, 0, 0.15);  /* subtle elevation hint in dark mode */
+                0 1px 3px rgba(0, 0, 0, 0.15);
   --slider-control-bg: var(--tertiary-color);
 
   --polaroid-frame-bg: #1e1e1e;
@@ -80,7 +80,7 @@
   background-color: var(--background-color);
 }
 
-/* Prevent horizontal overflow site-wide */
+/* Prevent horizontal overflow site-wide to avoid unwanted scrollbars on narrow viewports. */
 html,
 body {
   width: 100%;
@@ -89,7 +89,7 @@ body {
   position: relative;
 }
 
-/* Text selection highlight color */
+/* Set the text selection highlight color using the primary brand color. */
 ::-moz-selection {
   color: var(--selection-text);
   background: var(--selection-bg);
@@ -105,22 +105,20 @@ body {
   to { opacity: 1; }
 }
 
-@keyframes modalContentIn {
-  from { opacity: 0; transform: scale(0.96); }
-  to   { opacity: 1; transform: scale(1); }
-}
+/* The modal-content entrance animation is handled by the GSAP morph timeline
+   in imageMorph.js, so no CSS @keyframes are needed for it. */
 
 /* 
   Utility Classes
-  Reusable helpers used across multiple components.
+  Reusable helper classes used across multiple components.
 */
 
-/* Prevents CSS transitions: used by JS when setting initial element positions */
+/* Prevent CSS transitions from interfering when JavaScript sets initial element positions before animating them. */
 .no-transition {
   transition: none !important;
 }
 
-/* Scroll-triggered fade-in animation (JS adds .visible / .hidden) */
+/* Scroll-triggered fade-in animation: JavaScript adds the .visible or .hidden class based on the element's position in the viewport. */
 .fade-in {
   opacity: 0;
   transform: translateY(16px);
@@ -154,18 +152,17 @@ body {
 
 /*
   Typography: Body Section
-  .body-section is shared across h1 to h3, p, a, and
-  <section> elements. Element qualifiers are
-  intentional: each element type gets distinct sizing.
+  The .body-section class is shared across heading levels, paragraphs, links, and section elements.
+  Element qualifiers are intentional because each element type needs distinct sizing and spacing.
 */
 
-/* Shared z-index lift for all .body-section elements */
+/* Apply a shared z-index lift to all .body-section elements so they render above the background images. */
 .body-section {
   position: relative;
   z-index: var(--z-content);
 }
 
-/* Common text styles for body-section headings, paragraphs, links */
+/* Common text color applied to all body-section headings, paragraphs, and links. */
 h1.body-section,
 h2.body-section,
 h3.body-section,
@@ -206,8 +203,8 @@ p.body-section {
 
 /*
   Layout: Hero Background
-  Two overlapping images swap via opacity for dark/light mode.
-  Default shows dark-bg to avoid white flash before JS loads.
+  Two overlapping background images swap visibility via opacity for dark and light mode.
+  The dark-background image is visible by default to prevent a white flash before JavaScript loads and applies the theme.
 */
 
 .bg-container {
@@ -230,11 +227,11 @@ p.body-section {
   z-index: var(--z-background);
 }
 
-/* Default state: dark bg visible, light bg hidden (prevents white flash) */
+/* In the default state, show the dark-background image and hide the light-background image to prevent a white flash before JavaScript applies the theme. */
 .dark-bg { opacity: 1; }
 .light-bg { opacity: 0; }
 
-/* Light mode: swap background visibility */
+/* When the page is not in dark mode, reverse the visibility so the light-background image is shown. */
 body:not(.dark-mode) .dark-bg { opacity: 0; }
 body:not(.dark-mode) .light-bg { opacity: 1; }
 
@@ -242,7 +239,7 @@ body:not(.dark-mode) .light-bg { opacity: 1; }
   Layout: Content Sections
 */
 
-/* Centered flex container for each content area */
+/* A centered flex container that wraps each content area on the page. */
 .body-content {
   display: flex;
   justify-content: center;
@@ -252,7 +249,7 @@ body:not(.dark-mode) .light-bg { opacity: 1; }
   padding-bottom: 0;
 }
 
-/* First viewport hero area: taller with bottom padding for scroll room */
+/* The first viewport hero area is taller and includes extra bottom padding to provide scroll room for the ScrollSmoother effect. */
 .body-content--firstviewport {
   min-height: 85vh;
   padding-bottom: 8.5rem;
@@ -280,7 +277,7 @@ section.body-section {
   line-height: 1.6;
 }
 
-/* Prevent double-tap zoom on all interactive elements */
+/* Prevent the browser from zooming on double-tap for all interactive elements, which improves the mobile touch experience. */
 a, button,
 .button, .nav-link, .social-button, .expand-trigger,
 .hamburger, .slider button, .dot, .modal-close,
@@ -290,9 +287,8 @@ a, button,
 
 /*
   Nav Block
-  Frosted-glass pill nav, centered-fixed at top.
-  Uses --glass-bg and --nav-shadow tokens so
-  dark/light theming needs zero overrides here.
+  A frosted-glass pill-shaped navigation bar, fixed at the top center of the viewport.
+  Uses the --glass-bg and --nav-shadow CSS custom properties so no overrides are needed for dark mode theming.
 */
 
 .nav-container {
@@ -337,7 +333,7 @@ a, button,
   }
 }
 
-/* When theme toggle sits inside nav: circular, no text padding */
+/* When the theme toggle button sits inside the navigation bar, render it as a circular icon-only button without text padding. */
 .nav-link.theme-btn {
   padding: 0;
   width: 44px;
@@ -352,8 +348,7 @@ a, button,
 
 /*
    Hamburger Block
-   Mobile menu toggle: hidden on desktop,
-   shown at ≤768px via media query.
+   The mobile menu toggle button is hidden on desktop and shown at viewport widths of 768 pixels or less via a media query.
 */
 
 .hamburger {
@@ -368,7 +363,7 @@ a, button,
   pointer-events: auto;
 }
 
-/* Touch press feedback for hamburger */
+/* On touch devices, change the hamburger icon fill color on press to provide tactile feedback. */
 @media (hover: none) and (pointer: coarse) {
   .hamburger:active svg {
     fill: var(--primary-color);
@@ -381,7 +376,7 @@ a, button,
   }
 }
 
-/* Targets both <svg class="hamburger-icon"> and any svg child */
+/* Style the hamburger icon SVG element and its children with consistent dimensions and fill color. */
 .hamburger svg {
   width: 2rem;
   height: 2rem;
@@ -391,8 +386,8 @@ a, button,
 
 /*
   Sidebar Block
-  Full-screen mobile nav panel, slides in from right.
-  Layered above .overlay (z-sidebar > z-overlay).
+  A full-screen mobile navigation panel that slides in from the right side of the viewport.
+  It is layered above the overlay backdrop because the sidebar z-index is higher than the overlay z-index.
 */
 
 .menu-sidebar {
@@ -417,7 +412,7 @@ a, button,
   /* Don't set pointer-events:auto here ,the sidebar covers the hamburger. */
 }
 
-/* Prevent default tap highlight flash on all touch elements */
+/* Prevent the default tap highlight flash that appears on touch devices when tapping interactive elements. */
 @media (hover: none) and (pointer: coarse) {
   * {
     -webkit-tap-highlight-color: transparent;
@@ -459,7 +454,7 @@ a, button,
   touch-action: manipulation;
 }
 
-/* Larger theme toggle when rendered inside sidebar */
+/* Increase the theme toggle button size when it is rendered inside the sidebar layout. */
 .sidebar-links .theme-btn {
   height: 56px;
   width: 56px;
@@ -469,14 +464,14 @@ a, button,
   padding: 0;
 }
 
-/* Only apply hover on devices that support it (prevents sticky hover on touch) */
+/* Only apply hover styles on devices with a fine pointer such as a mouse, which prevents sticky hover states on touch devices. */
 @media (hover: hover) and (pointer: fine) {
   .sidebar-link:hover {
     color: var(--primary-color);
   }
 }
 
-/* Translucent backdrop behind open sidebar */
+/* A translucent dark backdrop that appears behind the open sidebar to dim the page content and focus attention on the navigation panel. */
 .overlay {
   position: fixed;
   top: 0;
@@ -500,9 +495,8 @@ a, button,
 
 /*
   Theme Toggle Block
-  Dark/light mode switch icon.
-  Renders inside both nav (desktop) and sidebar (mobile).
-  JS toggles .dark-mode on body; icon swap is pure CSS.
+  The dark and light mode switch icon renders inside both the desktop navigation bar and the mobile sidebar.
+  JavaScript toggles the .dark-mode class on the body element, and the icon swap between moon and sun is handled entirely with CSS.
 */
 
 .theme-btn {
@@ -537,13 +531,14 @@ a, button,
   }
 }
 
-/* Show moon icon by default; swap to sun icon in dark mode */
+/* Show the moon icon by default in light mode, and swap to the sun icon when dark mode is active. */
 .light-icon { display: none; }
 .dark-mode .dark-icon { display: none; }
 .dark-mode .light-icon { display: block; }
 
 /* 
   Header Block
+  The page header contains the social button link and logo image, positioned with a relative z-index so it appears above the hero background.
 */
 
 .header-link {
@@ -567,11 +562,9 @@ a, button,
 }
 
 /*
-  Button Block: RSVP CTA
-  Pill-shaped link button with frosted-glass border.
-  On hover: scales up, fills with primary color,
-  reveals 5 floating letter images (J-e-s-u-s)
-  that scatter outward via absolute positioning.
+  Button Block: RSVP Call to Action
+  A pill-shaped link button with a frosted-glass border effect.
+  On hover, the button scales up and fills with the primary color while revealing five floating letter images spelling J-E-S-U-S that scatter outward from center using absolute positioning.
 */
 
 .button {
@@ -590,10 +583,10 @@ a, button,
   height: auto;
   width: auto;
   position: relative;
-  /* will-change removed: GSAP manages this dynamically during hover/tap tweens */
+  /* The will-change property has been removed because GSAP manages it dynamically during hover and tap tween animations. */
 }
 
-/* Glow pseudo-element behind button: fades in on hover (desktop only) */
+/* A glow pseudo-element positioned behind the button that fades in on hover, but only on desktop devices with a hover-capable pointer. */
 @media (hover: hover) and (pointer: fine) {
   .button::after {
     content: '';
@@ -615,7 +608,7 @@ a, button,
   .button:hover::after { opacity: 1; }
 }
 
-/* Button label text stays above floating images */
+/* Ensure the button label text renders above the floating letter images by giving it a higher z-index. */
 .button-text {
   position: relative;
   z-index: 10;
@@ -630,9 +623,9 @@ a, button,
   flex-shrink: 0;
 }
 
-/* Floating letter images: hidden by default, revealed on hover/touch.
-   CSS transition is the baseline; GSAP overrides inline during touch animation
-   then clears props so CSS hover can resume. */
+/* Floating letter images for the RSVP button: hidden by default and revealed on hover or touch.
+   CSS transitions provide the baseline animation, while GSAP overrides inline styles during the touch animation
+   and then clears its props so the CSS hover effect can resume normally. */
 .button img {
   position: absolute;
   top: 50%;
@@ -651,15 +644,14 @@ a, button,
   }
 }
 
-/* Each letter: unique size, rotation, and hover offset */
+/* Each floating letter image gets its own unique size, rotation angle, and hover offset position for an organic scatter effect. */
 .button__J  { width: 3rem; transform: translate(-1.5rem, -1rem) rotate(10deg);  filter: blur(0.2px); }
 .button__e  { width: 3rem; transform: translate(-1.5rem, -1rem) rotate(5deg);   filter: blur(0.2px); }
 .button__s  { width: 2rem; transform: translate(-2rem, -1rem) rotate(-20deg);   filter: blur(0.2px); }
 .button__u  { width: 2rem; transform: translate(-2rem, -1rem) rotate(-10deg);   filter: blur(0.2px); }
 .button__s2 { width: 4rem; transform: translate(-1.5rem, -1rem) rotate(10deg);  filter: blur(0.2px); }
 
-/* Hover: all button hover effects gated to pointer:fine: prevents sticky
-   hover-on-tap on touch devices (iOS/Android keep :hover after touch lift) */
+/* Gate all button hover effects behind a pointer:fine media query to prevent sticky hover states on touch devices, where iOS and Android keep the :hover style active after a tap is lifted. */
 @media (hover: hover) and (pointer: fine) {
   .button:hover,
   .button.hover {
@@ -683,7 +675,7 @@ a, button,
   .button.hover .button__s2 { transform: translate(0.5rem, -1.5rem) scale(1.2); }
 }
 
-/* Touch press: subtle scale-down only */
+/* On touch-only devices, apply a subtle scale-down transform on button press instead of a hover effect. */
 @media (hover: none) {
   .button:active {
     transform: scale(0.97);
@@ -691,9 +683,9 @@ a, button,
 }
 
 /*
-  Social Button Block (BEM)
-  Icon with reveal-on-hover colored background and label.
-  Used in header (Instagram link) and footer (social links).
+  Social Button Block (BEM naming convention)
+  An icon button that reveals a colored background and label text on hover.
+  Used for the Instagram link in the header and for social links in the footer.
 */
 
 .social-button {
@@ -715,14 +707,14 @@ a, button,
   transition: transform 150ms cubic-bezier(0.215, 0.61, 0.355, 1);
 }
 
-/* Touch press feedback */
+/* Provide a subtle scale-down press feedback effect on touch devices. */
 @media (hover: none) and (pointer: coarse) {
   .social-button:active {
     transform: scale(0.95);
   }
 }
 
-/* Gate hover rules: prevents phantom triggers on touch-tap */
+/* Gate hover rules behind a pointer:fine media query to prevent phantom hover triggers that occur after a touch tap. */
 @media (hover: hover) and (pointer: fine) {
   .social-button:hover .social-button--background { opacity: 1; }
   .social-button:hover .social-button--label {
@@ -732,10 +724,9 @@ a, button,
   }
 }
 
-/* Suppress social-card hover during theme toggle repaint.
-   JS adds .theme-transitioning to <body> for 150ms after each
-   theme-btn click. We force hover styles back to rest state
-   AND kill transitions so the suppression is instantaneous. */
+/* Suppress social-card hover styles during theme toggle repaint.
+   JavaScript adds the .theme-transitioning class to the body element for 150 milliseconds after each theme button click.
+   This rule forces hover styles back to their rest state and disables transitions so the suppression is instantaneous. */
 .theme-transitioning .social-button--background,
 .theme-transitioning .social-button--label {
   transition: none !important;
@@ -747,10 +738,9 @@ a, button,
   color: var(--tertiary-color) !important;
 }
 
-/* Full-size colored backdrop, hidden until hover/active.
-   transition-delay prevents accidental flash during theme repaints.
-   Uses inset (top/right/bottom/left:0) instead of width/height:100%
-   to guarantee full coverage when parent has height:auto. */
+/* A full-size colored backdrop that remains hidden until hover or active state.
+   Uses inset positioning with top, right, bottom, and left set to zero instead of width and height at 100 percent
+   to guarantee full coverage even when the parent element has a height of auto. */
 .social-button--background {
   background-color: var(--primary-color);
   position: absolute;
@@ -764,8 +754,8 @@ a, button,
   opacity: 0;
 }
 
-/* Label text below icon: hidden at rest, fades in on hover.
-   Spacing from icon is controlled by parent flex gap. */
+/* The label text below the icon is hidden in its rest state and fades in on hover.
+   The spacing between the icon and the label is controlled by the parent flexbox gap property. */
 .social-button--label {
   color: var(--tertiary-color);
   text-align: center;
@@ -778,21 +768,20 @@ a, button,
   transition: opacity 100ms ease-out;
 }
 
-/* Header social button sits on the page background: label must follow secondary color
-   so it reads correctly in both light (black) and dark (white) mode */
+/* When the social button sits in the header against the page background, the label must use the secondary color token
+   so it is readable in both light mode with black text and dark mode with white text. */
 .header-link .social-button--label {
   color: var(--secondary-color);
 }
 
 /*
   Image Grid Block
-  Responsive CSS Grid galleries for event photos.
-  Two aspect ratios share a common base layout :
-  only --row-heights differs between variants.
-  Columns adjust from 4→2 at ≤768px.
+  Responsive CSS Grid galleries for event photos with two aspect ratio variants.
+  Both variants share a common base layout, and only the --row-heights custom property differs between them.
+  The column count adjusts from four columns on desktop down to two columns at 768 pixels or less.
 */
 
-/* Shared grid base for the 16:9 gallery */
+/* Shared grid base layout for the 16:9 aspect ratio gallery. */
 .image-grid-span {
   --gap: 0.125rem;
   --num-cols: 4;
@@ -808,7 +797,7 @@ a, button,
   overflow: hidden;
 }
 
-/* 16:9 landscape ratio: wide/panoramic shots */
+/* The 16:9 landscape ratio variant is used for wide and panoramic photo shots, constrained to 60 percent of the viewport width. */
 .image-grid-span {
   --row-heights: calc((100vw / var(--num-cols)) * 9 / 16);
   width: 60%;
@@ -817,7 +806,7 @@ a, button,
   margin-right: auto;
 }
 
-/* Grid Item: individual photo/video cell */
+/* A single grid cell that holds an individual photo or video element. */
 .grid-item {
   position: relative;
   overflow: hidden;
@@ -839,7 +828,7 @@ a, button,
   content-visibility: auto;
 }
 
-/* Force iframes to fill their grid cell */
+/* Force embedded iframes to fill their entire grid cell area for a seamless video integration. */
 .grid-item iframe {
   width: 100%;
   height: 100%;
@@ -847,12 +836,12 @@ a, button,
   border: 0;
 }
 
-/* Span helpers: let items occupy multiple grid tracks */
+/* Span helper classes that let individual grid items occupy multiple columns or rows for flexible layout compositions. */
 .image-grid-col-2 { grid-column: span 2; }
 .image-grid-col-4 { grid-column: span 4; }
 .image-grid-row-2 { grid-row: span 2; }
 
-/* Video wrapper: fill the full grid cell, maintain 16:9 ratio */
+/* A wrapper for video content that fills the full grid cell while maintaining the 16:9 aspect ratio. */
 .video-wrapper {
   position: relative;
   overflow: hidden;
@@ -866,12 +855,11 @@ a, button,
 
 /*
   Polaroid Collage Grid Block
-  Polaroid-style photo cards with white frames,
-  subtle shadows, and organic rotation.
-  3-col desktop → 1-col mobile.
+  Polaroid-style photo cards with white frames, subtle shadows, and organic rotation offsets.
+  The layout uses a three-column grid on desktop and collapses to a single column on mobile.
 */
 
-/* Grid container: 80% width, tight gap for scattered overlap */
+/* The grid container is set to 60 percent width with no gap to allow for the scattered overlapping look created by transform rotations and translations. */
 .polaroid-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -883,7 +871,7 @@ a, button,
   overflow: visible;
 }
 
-/* Card wrapper: rotation + hover transitions */
+/* Each polaroid card wrapper includes an initial rotation offset, hover transition, cursor pointer, and shadow for depth. */
 .polaroid-card {
   position: relative;
   isolation: isolate;
@@ -894,7 +882,7 @@ a, button,
   margin: 0.5rem;
 }
 
-/* Repeating rotation + offset pattern: scattered, overlapping look */
+/* A repeating six-item rotation and offset pattern that creates a scattered, overlapping collage look across the grid. */
 .polaroid-card:nth-child(6n+1) { transform: rotate(-3.5deg) translate(-4px, 2px); }
 .polaroid-card:nth-child(6n+2) { transform: rotate(2.8deg) translate(3px, -3px); }
 .polaroid-card:nth-child(6n+3) { transform: rotate(-1.5deg) translate(-2px, 5px); }
@@ -902,7 +890,7 @@ a, button,
 .polaroid-card:nth-child(6n+5) { transform: rotate(-2.5deg) translate(-3px, 4px); }
 .polaroid-card:nth-child(6n+6) { transform: rotate(1.8deg) translate(2px, -4px); }
 
-/* Hover: straighten and lift */
+/* On hover or when the .show-info class is active, straighten the card rotation and lift it above the surrounding cards by increasing the z-index. */
 .polaroid-card.hover,
 .polaroid-card.show-info {
   transform: rotate(0deg);
@@ -916,7 +904,7 @@ a, button,
   }
 }
 
-/* Polaroid frame: white border, rounded corners, soft shadow */
+/* The polaroid frame provides the classic instant-photo look with a light background, subtle padding, rounded corners, and a soft shadow. */
 .polaroid-frame {
   position: relative;
   background: var(--polaroid-frame-bg);
@@ -933,7 +921,7 @@ a, button,
   box-shadow: var(--polaroid-shadow-hover);
 }
 
-/* Image inside frame: default 5:4 ratio */
+/* Images inside the polaroid frame use a 5:4 aspect ratio by default with cover-fit object positioning. */
 .polaroid-frame > img {
   width: 100%;
   aspect-ratio: 5 / 4;
@@ -943,20 +931,19 @@ a, button,
   content-visibility: auto;
 }
 
-/* 16:9 wide variant */
+/* The wide polaroid variant uses a 16:9 aspect ratio instead of the default 5:4 for panoramic-style photos. */
 .polaroid-grid--wide .polaroid-frame > img {
   aspect-ratio: 16 / 9;
 }
 
 /*
   Grid Hover Overlay
-  Directional animated info overlay on grid images.
-  JS adds .hover (mouse) or .show-info (touch)
-  to .grid-item. Text elements receive a directional
-  translate offset from JS for enter/leave effects.
+  A directional animated info overlay that appears on grid images on hover or tap.
+  JavaScript adds the .hover class for mouse devices and the .show-info class for touch devices to the .grid-item element.
+  Text elements inside the overlay receive a directional translate offset from JavaScript for enter and leave effects.
 */
 
-/* Dark overlay panel: hidden by default */
+/* A dark semi-transparent overlay panel that is hidden by default and revealed on hover or tap. */
 .grid-item-info {
   position: absolute;
   top: 0;
@@ -981,7 +968,7 @@ a, button,
   cursor: pointer;
 }
 
-/* Overlay text: directional transform is set/animated by JS */
+/* Overlay text elements receive their directional transform values from JavaScript, which animates them on enter and leave. */
 .grid-item-info p {
   position: relative;
   z-index: 2;
@@ -1004,7 +991,7 @@ a, button,
   color: rgba(255, 255, 255, 0.8);
 }
 
-/* Active state: shared by mouse hover (.hover) and touch tap (.show-info) */
+/* The active state is shared by mouse hover using the .hover class and touch tap using the .show-info class, making the overlay visible and fully opaque. */
 .grid-item.hover .grid-item-info,
 .grid-item.show-info .grid-item-info {
   visibility: visible;
@@ -1016,27 +1003,47 @@ a, button,
   opacity: 1;
 }
 
-/* Staggered text reveal: subtitle enters 80ms after title */
+/* Apply a staggered text reveal effect so the subtitle enters 80 milliseconds after the title for a more polished entrance. */
 .grid-item.hover .grid-item-info p {
   transition-delay: 0.08s;
 }
 
-/* Touch devices: reset directional transform */
+/* On touch devices, reset the directional transform to none so the overlay text appears statically centered. */
 .grid-item.show-info .grid-item-info p {
   transform: none;
 }
 
-/* Subtle zoom on active image: excludes polaroid cards */
+/* Apply a subtle zoom effect to grid images when the overlay is active, but exclude polaroid cards since they use their own hover effects. */
 .grid-item:not(.polaroid-card).hover img,
 .grid-item:not(.polaroid-card).show-info img {
   transform: scale(1.05);
 }
 
 /*
+  Morph Clone Block
+  A fixed-position clone element used by imageMorph.js for the directional expand and contract animation when opening and closing the image modal.
+*/
+
+.morph-clone {
+  display: none;
+  position: fixed;
+  z-index: calc(var(--z-modal) + 1);
+  pointer-events: none;
+  overflow: hidden;
+  will-change: left, top, width, height;
+}
+
+.morph-clone-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/*
   Modal Block
-  Fullscreen image viewer with blurred backdrop.
-  Opens when user clicks a grid image to show
-  full-resolution version (loaded from data-src).
+  A fullscreen image viewer with a blurred dark backdrop.
+  It opens when the user clicks a grid image to display the full-resolution version loaded from the data-src attribute.
 */
 
 .modal {
@@ -1060,9 +1067,8 @@ a, button,
   animation: fadeIn 0.25s var(--ease-out-quart);
 }
 
-.modal.show .modal-content {
-  animation: modalContentIn 0.25s var(--ease-out-quart);
-}
+/* The modal-content entrance is handled by the GSAP morph animation (imageMorph.js)
+   so no CSS animation is applied here — it would conflict with the morph tween. */
 
 .modal-content {
   position: relative;
@@ -1095,7 +1101,7 @@ a, button,
   transition: background-color 0.3s ease, border-color 0.3s ease, transform 100ms ease-out;
 }
 
-/* Focus ring for keyboard users */
+/* Display a visible focus ring around the close button when it receives keyboard focus, improving accessibility for keyboard navigation. */
 .modal-close:focus-visible {
   outline: 2px solid var(--primary-color);
   outline-offset: 2px;
@@ -1108,7 +1114,7 @@ a, button,
   }
 }
 
-/* Press feedback: fast subtle scale-down on click/tap */
+/* Provide fast press feedback with a subtle scale-down transform on click or tap of the modal close button. */
 .modal-close:active {
   transform: scale(0.92);
 }
@@ -1119,20 +1125,34 @@ a, button,
   height: 18px;
 }
 
+/* A polaroid-style frame wrapping the modal image so the full-resolution view maintains the same instant-photo aesthetic as the thumbnail grid.
+   The frame uses the same background, shadow, and rounded corners as the grid polaroids, with slightly larger padding for the expanded view. */
+.modal-polaroid-frame {
+  background: var(--polaroid-frame-bg);
+  padding: 0.75rem;
+  border-radius: 6px;
+  box-shadow: var(--polaroid-shadow-hover);
+  overflow: hidden;
+  max-width: 100%;
+  max-height: 95vh;
+  display: flex;
+  flex-direction: column;
+}
+
 .modal-img {
   display: block;
   width: auto;
   height: auto;
   max-width: 100%;
-  max-height: 80vh;
+  max-height: calc(95vh - 1.5rem);
   object-fit: contain;
+  border-radius: 3px;
 }
 
 /*
   Slider Block
-  Poster carousel with prev/next buttons and dot indicators.
-  Uses --slider-control-bg token for dark/light theming
-  of buttons and dots: no dark-mode overrides needed.
+  A poster carousel with previous and next buttons and dot indicator navigation.
+  Uses the --slider-control-bg CSS custom property for dark and light mode theming of buttons and dots, so no dark-mode override rules are needed.
 */
 
 .slider {
@@ -1157,7 +1177,7 @@ a, button,
   overflow: hidden;
 }
 
-/* Slide images stack absolutely; only .active is visible */
+/* Slide images are stacked on top of each other using absolute positioning, and only the slide with the .active class is visible. */
 .slider img {
   width: 100%;
   height: fit-content;
@@ -1179,7 +1199,7 @@ a, button,
   z-index: 1;
 }
 
-/* Circular prev/next buttons: positioned outside slider edges */
+/* Circular previous and next buttons positioned at the vertical center of the slider, slightly outside the slider edges for easy access. */
 .slider button {
   position: absolute;
   top: 50%;
@@ -1221,7 +1241,7 @@ a, button,
 .prev-btn { left: 0.5rem; }
 .next-btn { right: 0.5rem; }
 
-/* Dot indicators: centered below slider content */
+/* Dot indicators are centered horizontally below the slider content and provide clickable navigation between slides. */
 .dots {
   display: flex;
   justify-content: center;
@@ -1240,7 +1260,7 @@ a, button,
   transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
 }
 
-/* Active state: primary color fill */
+/* The active dot indicator is filled with the primary color and slightly scaled up to distinguish it from inactive dots. */
 .dot.active {
   background-color: var(--primary-color);
   border-color: var(--primary-color);
@@ -1255,11 +1275,10 @@ a, button,
 }
 
 /*
-  Expandable Block: Accordion Q&A
-  Clicking .expand-trigger toggles .active on
-  .expand-list-item, revealing .expand-target-short
-  via animated max-height. Uses --glass-bg token
-  so dark/light theming needs zero overrides.
+  Expandable Block: Accordion Question and Answer
+  Clicking the .expand-trigger element toggles the .active class on the .expand-list-item container,
+  which reveals the .expand-target-short content panel via an animated max-height transition.
+  Uses the --glass-bg CSS custom property so no overrides are needed for dark mode theming.
 */
 
 .expand-list {
@@ -1276,12 +1295,12 @@ a, button,
   border-radius: 0.2rem;
 }
 
-/* Override default 🌸 list bullet */
+/* Hide the default list bullet marker that the browser applies to list items. */
 .expand-list-item::before {
   display: none;
 }
 
-/* Trigger bar */
+/* The clickable trigger bar that users interact with to expand or collapse the accordion panel. */
 .expand-trigger {
   position: relative;
   display: flex;
@@ -1302,12 +1321,12 @@ a, button,
   line-height: 1.4;
 }
 
-/* Open state: square off bottom corners to join with content panel */
+/* When the accordion item is open, square off the bottom corners of the trigger bar so they seamlessly join with the content panel below. */
 .expand-list-item.active .expand-trigger {
   border-radius: 0.2rem 0.2rem 0 0;
 }
 
-/* Expand/collapse icon container */
+/* A container for the expand and collapse icon that switches between a plus and minus symbol. */
 .expand-icon {
   display: flex;
   align-items: center;
@@ -1335,7 +1354,7 @@ a, button,
   display: block;
 }
 
-/* Label wrapper inside trigger */
+/* A flex wrapper inside the trigger bar that holds the heading label and ensures proper spacing between the icon and the text. */
 .anchor-label {
   flex: 1;
   padding: 0 0.6rem;
@@ -1350,7 +1369,7 @@ a, button,
   align-items: center;
 }
 
-/* Hover highlight: fills trigger with primary color */
+/* A hover highlight effect that fills the trigger bar background with the primary color when the user hovers over an expandable item. */
 .anchor-background {
   position: absolute;
   top: 0;
@@ -1373,7 +1392,7 @@ a, button,
   }
 }
 
-/* Expandable content panel: animated open/close via max-height */
+/* The expandable content panel uses an animated max-height transition to create a smooth open and close effect. */
 .expand-target-short {
   max-height: 0;
   overflow: hidden;
@@ -1678,6 +1697,26 @@ ul.contact-info li {
   .slider .prev-btn,
   .slider .next-btn {
     display: none !important;
+  }
+
+  /* Polaroid grid: single column on mobile so each card fills the viewport width
+     instead of cramming three into a narrow screen. */
+  .polaroid-grid {
+    grid-template-columns: 1fr;
+    width: 85%;
+    max-width: 85%;
+  }
+
+  /* Modal polaroid frame: reduce padding on small screens so the white border
+     does not eat into an already constrained image area. */
+  .modal-polaroid-frame {
+    padding: 0.5rem;
+    border-radius: 4px;
+  }
+
+  .modal-img {
+    max-height: calc(95vh - 1rem);
+    border-radius: 2px;
   }
 
   /* Floating letter images: show on touch via .button.active class added by GSAP */

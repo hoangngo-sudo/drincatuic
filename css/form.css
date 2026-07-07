@@ -12,7 +12,7 @@
 :root {
   font-size: 16px;
 
-  /* Brand color tokens */
+  /* Brand color tokens that define the registration form's visual identity and interactive states. */
   --color-brand:        #6703c4;
   --color-brand-hover:  #8f45dd;
   --color-bg-page:      #ede7f6;
@@ -20,6 +20,7 @@
   --color-border-input: #DCD7D7;
   --color-success:      #10b981;
 
+  /* Fluid spacing scale using clamp for responsive sizing across viewport widths. */
   --space-3xs: 0.25rem;
   --space-2xs: clamp(0.5rem, 1.5vw, 0.75rem);
   --space-xs:  clamp(0.75rem, 2vw, 1rem);

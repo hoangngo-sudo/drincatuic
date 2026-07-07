@@ -1,8 +1,8 @@
 /* 
-  Modified from:
-  http://meyerweb.com/eric/tools/css/reset/ 
-  v2.0 | 20110126
-  License: none (public domain)
+  This stylesheet is a modified version of the Meyer Web CSS Reset.
+  Source: http://meyerweb.com/eric/tools/css/reset/ 
+  Version 2.0 | 20110126
+  License: None (public domain)
 */
 
 html,
@@ -26,7 +26,7 @@ input {
     max-width: 100%;
 }
 
-/* HTML5 display-role reset for older browsers */
+/* Ensure HTML5 semantic elements are rendered as block-level elements in browsers that do not support them natively. */
 article,
 aside,
 details,

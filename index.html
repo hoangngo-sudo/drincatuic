@@ -4,8 +4,8 @@
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <!--
-    Development CSP includes http://localhost:* for webpack-dev-server HMR.
-    Production CSP omits localhost. Controlled by webpack mode via isDev.
+    The development Content Security Policy includes http://localhost:* to allow webpack-dev-server hot module replacement connections.
+    The production version of this CSP omits the localhost directive. The switch is controlled by the webpack mode through the isDev template parameter.
   -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'<% if (isDev) { %> http://localhost:*<% } %> https://player.vimeo.com https://cdn.jsdelivr.net https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:<% if (isDev) { %> http://localhost:*<% } %>; font-src 'self' https://dhygzobemt712.cloudfront.net; frame-src https://player.vimeo.com; connect-src 'self'<% if (isDev) { %> http://localhost:*<% } %> https://cloudflareinsights.com; object-src 'none'; base-uri 'self'">
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
@@ -513,7 +513,9 @@
       </svg>
     </button>
     <div class="modal-content">
-      <img class="modal-img" src="" alt="">
+      <div class="modal-polaroid-frame">
+        <img class="modal-img" src="" alt="">
+      </div>
     </div>
   </div>
 

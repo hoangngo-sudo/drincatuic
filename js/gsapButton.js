@@ -1,18 +1,21 @@
-// gsapButton.js: Eased hover/tap animations for all interactive buttons
-// Follows Emil's design principles:
-//   - Hover: ease (fast start, slow end), 200ms, subtle scale
-//   - Press: scale(0.97) per button press principle, 150ms
-//   - No y-axis offsets — keep interaction simple
-// .social-button excluded: footer icons use bespoke CSS :active press states.
+/**
+ * gsapButton.js: Eased hover and tap animations for all interactive buttons.
+ *
+ * Follows Emil's design principles:
+ *   - Hover uses an ease-out curve (fast start, slow end) over 200ms with a subtle scale increase.
+ *   - Press applies a scale(0.97) transform over 150ms per the button press principle.
+ *   - No y-axis offsets are used to keep the interaction simple and predictable.
+ *   - .social-button elements are excluded because footer icons use bespoke CSS :active press states.
+ */
 
 const BUTTON_SELECTORS = [
   '.button', '.prev-btn', '.next-btn',
   '.expand-trigger', '.modal-close'
 ].join(', ');
 
-// Hover enter/leave: ease-out for responsive feel, settles naturally
+/* Use a power2-out easing curve for hover enter and leave so the response feels fast but settles naturally. */
 const EASE = "power2.out";
-// Tap press: snappier ease for instant press feedback
+/* Use a snappier power1-out easing for tap press so the feedback feels instantaneous. */
 const TAP_EASE = "power1.out";
 
 const HOVER_STATE = { scale: 1.05 };
@@ -27,15 +30,15 @@ export default function initGsapButtons() {
     return { destroy() {} };
   }
 
-  // Only attach hover animations on devices with a true hover pointer (mouse/trackpad).
-  // Touch-only devices fire phantom mouseenter on tap; gate them out here.
+  /* Only attach hover animations on devices with a true hover pointer such as a mouse or trackpad.
+     Touch-only devices fire phantom mouseenter events on tap, so we gate them out here to prevent sticky hover states. */
   const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
   const buttons = document.querySelectorAll(BUTTON_SELECTORS);
   const cleanups = [];
 
   buttons.forEach((el) => {
-    // Track whether the pointer is currently over the element
+    /* Track whether the pointer is currently hovering over this button element. */
     let hovering = false;
 
     const onEnter = () => {
@@ -53,12 +56,12 @@ export default function initGsapButtons() {
     };
 
     const onUp = () => {
-      // Return to hover state if still hovering, otherwise rest
+      /* Return to the hover scale if the pointer is still over the element, otherwise return to rest. */
       const target = hovering ? HOVER_STATE : REST_STATE;
       gsap.to(el, { ...target, ease: EASE, duration: DURATION_HOVER, overwrite: "auto" });
     };
 
-    // Touch: press-down on touchstart, eased return on touchend
+    /* On touch devices, press down triggers an immediate scale on touchstart and a eased return on touchend. */
     const onTouchStart = () => {
       gsap.to(el, { ...TAP_STATE, ease: TAP_EASE, duration: DURATION_TAP, overwrite: "auto" });
     };
@@ -67,10 +70,11 @@ export default function initGsapButtons() {
       gsap.to(el, { ...REST_STATE, ease: EASE, duration: DURATION_HOVER, overwrite: "auto" });
     };
 
-    // RSVP button: delay navigation until letter animation finishes
+    /* For the RSVP button, delay navigation until the letter-scatter animation completes. */
     const isRsvpBtn = el.classList.contains('button') && el.tagName === 'A' && el.getAttribute('href');
     const LETTER_SELECTOR = '.button__J, .button__e, .button__s, .button__u, .button__s2';
-    const LETTER_ANIM_DURATION = 0.25; // seconds — standard UI duration per Emil guidelines (150-250ms)
+    /* Duration in seconds for the letter animation, following Emil's standard UI duration guidelines of 150 to 250 milliseconds. */
+    const LETTER_ANIM_DURATION = 0.25;
     const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     let navigating = false;
@@ -83,22 +87,23 @@ export default function initGsapButtons() {
       if (navigating) return;
       navigating = true;
 
-      // Skip animation for reduced motion
+      /* Skip the letter animation when the user has requested reduced motion and navigate immediately. */
       if (REDUCED_MOTION) {
         navigateTo();
         return;
       }
 
-      // Scale up button
+      /* Scale up the button slightly to provide visual feedback before the letter animation. */
       gsap.to(el, { scale: 1.05, ease: "power2.out", duration: 0.2 });
 
-      // Clear GSAP inline styles on letters so CSS transitions take over
+      /* Clear any GSAP inline styles on the letter images so the CSS transitions can take over and animate them. */
       el.querySelectorAll(LETTER_SELECTOR).forEach((img) => {
         gsap.set(img, { clearProps: "all" });
       });
-      el.classList.add('hover'); // triggers CSS letter animation
+      /* Add the hover class to trigger the CSS letter scatter animation defined in the stylesheet. */
+      el.classList.add('hover');
 
-      // Navigate after animation completes
+      /* Navigate to the target URL after the letter animation has had time to complete. */
       setTimeout(navigateTo, LETTER_ANIM_DURATION * 1000);
     };
 
@@ -108,12 +113,12 @@ export default function initGsapButtons() {
       triggerRsvpLetters();
     };
 
-    // Attach RSVP click interceptor
+    /* Attach a click interceptor on the RSVP button to trigger the letter animation before navigation. */
     if (isRsvpBtn) {
       el.addEventListener('click', onRsvpClick);
     }
 
-    // Desktop (hover-capable devices only): prevents phantom hover on touch taps
+    /* Attach mouse event listeners on hover-capable devices only to prevent phantom hover states triggered by touch taps. */
     if (canHover) {
       el.addEventListener("mouseenter", onEnter);
       el.addEventListener("mouseleave", onLeave);
@@ -121,7 +126,7 @@ export default function initGsapButtons() {
       el.addEventListener("mouseup", onUp);
     }
 
-    // Touch
+    /* Attach touch event listeners for press-down feedback on all devices. */
     el.addEventListener("touchstart", onTouchStart, { passive: true });
     el.addEventListener("touchend", onTouchEnd, { passive: true });
 
