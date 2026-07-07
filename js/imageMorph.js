@@ -38,6 +38,19 @@ const morph = (() => {
      instead of snapping flat at the last frame. */
   let sourceRotation = 0;
 
+  /* The .polaroid-card element that was clicked, stored so the close
+     animation can crossfade the clone into the real card and mask any
+     sub-pixel positional mismatch when the two swap visibility. */
+  let sourceCardEl = null;
+
+  /* The translateX and translateY values from the polaroid card's CSS
+     transform, extracted during open and applied during close so the
+     clone replicates the card's full rotate()+translate() transform
+     instead of only the rotation.  Defaults to 0 for non-polaroid
+     images. */
+  let sourceTranslateX = 0;
+  let sourceTranslateY = 0;
+
   let morphClone = null;
   let morphCloneImg = null;
   let resolveOpen = null;
@@ -147,13 +160,23 @@ const morph = (() => {
          to the same frame-sized rect even after the user has scrolled. */
       closeSourceEl = polaroidFrame || sourceEl;
 
-      /* Capture the polaroid card's organic rotation so the close animation can
-         rotate the clone back into the card's tilted angle.  Without this the
-         clone lands flat at 0° and the real card underneath snaps into its
-         scattered rotation — a visible pop. */
-      sourceRotation = polaroidFrame
-        ? getRotationAngle(polaroidFrame.closest('.polaroid-card'))
-        : 0;
+      /* Capture the polaroid card's full transform (rotation + translation)
+         so the close animation can replicate both.  The CSS uses
+         rotate() translate() order, so m.e = tx and m.f = ty directly
+         from the matrix — no decomposition needed. */
+      if (polaroidFrame) {
+        const card = polaroidFrame.closest('.polaroid-card');
+        const m = new DOMMatrixReadOnly(window.getComputedStyle(card).transform);
+        sourceRotation = Math.atan2(m.b, m.a) * (180 / Math.PI);
+        sourceTranslateX = m.e;
+        sourceTranslateY = m.f;
+        sourceCardEl = card;
+      } else {
+        sourceRotation = 0;
+        sourceTranslateX = 0;
+        sourceTranslateY = 0;
+        sourceCardEl = null;
+      }
 
       if (prefersReducedMotion()) {
         modalImg.src = imgSrc;
@@ -335,18 +358,31 @@ const morph = (() => {
       closeBtn.style.opacity = "0";
       closeBtn.style.pointerEvents = "none";
 
+      /* Hide the real polaroid card behind the still-visible modal
+         backdrop so the clone can land in its place and crossfade
+         into it.  The backdrop blur masks the disappearance at this
+         stage, and the crossfade at the end reveals it smoothly. */
+      if (sourceCardEl) {
+        gsap.set(sourceCardEl, { opacity: 0 });
+      }
+
       const tl = gsap.timeline({
         onComplete: onCloseComplete,
       });
 
       tl.to(morphClone, {
-        left: srcRect.left,
-        top: srcRect.top,
+        /* Subtract the card's CSS translate offset from left/top because
+           freezeRectFromEl (via getBoundingClientRect) already includes it
+           in the screen-space position.  GSAP x/y adds it back as a
+           transform, matching the card's rotate()+translate() chain so the
+           clone lands on the exact visual position. */
+        left: srcRect.left - sourceTranslateX,
+        top: srcRect.top - sourceTranslateY,
         width: srcRect.width,
         height: srcRect.height,
-        /* Rotate the clone back into the polaroid card's original scattered
-           tilt so the landing feels organic instead of snapping flat at 0°. */
         rotation: sourceRotation,
+        x: sourceTranslateX,
+        y: sourceTranslateY,
         duration: MORPH_DUR,
         ease: EASE_OUT_QUART,
       }, 0);
@@ -359,18 +395,28 @@ const morph = (() => {
         ease: EASE_OUT_QUART,
       }, 0);
 
-      /* Fade the clone out with a short opacity-only tween that overlaps the
-         final 60 ms of the position + rotation animation.  Scaling is
-         deliberately omitted here: scaling a rotated element around a
-         center origin creates a compound-transform wobble at the velocity
-         boundary that manifests as visible jitter.  A pure opacity fade is
-         fast and stable — Emil's rule: "Only animate transform and opacity,
-         and keep them simple." */
+      /* Crossfade: the clone fades out while the real polaroid card fades
+         in simultaneously, so any sub-pixel positional mismatch between
+         the two is blended rather than snapping.  The overlap starts
+         80 ms before the position + rotation tween finishes, giving a
+         150 ms crossfade window.  Emil's rule: "Only animate transform
+         and opacity, and keep them simple." */
+      const CROSSFADE_DUR = 0.15;
+      const CROSSFADE_OVERLAP = 0.08;
+
       tl.to(morphClone, {
         opacity: 0,
-        duration: 0.12,
+        duration: CROSSFADE_DUR,
         ease: "power2.out",
-      }, "-=0.06");
+      }, `-=${CROSSFADE_OVERLAP}`);
+
+      if (sourceCardEl) {
+        tl.to(sourceCardEl, {
+          opacity: 1,
+          duration: CROSSFADE_DUR,
+          ease: "power2.out",
+        }, `-=${CROSSFADE_DUR}`);
+      }
     });
 
   const onCloseComplete = () => {
@@ -392,11 +438,21 @@ const morph = (() => {
     modalImg.style.opacity = "";
     document.body.style.overflow = "";
 
+    /* Restore the real polaroid card to full opacity in case the
+       crossfade tween was interrupted or never ran (e.g. reduced
+       motion path). */
+    if (sourceCardEl) {
+      gsap.set(sourceCardEl, { opacity: 1 });
+    }
+
     isAnimating = false;
     sourceRect = null;
     sourceImgSrc = null;
     closeSourceEl = null;
     sourceRotation = 0;
+    sourceTranslateX = 0;
+    sourceTranslateY = 0;
+    sourceCardEl = null;
 
     if (resolveClose) { resolveClose(); resolveClose = null; }
 

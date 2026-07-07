@@ -100,11 +100,6 @@ body {
   background: var(--selection-bg);
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
 /* The modal-content entrance animation is handled by the GSAP morph timeline
    in imageMorph.js, so no CSS @keyframes are needed for it. */
 
@@ -1064,7 +1059,6 @@ a, button,
   display: flex;
   justify-content: center;
   align-items: center;
-  animation: fadeIn 0.25s var(--ease-out-quart);
 }
 
 /* The modal-content entrance is handled by the GSAP morph animation (imageMorph.js)

@@ -83,29 +83,7 @@
         ".grid-item-info p, .grid-item-info .view-icon"
       );
 
-      if (isTouchDevice()) {
-        /* On touch devices, one tap opens the high-resolution image directly, bypassing the info overlay entirely. */
-        item.addEventListener(
-          "click",
-          function (e) {
-            e.stopPropagation();
-
-            const modal = document.getElementById("imageModal");
-            if (!modal) return;
-            const modalImg = modal.querySelector(".modal-img");
-            if (!modalImg) return;
-
-            const fullSrc = img.getAttribute("data-src") || img.src;
-            modalImg.src = fullSrc;
-            modalImg.alt = img.alt || "Image";
-            modalImg.onload = () => {
-              modal.classList.add("show");
-            };
-            document.body.style.overflow = "hidden";
-          },
-          true
-        );
-      } else {
+      {
         /* On mouse devices, apply a directional hover effect that offsets overlay elements opposite to cursor movement. */
         item.addEventListener(
           "mouseenter",
