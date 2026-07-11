@@ -83,8 +83,9 @@
         ".grid-item-info p, .grid-item-info .view-icon"
       );
 
-      {
-        /* On mouse devices, apply a directional hover effect that offsets overlay elements opposite to cursor movement. */
+      /* On mouse devices, apply a directional hover effect that offsets overlay elements opposite to cursor movement.
+         Gate behind the touch-device check so mobile/tablet users don't get sticky hover states. */
+      if (!isTouchDevice()) {
         item.addEventListener(
           "mouseenter",
           function () {
@@ -117,13 +118,15 @@
           },
           false
         );
-
-        /* Forward clicks on the info overlay to the underlying image so the modal still opens. */
-        infoOverlay.addEventListener("click", function (e) {
-          img.click();
-        });
       }
+
+      /* Forward clicks on the info overlay to the underlying image so the modal still opens.
+         Runs on both mouse and touch devices. */
+      infoOverlay.addEventListener("click", function (e) {
+        img.click();
+      });
     });
+
   }
 
   // Initialize when DOM is ready

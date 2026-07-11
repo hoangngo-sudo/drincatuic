@@ -65,16 +65,11 @@ if (modal) {
     closeBtn.addEventListener("click", closeModal);
   }
 
-  /* Close the modal when the Escape key is pressed while the modal is visible. */
+  /* Pressing Escape closes the modal, but only after the morph
+     animation has finished — prevents accidental double-close
+     while the transition is still playing. */
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && modal.classList.contains("show")) {
-      closeModal();
-    }
-  });
-
-  /* Close the modal when clicking on the dark backdrop area outside the image content. */
-  modal.addEventListener("click", (e) => {
-    if (e.target === modal) {
+    if (e.key === "Escape" && modal.classList.contains("show") && !morph.isAnimating) {
       closeModal();
     }
   });

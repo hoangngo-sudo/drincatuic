@@ -87,6 +87,8 @@ body {
   max-width: 100%;
   overflow-x: hidden;
   position: relative;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Set the text selection highlight color using the primary brand color. */
@@ -511,13 +513,38 @@ a, button,
 }
 
 .theme-icon {
+  position: absolute;
   width: 18px;
   height: 18px;
-  display: block;
-  flex-shrink: 0;
   margin: auto;
   padding: 0;
-  position: relative;
+  transition: opacity 0.3s cubic-bezier(0.2, 0, 0, 1),
+              transform 0.3s cubic-bezier(0.2, 0, 0, 1),
+              filter 0.3s cubic-bezier(0.2, 0, 0, 1);
+}
+
+/* Default (light mode): moon icon visible, sun icon hidden and blurred. */
+.dark-icon {
+  opacity: 1;
+  transform: scale(1);
+  filter: blur(0px);
+}
+.light-icon {
+  opacity: 0;
+  transform: scale(0.25);
+  filter: blur(4px);
+}
+
+/* Dark mode: sun icon visible, moon icon hidden and blurred. */
+.dark-mode .dark-icon {
+  opacity: 0;
+  transform: scale(0.25);
+  filter: blur(4px);
+}
+.dark-mode .light-icon {
+  opacity: 1;
+  transform: scale(1);
+  filter: blur(0px);
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -526,10 +553,7 @@ a, button,
   }
 }
 
-/* Show the moon icon by default in light mode, and swap to the sun icon when dark mode is active. */
-.light-icon { display: none; }
-.dark-mode .dark-icon { display: none; }
-.dark-mode .light-icon { display: block; }
+/* Theme icon visibility and cross-fade animation are handled via opacity, scale, and filter on the .theme-icon rules above. */
 
 /* 
   Header Block
@@ -705,7 +729,7 @@ a, button,
 /* Provide a subtle scale-down press feedback effect on touch devices. */
 @media (hover: none) and (pointer: coarse) {
   .social-button:active {
-    transform: scale(0.95);
+    transform: scale(0.96);
   }
 }
 
@@ -821,6 +845,12 @@ a, button,
   cursor: pointer;
   transition: transform 0.3s ease;
   content-visibility: auto;
+  outline: 1px solid rgba(0, 0, 0, 0.1);
+  outline-offset: -1px;
+}
+
+.dark-mode .grid-item img {
+  outline: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* Force embedded iframes to fill their entire grid cell area for a seamless video integration. */
@@ -872,7 +902,7 @@ a, button,
   isolation: isolate;
   transition: transform 200ms cubic-bezier(0.23, 1, 0.32, 1);
   cursor: pointer;
-  border-radius: 5px;
+  border-radius: 13px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.24);
   margin: 0.5rem;
 }
@@ -904,7 +934,7 @@ a, button,
   position: relative;
   background: var(--polaroid-frame-bg);
   padding: 0.5rem;
-  border-radius: 5px;
+  border-radius: 13px;
   box-shadow: var(--polaroid-shadow);
   overflow: hidden;
   transition: box-shadow 0.3s cubic-bezier(0.23, 1, 0.32, 1);
@@ -924,6 +954,12 @@ a, button,
   display: block;
   border-radius: 5px;
   content-visibility: auto;
+  outline: 1px solid rgba(0, 0, 0, 0.1);
+  outline-offset: -1px;
+}
+
+.dark-mode .polaroid-frame > img {
+  outline: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* The wide polaroid variant uses a 16:9 aspect ratio instead of the default 5:4 for panoramic-style photos. */
@@ -974,14 +1010,14 @@ a, button,
 }
 
 .grid-item-info p:first-child {
-  font-size: 1em;
+  font-size: clamp(0.75rem, 1.3vw, 1rem);
   font-weight: 600;
   margin-bottom: 0.3em;
   color: #fff;
 }
 
 .grid-item-info p {
-  font-size: 1em;
+  font-size: clamp(0.65rem, 1.1vw, 0.85rem);
   font-weight: 400;
   color: rgba(255, 255, 255, 0.8);
 }
@@ -1019,13 +1055,17 @@ a, button,
   A fixed-position clone element used by imageMorph.js for the directional expand and contract animation when opening and closing the image modal.
 */
 
+/* GSAP manages GPU layer promotion internally via force3D when rotation
+   is animated.  Keeping will-change: transform on this element causes
+   Chrome to create a compositor layer that briefly renders at 0×0
+   before being sized — the "shrink to dot" glitch.  Opacity alone is
+   sufficient for the crossfade. */
 .morph-clone {
   display: none;
   position: fixed;
   z-index: calc(var(--z-modal) + 1);
   pointer-events: none;
   overflow: hidden;
-  will-change: left, top, width, height;
 }
 
 .morph-clone-img {
@@ -1110,7 +1150,7 @@ a, button,
 
 /* Provide fast press feedback with a subtle scale-down transform on click or tap of the modal close button. */
 .modal-close:active {
-  transform: scale(0.92);
+  transform: scale(0.96);
 }
 
 .modal-close svg {
@@ -1120,11 +1160,11 @@ a, button,
 }
 
 /* A polaroid-style frame wrapping the modal image so the full-resolution view maintains the same instant-photo aesthetic as the thumbnail grid.
-   The frame uses the same background, shadow, and rounded corners as the grid polaroids, with slightly larger padding for the expanded view. */
+   The frame uses the same background, shadow, and rounded corners as the grid polaroids, with matching padding and concentric radius so the morph clone matches in both directions. */
 .modal-polaroid-frame {
   background: var(--polaroid-frame-bg);
-  padding: 0.75rem;
-  border-radius: 6px;
+  padding: 0.5rem;
+  border-radius: 13px;
   box-shadow: var(--polaroid-shadow-hover);
   overflow: hidden;
   max-width: 100%;
@@ -1138,9 +1178,9 @@ a, button,
   width: auto;
   height: auto;
   max-width: 100%;
-  max-height: calc(95vh - 1.5rem);
+  max-height: calc(95vh - 1rem);
   object-fit: contain;
-  border-radius: 3px;
+  border-radius: 5px;
 }
 
 /*
@@ -1185,6 +1225,7 @@ a, button,
   left: 0;
   opacity: 0;
   pointer-events: none;
+  transition: opacity 200ms ease-out;
 }
 
 .slider img.active {
@@ -1252,6 +1293,18 @@ a, button,
   border: 1px solid var(--border-color);
   cursor: pointer;
   transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  position: relative;
+}
+
+/* Extend the dot hit area to the minimum 40×40px for better touch and click targets without affecting the visible size. */
+.dot::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px;
+  height: 40px;
 }
 
 /* The active dot indicator is filled with the primary color and slightly scaled up to distinguish it from inactive dots. */

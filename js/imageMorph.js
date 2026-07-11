@@ -141,7 +141,9 @@ const morph = (() => {
 
   const open = (imgSrc, imgAlt, sourceEl) =>
     new Promise((resolve) => {
-      if (isAnimating) return resolve();
+      killTweens();
+      if (resolveOpen) { resolveOpen(); resolveOpen = null; }
+      if (resolveClose) { resolveClose(); resolveClose = null; }
       isAnimating = true;
       resolveOpen = resolve;
 
@@ -212,14 +214,17 @@ const morph = (() => {
         /* Make the morph clone visually match the modal polaroid frame so the clone-to-real swap at the end of the animation is invisible.
            Without these styles the clone is a bare full-bleed image, while the real frame has white padding and a shadow —
            the mismatch causes a visible snap when onOpenComplete hides the clone and reveals the frame.
-           Padding is read from the live computed style so it stays in sync with responsive media queries on small screens. */
+           Padding is read from the live computed style so it stays in sync with responsive media queries on small screens.
+           Guard against null modalPolaroidFrame — fall back to empty padding and no shadow if the element is missing. */
         morphClone.style.display = "block";
         morphClone.style.opacity = "1";
         morphClone.style.boxSizing = "border-box";
         morphClone.style.backgroundColor = "var(--polaroid-frame-bg)";
-        morphClone.style.padding = window.getComputedStyle(modalPolaroidFrame).paddingLeft;
-        morphClone.style.borderRadius = window.getComputedStyle(modalPolaroidFrame).borderRadius;
-        morphClone.style.boxShadow = window.getComputedStyle(modalPolaroidFrame).boxShadow;
+        if (modalPolaroidFrame) {
+          morphClone.style.padding = window.getComputedStyle(modalPolaroidFrame).paddingLeft;
+          morphClone.style.borderRadius = window.getComputedStyle(modalPolaroidFrame).borderRadius;
+          morphClone.style.boxShadow = window.getComputedStyle(modalPolaroidFrame).boxShadow;
+        }
 
         gsap.set(morphClone, {
           left: sourceRect.left,
@@ -295,12 +300,18 @@ const morph = (() => {
 
   const close = (sourceEl) =>
     new Promise((resolve) => {
-      if (isAnimating) return resolve();
+      killTweens();
+      if (resolveOpen) { resolveOpen(); resolveOpen = null; }
+      if (resolveClose) { resolveClose(); resolveClose = null; }
       isAnimating = true;
       resolveClose = resolve;
-      killTweens();
 
       if (prefersReducedMotion()) {
+        onCloseComplete();
+        return;
+      }
+
+      if (!morphClone) {
         onCloseComplete();
         return;
       }
@@ -331,14 +342,17 @@ const morph = (() => {
       morphCloneImg.alt = modalImg.alt || "";
 
       /* Style the clone to match the polaroid frame during the close animation so the visual is consistent from the moment the modal content fades out.
-         Padding and border-radius are read from the live computed style so they match responsive media queries. */
+         Padding and border-radius are read from the live computed style so they match responsive media queries.
+         Guard against null modalPolaroidFrame — skip frame styling if the element is missing. */
       morphClone.style.display = "block";
       morphClone.style.opacity = "1";
       morphClone.style.boxSizing = "border-box";
       morphClone.style.backgroundColor = "var(--polaroid-frame-bg)";
-      morphClone.style.padding = window.getComputedStyle(modalPolaroidFrame).paddingLeft;
-      morphClone.style.borderRadius = window.getComputedStyle(modalPolaroidFrame).borderRadius;
-      morphClone.style.boxShadow = window.getComputedStyle(modalPolaroidFrame).boxShadow;
+      if (modalPolaroidFrame) {
+        morphClone.style.padding = window.getComputedStyle(modalPolaroidFrame).paddingLeft;
+        morphClone.style.borderRadius = window.getComputedStyle(modalPolaroidFrame).borderRadius;
+        morphClone.style.boxShadow = window.getComputedStyle(modalPolaroidFrame).boxShadow;
+      }
 
       gsap.set(morphClone, {
         left: modalRect.left,
