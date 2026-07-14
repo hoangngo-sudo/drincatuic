@@ -9,7 +9,8 @@ function Slider() {
 
   let currentIndex = 0;
 
-  /* Create and insert a dot indicator for each slide into the dots container. */
+  /* Create and insert a dot indicator for each slide into the dots
+     container. */
   items.forEach((_, index) => {
     let dot = document.createElement("span");
     dot.classList.add("dot");
@@ -21,9 +22,11 @@ function Slider() {
   let dots = document.querySelectorAll(".dot");
 
   /* Set the first slide item as active by default on page load. */
+
   items[0].classList.add("active");
 
-  /* Show the slide at the given index and update dot indicators accordingly. */
+  /* Show the slide at the given index and update the dot indicators. */
+
   function showItem(index) {
     items.forEach((item, idx) => {
       item.classList.remove("active");
@@ -37,6 +40,7 @@ function Slider() {
   }
 
   /* Navigate to the previous slide when the previous button is clicked. */
+
   if (prevButton) {
     prevButton.addEventListener("click", () => {
       let index = [...items].findIndex((item) =>
@@ -47,6 +51,7 @@ function Slider() {
   }
 
   /* Navigate to the next slide when the next button is clicked. */
+
   if (nextButton) {
     nextButton.addEventListener("click", () => {
       let index = [...items].findIndex((item) =>
@@ -56,7 +61,7 @@ function Slider() {
     });
   }
 
-  /* Jump to the corresponding slide when a dot indicator is clicked. */
+  /* Jump to the slide when a dot indicator is clicked. */
   dots.forEach((dot) => {
     dot.addEventListener("click", () => {
       let index = parseInt(dot.dataset.index);

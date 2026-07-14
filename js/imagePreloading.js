@@ -1,37 +1,41 @@
 /**
- * Preload full-resolution (data-src) gallery images when they enter the viewport.
- * Uses IntersectionObserver — native loading="lazy" handles the thumbnail load;
- * this preloads the high-res version for instant modal display on click.
+ * Preload full-resolution (data-src) gallery images before they enter the
+ * viewport. The morph animation has the high-res version ready on tap.
+ *
+ * Uses IntersectionObserver with an 800px rootMargin (about one desktop
+ * viewport-height of runway). On any realistic scroll speed the full-res
+ * finishes loading before the user reaches the thumbnail. Combined with
+ * the thumbnail-immediate-morph fallback in imageMorph.js, this gives
+ * instant morph feedback every time without wasting bandwidth on images
+ * the user never scrolls near.
  */
 
-function setupLazyFullResPreload() {
+function setupViewportFullResPreload() {
+  const preloaded = new Set();
+
   const observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const img = entry.target;
-          const fullSrc = img.getAttribute("data-src");
-          if (fullSrc) {
-            const preloadLink = document.createElement("link");
-            preloadLink.rel = "preload";
-            preloadLink.as = "image";
-            preloadLink.href = fullSrc;
-            document.head.appendChild(preloadLink);
-          }
-          observer.unobserve(img);
+        if (!entry.isIntersecting) return;
+        const img = entry.target;
+        const fullSrc = img.getAttribute("data-src");
+        if (fullSrc && !preloaded.has(fullSrc)) {
+          preloaded.add(fullSrc);
+          const link = document.createElement("link");
+          link.rel = "preload";
+          link.as = "image";
+          link.href = fullSrc;
+          document.head.appendChild(link);
         }
+        observer.unobserve(img);
       });
     },
-    { rootMargin: "200px" }
+    { rootMargin: "800px" }
   );
 
-  document.querySelectorAll(
-    ".image-grid-span img, .polaroid-grid img"
-  ).forEach((img) => {
-    if (img.getAttribute("loading") === "lazy" && img.hasAttribute("data-src")) {
-      observer.observe(img);
-    }
-  });
+  document
+    .querySelectorAll(".polaroid-grid img[data-src]")
+    .forEach((img) => observer.observe(img));
 }
 
-document.addEventListener("DOMContentLoaded", setupLazyFullResPreload);
+document.addEventListener("DOMContentLoaded", setupViewportFullResPreload);

@@ -22,16 +22,20 @@ export default function scrollNav() {
   const nav = document.querySelector(".sticky-nav");
   if (!nav) return null;
 
-  /* Use GSAP quickTo tweeners when the GSAP library is available for efficient frame-synchronised animations. */
+  /* Use GSAP quickTo tweeners when the GSAP library is available. They
+     give efficient frame-synchronised animations. */
   if (gsap) {
-    /* Set the initial centering transform with GSAP so CSS translateX does not conflict with the y-axis animations. */
+    /* Set the initial centering transform with GSAP. CSS translateX won't
+       conflict with the y-axis animations. */
     gsap.set(nav, { xPercent: -50, x: 0, y: 0, opacity: 1 });
 
-    /* Create quickTo tweeners for y position and opacity, matching their durations so the navbar does not vanish before it has fully slid out of view. */
+    /* Create quickTo tweeners for y position and opacity. Their durations
+       match so the navbar doesn't vanish before it slides out of view. */
     const tweenY       = gsap.quickTo(nav, "y",       { duration: 0.6, ease: "power2.out" });
     const tweenOpacity = gsap.quickTo(nav, "opacity",  { duration: 0.6, ease: "power2.out" });
 
-    /* Calculate the y-offset needed to slide the navbar fully above the viewport, including a 32-pixel buffer. */
+    /* Calculate the y-offset needed to slide the navbar above the
+       viewport. Include a 32-pixel buffer. */
     const hideY = -(nav.offsetHeight + 32);
     let hidden = false;
 
@@ -58,7 +62,8 @@ export default function scrollNav() {
       nav.style.pointerEvents = "auto";
     }
 
-    /* Reveal the navbar whenever a navigation link receives keyboard focus to ensure it remains accessible to keyboard users. */
+    /* Reveal the navbar whenever a navigation link receives keyboard focus.
+       This keeps it accessible to keyboard users. */
     nav.addEventListener("focusin", forceShow);
 
     return { show, hide, forceShow, get isHidden() { return hidden; } };

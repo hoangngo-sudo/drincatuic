@@ -6,18 +6,20 @@
 (function () {
   "use strict";
 
-  /* Track the direction of mouse movement globally so overlay elements can offset accordingly. */
+  /* Track the direction of mouse movement globally. Overlay elements offset
+     based on this direction. */
   let pointerDirectionX = 0;
   let pointerDirectionY = 0;
   let lastMouseX = null;
   let lastMouseY = null;
 
-  /* Apply a 2D translation transform to the given element using pixel offsets. */
+  /* Apply a 2D translation to the given element using pixel offsets. */
   function translate(element, x, y) {
     element.style.transform = `translate(${x}px, ${y}px)`;
   }
 
-  /* Return a throttled version of the given function that fires at most once per limit milliseconds. */
+  /* Return a throttled version of the given function. It fires at most once
+     every limit milliseconds. */
   function throttle(func, limit) {
     let inThrottle;
     return function (...args) {
@@ -30,6 +32,7 @@
   }
 
   /* Check whether the current device supports touch interactions. */
+
   function isTouchDevice() {
     return "ontouchstart" in window || navigator.maxTouchPoints > 0;
   }
@@ -39,7 +42,8 @@
       ".image-grid .grid-item, .image-grid-span .grid-item, .polaroid-grid .grid-item"
     );
 
-    /* Track mouse movement direction globally for the directional hover offset effect. */
+    /* Track mouse movement direction globally. The directional hover offset
+       effect uses this. */
     if (!isTouchDevice()) {
       document.addEventListener("mousemove", function (event) {
         if (lastMouseX !== null && lastMouseY !== null) {
@@ -56,7 +60,8 @@
         lastMouseY = event.pageY;
       });
 
-      /* Reset the tracked direction on scroll to avoid stale offsets after page movement. */
+      /* Reset the tracked direction on scroll. This avoids stale offsets
+         after the page moves. */
       document.addEventListener(
         "scroll",
         throttle(function () {
@@ -68,9 +73,11 @@
       );
     }
 
-    /* Set up hover or tap behavior for each grid item based on input modality. */
+    /* Set up hover or tap behavior for each grid item. The behavior depends
+       on the input modality. */
     gridItems.forEach((item) => {
-      /* Skip grid items that contain embedded video iframes, as they handle interaction separately. */
+      /* Skip grid items that contain embedded video iframes. They handle
+         interaction separately. */
       if (item.querySelector("iframe")) return;
 
       const img = item.querySelector("img");
@@ -78,24 +85,29 @@
       
       if (!img || !infoOverlay) return;
 
-      /* Select the text and icon elements that will receive the directional offset animation. */
+      /* Select the text and icon elements. They get the directional offset
+         animation. */
       const animatedElements = item.querySelectorAll(
         ".grid-item-info p, .grid-item-info .view-icon"
       );
 
-      /* On mouse devices, apply a directional hover effect that offsets overlay elements opposite to cursor movement.
-         Gate behind the touch-device check so mobile/tablet users don't get sticky hover states. */
+      /* On mouse devices, apply a directional hover effect. Overlay elements
+         offset opposite to the cursor movement.
+         Gate behind the touch-device check. Mobile and tablet users don't
+         get sticky hover states. */
       if (!isTouchDevice()) {
         item.addEventListener(
           "mouseenter",
           function () {
-            /* Offset overlay elements in the opposite direction of the cursor's entry to create a parallax reveal effect. */
+            /* Offset overlay elements opposite to the cursor's entry direction.
+               This creates a parallax reveal effect. */
             animatedElements.forEach((el) => {
               el.classList.add("no-transition");
               translate(el, -20 * pointerDirectionX, -20 * pointerDirectionY);
             });
 
-            /* After a single frame, animate all elements back to their origin position for a smooth settle. */
+            /* After a single frame, animate all elements back to their origin
+               position. They settle in without snapping. */
             setTimeout(() => {
               item.classList.add("hover");
               animatedElements.forEach((el) => {
@@ -111,7 +123,8 @@
           "mouseleave",
           function () {
             item.classList.remove("hover");
-            /* Offset elements in the direction the cursor is leaving to create a trailing exit effect. */
+            /* Offset elements in the direction the cursor is leaving. This
+               creates a trailing exit effect. */
             animatedElements.forEach((el) => {
               translate(el, 20 * pointerDirectionX, 20 * pointerDirectionY);
             });
@@ -120,8 +133,8 @@
         );
       }
 
-      /* Forward clicks on the info overlay to the underlying image so the modal still opens.
-         Runs on both mouse and touch devices. */
+      /* Forward clicks on the info overlay to the underlying image. The modal
+         still opens. This runs on both mouse and touch devices. */
       infoOverlay.addEventListener("click", function (e) {
         img.click();
       });
@@ -129,7 +142,7 @@
 
   }
 
-  // Initialize when DOM is ready
+  // Initialize when the DOM is ready.
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", initGridHover);
   } else {

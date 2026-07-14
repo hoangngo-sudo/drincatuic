@@ -5,8 +5,9 @@ function theme() {
   const toggleThemeMode = (e) => {
     if (e) e.preventDefault();
 
-    /* Force the social card hover styles back to their rest state using inline !important declarations
-       so no CSS cascade can keep the hover visible during the theme repaint. */
+    /* Force the social card hover styles back to their rest state using inline
+       !important declarations. No CSS cascade can keep the hover visible
+       during the theme repaint. */
     const bg = document.querySelector('.header-link .social-button--background');
     const label = document.querySelector('.header-link .social-button--label');
     const suppress = (el) => {
@@ -22,13 +23,15 @@ function theme() {
 
     suppress(bg);
     suppress(label);
-    /* When the label was suppressed, also reset its transform and color properties to clear any hover state. */
+    /* When the label was suppressed, also reset its transform and color
+       properties. This clears any hover state. */
     if (label) {
       label.style.setProperty('transform', 'translateY(4px)', 'important');
       label.style.setProperty('color', '', 'important');
     }
 
-    /* Restore the suppressed social button styles after a brief timeout so the theme repaint completes without visible flicker. */
+    /* Restore the suppressed social button styles after a brief timeout.
+       The theme repaint finishes without visible flicker. */
     setTimeout(() => {
       restore(bg);
       restore(label);
@@ -56,14 +59,16 @@ function theme() {
     localStorage.setItem("darkmode", "null");
   };
 
-  /* Only apply dark mode on page load when the user has previously opted into it; do not apply it on the first visit. */
+  /* Only apply dark mode on page load when the user has previously opted
+     into it. Don't apply it on the first visit. */
   if (darkmode === "active") {
     enableDarkMode();
   } else {
     disableDarkMode();
   }
 
-  /* Attach a click event listener to each theme toggle button so users can switch between dark and light mode. */
+  /* Attach a click event listener to each theme toggle button. Users
+     switch between dark and light mode by clicking it. */
   if (themeButtons.length > 0) {
     themeButtons.forEach((button) => {
       button.addEventListener("click", toggleThemeMode);
@@ -76,7 +81,8 @@ document.addEventListener("DOMContentLoaded", theme);
 
 function form() {
   const form = document.querySelector(".form");
-  /* Exit early if the form element is not present, since this function only applies to the registration page. */
+  /* Exit early if the form element is not present. This function only
+     applies to the registration page. */
   if (!form) return;
   const submitBtn = document.querySelector(".btn");
   const successMessage = document.querySelector("#successMessage");
@@ -88,7 +94,8 @@ function form() {
   const willPayRadio = document.getElementById("will-pay");
   const alreadyPaidRadio = document.getElementById("already-paid");
 
-  /* Display a personalized success message with the registrant's name and scroll it into view. */
+  /* Display a personalized success message with the registrant's name.
+     Scroll it into view. */
   const showSuccessMessage = (name) => {
     if (successMessage && successText) {
       successText.textContent = `Thank you ${name}, you have been registered.`;
@@ -97,14 +104,15 @@ function form() {
     }
   };
 
-  /* Remove the success message from view by clearing its active class. */
+  /* Remove the success message from view. Clear its active class. */
   const hideSuccessMessage = () => {
     if (successMessage) {
       successMessage.classList.remove("active");
     }
   };
 
-  /* Toggle the submit button between its normal and loading states, updating the text and disabled attribute accordingly. */
+  /* Toggle the submit button between its normal and loading states.
+     Update the text and disabled attribute. */
   const setButtonLoading = (isLoading) => {
     if (submitBtn) {
       if (isLoading) {
@@ -119,7 +127,8 @@ function form() {
     }
   };
 
-  /* Clear error styling for a specific field type: payment radio labels, acknowledgement label, or text input error messages. */
+  /* Clear error styling for a specific field type: payment radio labels,
+     acknowledgement label, or text input error messages. */
   const resetErrorStyling = (type) => {
     if (type === "payment") {
       const willPayLabel = document.querySelector('label[for="will-pay"]');
@@ -163,7 +172,8 @@ function form() {
     }
   };
 
-  /* Clear payment error styling when the user interacts with the payment radio buttons. */
+  /* Clear payment error styling when the user interacts with the payment
+     radio buttons. */
   if (willPayRadio) {
     willPayRadio.addEventListener("change", () => resetErrorStyling("payment"));
   }
@@ -174,7 +184,8 @@ function form() {
     );
   }
 
-  /* Clear the acknowledgement error styling when the user checks the checkbox. */
+  /* Clear the acknowledgement error styling when the user checks the
+     checkbox. */
   if (acknowledgeCheckbox) {
     acknowledgeCheckbox.addEventListener("change", function () {
       if (this.checked) {
@@ -183,7 +194,8 @@ function form() {
     });
   }
 
-  /* Validate all form fields and return true only when every field passes its validation check. */
+  /* Validate all form fields. Return true only when every field passes its
+     validation check. */
   const validateForm = () => {
     let containsErrors = false;
 
@@ -191,7 +203,8 @@ function form() {
       document.querySelectorAll(".question-div")
     ).find((element) => element.textContent.includes("Payment"));
 
-    /* Collect all form field values into a person object for validation. */
+    /* Collect all form field values into a person object. We use it for
+       validation. */
     let person = {
       name: "",
       email: "",
@@ -224,12 +237,14 @@ function form() {
       person.paymentSelected = true;
     }
 
-    /* Clear any previous error styling before running the validation checks. */
+    /* Clear any previous error styling before running the validation
+       checks. */
     resetErrorStyling("inputs");
     resetErrorStyling("acknowledge");
     resetErrorStyling("payment");
 
-    /* Validate that the name field is filled in and contains at least two characters. */
+    /* Validate that the name field is filled in and has at least two
+       characters. */
     if (!person.name || person.name.trim().length < 2) {
       if (nameInput) {
         const errorMsg = document.createElement("span");
@@ -240,7 +255,8 @@ function form() {
       containsErrors = true;
     }
 
-    /* Validate that the email field contains a value matching the required format with a .com or .edu domain. */
+    /* Validate that the email field matches the required format with a .com
+       or .edu domain. */
     const emailRegex = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.(com|edu)$/;
     if (!person.email || !emailRegex.test(person.email)) {
       if (emailInput) {
@@ -254,7 +270,8 @@ function form() {
       containsErrors = true;
     }
 
-    /* Validate that the phone number field contains at least ten characters. */
+    /* Validate that the phone number field has at least ten characters. */
+
     if (!person.phone || person.phone.trim().length < 10) {
       if (phoneInput) {
         // Add error message for phone
@@ -266,7 +283,7 @@ function form() {
       containsErrors = true;
     }
 
-    /* Validate that the acknowledgement checkbox has been checked. */
+    /* Validate that the acknowledgement checkbox is checked. */
     if (!person.acknowledged) {
       containsErrors = true;
       // Highlight the checkbox label
@@ -278,7 +295,8 @@ function form() {
       }
     }
 
-    /* Validate that the user has selected a payment option (will pay now or already paid). */
+    /* Validate that the user has selected a payment option. Either will pay
+       now or already paid. */
     if (!person.paymentSelected) {
       containsErrors = true;
       const willPayLabel = document.querySelector('label[for="will-pay"]');
@@ -305,7 +323,8 @@ function form() {
     return !containsErrors;
   };
 
-  /* Submit the registration data to the Supabase backend after validation passes. */
+  /* Submit the registration data to the Supabase backend. Only runs after
+     validation passes. */
   const addRegister = async () => {
     if (!nameInput || !emailInput || !phoneInput) return;
 
@@ -319,7 +338,8 @@ function form() {
       return;
     }
 
-    /* Map the short checkbox values to full descriptive sentences for storage in the database. */
+    /* Map the short checkbox values to full descriptive sentences for
+       storage in the database. */
     const serviceTextMap = {
       'praise': 'I want to participate in praise and worship',
       'bible': 'I want to facilitate group bible study',
@@ -336,7 +356,8 @@ function form() {
       payment_status: willPayRadio && willPayRadio.checked ? "will-pay" : "already-paid",
     };
 
-    /* Collect all checked service checkboxes and map their values to full descriptive sentences for the registration record. */
+    /* Collect all checked service checkboxes and map their values to full
+       descriptive sentences for the registration record. */
     const checkboxes = document.querySelectorAll('input[type="checkbox"][id]:checked');
     checkboxes.forEach((checkbox) => {
       if (checkbox.id !== "acknowledge") {
@@ -347,13 +368,15 @@ function form() {
       }
     });
 
-    /* Include the custom "Other" service text if the user has filled in that field. */
+    /* Include the custom "Other" service text if the user filled in that
+       field. */
     const otherServiceInput = document.getElementById("other-service");
     if (otherServiceInput && otherServiceInput.value.trim()) {
       register.services.push(`Other: ${otherServiceInput.value.trim()}`);
     }
 
     /* Insert the registration record into the Supabase registrations table. */
+
     const { data, error } = await client
       .from("registrations")
       .insert([register]);
@@ -370,7 +393,8 @@ function form() {
     }
   };
 
-  /* Reset all form fields to their default empty or unchecked state after a successful registration. */
+  /* Reset all form fields to their default empty or unchecked state after
+     a successful registration. */
   const clearForm = () => {
     const inputs = document.querySelectorAll('input:not([type="submit"])');
     inputs.forEach((input) => {
@@ -387,10 +411,12 @@ function form() {
     }
   };
 
-  /* Attach a click handler to the submit button that validates the form and submits the registration data. */
+  /* Attach a click handler to the submit button. It validates the form and
+     submits the registration data. */
   if (submitBtn) {
     submitBtn.addEventListener("click", function (event) {
-      /* Prevent the default form submission behavior so we can handle it asynchronously via the Supabase client. */
+      /* Prevent the default form submission behavior. We handle it
+         asynchronously with the Supabase client. */
       event.preventDefault();
 
       if (validateForm()) {
@@ -405,13 +431,15 @@ document.addEventListener("DOMContentLoaded", form);
 // --------------------------------------------------//
 
 function handleSidebar() {
-  /* Cache references to the hamburger toggle, sidebar panel, backdrop overlay, and sidebar links for reuse in event handlers. */
+  /* Cache references to the hamburger toggle, sidebar panel, backdrop
+     overlay, and sidebar links for reuse in event handlers. */
   const hamburger = document.querySelector(".hamburger");
   const menuSidebar = document.querySelector(".menu-sidebar");
   const overlay = document.querySelector(".overlay");
   const sidebarLinks = document.querySelectorAll(".sidebar-link");
 
-  /* Slide the sidebar into view and make the backdrop overlay visible. */
+  /* Slide the sidebar into view. Make the backdrop overlay visible. */
+
   const openSidebar = () => {
     menuSidebar.classList.add("active");
     overlay.classList.add("active");
@@ -419,7 +447,8 @@ function handleSidebar() {
     hamburger.style.zIndex = "999";
   };
 
-  /* Slide the sidebar out of view and hide the backdrop overlay, then restore the hamburger's original z-index. */
+  /* Slide the sidebar out of view. Hide the backdrop overlay. Restore
+     the hamburger's original z-index. */
   const closeSidebar = () => {
     menuSidebar.classList.remove("active");
     overlay.classList.remove("active");
@@ -428,6 +457,7 @@ function handleSidebar() {
   };
 
   /* Toggle the sidebar open or closed when the hamburger icon is clicked. */
+
   if (hamburger) {
     hamburger.addEventListener("click", () => {
       if (menuSidebar.classList.contains("active")) {
@@ -438,14 +468,16 @@ function handleSidebar() {
     });
   }
 
-  /* Close the sidebar when the user clicks on the dark backdrop overlay outside the sidebar panel. */
+  /* Close the sidebar when the user clicks on the dark backdrop overlay
+     outside the sidebar panel. */
   if (overlay) {
     overlay.addEventListener("click", closeSidebar);
   }
 
   if (sidebarLinks.length > 0) {
     sidebarLinks.forEach((link) => {
-      /* Skip the theme toggle button so the sidebar stays open when switching themes. */
+      /* Skip the theme toggle button. The sidebar stays open when
+         switching themes. */
       if (link.classList.contains("theme-btn")) return;
       link.addEventListener("click", closeSidebar);
     });

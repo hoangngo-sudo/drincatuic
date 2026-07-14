@@ -2,10 +2,13 @@
  * gsapButton.js: Eased hover and tap animations for all interactive buttons.
  *
  * Follows Emil's design principles:
- *   - Hover uses an ease-out curve (fast start, slow end) over 200ms with a subtle scale increase.
- *   - Press applies a scale(0.97) transform over 150ms per the button press principle.
- *   - No y-axis offsets are used to keep the interaction simple and predictable.
- *   - .social-button elements are excluded because footer icons use bespoke CSS :active press states.
+ *   - Hover uses an ease-out curve (fast start, slow end) over 200ms with
+ *     a small scale increase.
+ *   - Press applies a scale(0.97) transform over 150ms per the button press
+ *     principle.
+ *   - No y-axis offsets. The interaction stays simple and predictable.
+ *   - .social-button elements are excluded. Footer icons use bespoke CSS
+ *     :active press states.
  */
 
 const BUTTON_SELECTORS = [
@@ -13,9 +16,11 @@ const BUTTON_SELECTORS = [
   '.expand-trigger', '.modal-close'
 ].join(', ');
 
-/* Use a power2-out easing curve for hover enter and leave so the response feels fast but settles naturally. */
+/* Use a power2-out easing curve for hover enter and leave. The response
+   feels fast but settles naturally. */
 const EASE = "power2.out";
-/* Use a snappier power1-out easing for tap press so the feedback feels instantaneous. */
+/* Use a snappier power1-out easing for tap press. The feedback feels
+   instant. */
 const TAP_EASE = "power1.out";
 
 const HOVER_STATE = { scale: 1.05 };
@@ -30,15 +35,16 @@ export default function initGsapButtons() {
     return { destroy() {} };
   }
 
-  /* Only attach hover animations on devices with a true hover pointer such as a mouse or trackpad.
-     Touch-only devices fire phantom mouseenter events on tap, so we gate them out here to prevent sticky hover states. */
+  /* Only attach hover animations on devices with a real hover pointer
+     (mouse or trackpad). Touch-only devices fire phantom mouseenter events
+     on tap. We gate them out here to avoid sticky hover states. */
   const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
   const buttons = document.querySelectorAll(BUTTON_SELECTORS);
   const cleanups = [];
 
   buttons.forEach((el) => {
-    /* Track whether the pointer is currently hovering over this button element. */
+    /* Track whether the pointer is currently hovering over this button. */
     let hovering = false;
 
     const onEnter = () => {
@@ -56,12 +62,14 @@ export default function initGsapButtons() {
     };
 
     const onUp = () => {
-      /* Return to the hover scale if the pointer is still over the element, otherwise return to rest. */
+      /* Return to the hover scale if the pointer is still over the element.
+         Otherwise return to rest. */
       const target = hovering ? HOVER_STATE : REST_STATE;
       gsap.to(el, { ...target, ease: EASE, duration: DURATION_HOVER, overwrite: "auto" });
     };
 
-    /* On touch devices, press down triggers an immediate scale on touchstart and a eased return on touchend. */
+    /* On touch devices, press down triggers an immediate scale on touchstart
+       and a eased return on touchend. */
     const onTouchStart = () => {
       gsap.to(el, { ...TAP_STATE, ease: TAP_EASE, duration: DURATION_TAP, overwrite: "auto" });
     };
@@ -70,10 +78,12 @@ export default function initGsapButtons() {
       gsap.to(el, { ...REST_STATE, ease: EASE, duration: DURATION_HOVER, overwrite: "auto" });
     };
 
-    /* For the RSVP button, delay navigation until the letter-scatter animation completes. */
+    /* For the RSVP button, delay navigation until the letter-scatter
+       animation finishes. */
     const isRsvpBtn = el.classList.contains('button') && el.tagName === 'A' && el.getAttribute('href');
     const LETTER_SELECTOR = '.button__J, .button__e, .button__s, .button__u, .button__s2';
-    /* Duration in seconds for the letter animation, following Emil's standard UI duration guidelines of 150 to 250 milliseconds. */
+    /* Duration in seconds for the letter animation. Follows Emil's standard
+       UI duration guidelines of 150 to 250 ms. */
     const LETTER_ANIM_DURATION = 0.25;
     const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -87,24 +97,35 @@ export default function initGsapButtons() {
       if (navigating) return;
       navigating = true;
 
-      /* Skip the letter animation when the user has requested reduced motion and navigate immediately. */
+      /* Skip the letter animation when the user has requested reduced motion.
+         Navigate immediately. */
       if (REDUCED_MOTION) {
         navigateTo();
         return;
       }
 
-      /* Scale up the button slightly to provide visual feedback before the letter animation. */
+      /* Scale up the button slightly. This gives visual feedback before the
+         letter animation. */
       gsap.to(el, { scale: 1.05, ease: "power2.out", duration: 0.2 });
 
-      /* Clear any GSAP inline styles on the letter images so the CSS transitions can take over and animate them. */
+      /* Clear any GSAP inline styles on the letter images. The CSS
+         transitions take over and animate them. */
       el.querySelectorAll(LETTER_SELECTOR).forEach((img) => {
         gsap.set(img, { clearProps: "all" });
       });
-      /* Add the hover class to trigger the CSS letter scatter animation defined in the stylesheet. */
+      /* Add the hover class to trigger the CSS letter scatter animation from
+         the stylesheet. */
       el.classList.add('hover');
 
-      /* Navigate to the target URL after the letter animation has had time to complete. */
-      setTimeout(navigateTo, LETTER_ANIM_DURATION * 1000);
+      /* After the letter animation finishes, reset the hover state so the
+         button doesn't stay stuck at scale 1.05 with the .hover CSS class.
+         Then navigate. */
+      setTimeout(() => {
+        hovering = false;
+        el.classList.remove('hover');
+        gsap.set(el, { scale: 1 });
+        navigateTo();
+      }, LETTER_ANIM_DURATION * 1000);
     };
 
     const onRsvpClick = (e) => {
@@ -113,12 +134,14 @@ export default function initGsapButtons() {
       triggerRsvpLetters();
     };
 
-    /* Attach a click interceptor on the RSVP button to trigger the letter animation before navigation. */
+    /* Attach a click interceptor on the RSVP button. It triggers the letter
+       animation before navigation. */
     if (isRsvpBtn) {
       el.addEventListener('click', onRsvpClick);
     }
 
-    /* Attach mouse event listeners on hover-capable devices only to prevent phantom hover states triggered by touch taps. */
+    /* Attach mouse event listeners on hover-capable devices only. Touch
+       taps trigger phantom hover states otherwise. */
     if (canHover) {
       el.addEventListener("mouseenter", onEnter);
       el.addEventListener("mouseleave", onLeave);
@@ -127,6 +150,7 @@ export default function initGsapButtons() {
     }
 
     /* Attach touch event listeners for press-down feedback on all devices. */
+
     el.addEventListener("touchstart", onTouchStart, { passive: true });
     el.addEventListener("touchend", onTouchEnd, { passive: true });
 

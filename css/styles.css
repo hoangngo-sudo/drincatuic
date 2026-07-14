@@ -776,7 +776,7 @@ a, button,
 /* The label text below the icon is hidden in its rest state and fades in on hover.
    The spacing between the icon and the label is controlled by the parent flexbox gap property. */
 .social-button--label {
-  color: var(--tertiary-color);
+  color: #000;
   text-align: center;
   justify-content: center;
   position: relative;
@@ -787,10 +787,11 @@ a, button,
   transition: opacity 100ms ease-out;
 }
 
-/* When the social button sits in the header against the page background, the label must use the secondary color token
-   so it is readable in both light mode with black text and dark mode with white text. */
+/* When the social button sits in the header against the page background,
+   the label uses black text so it matches the hover color without
+   flashing on hover enter or exit. */
 .header-link .social-button--label {
-  color: var(--secondary-color);
+  color: #000;
 }
 
 /*
@@ -1783,9 +1784,10 @@ ul.contact-info li {
     opacity: 1;
     /* Cancel the desktop slide-up offset so label sits in natural position */
     transform: none;
-    /* Footer background is always dark: white text reads in both modes.
-       .header-link .social-button--label overrides this for the header context. */
-    color: #fff;
+    /* Use the secondary color token (black in light mode, white in dark
+       mode) so the label is always legible against the page background
+       without flashing white on light theme. */
+    color: var(--secondary-color);
   }
 
   /* Header sits on page background; override the white to follow secondary color
