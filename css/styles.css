@@ -1465,7 +1465,7 @@ a, button,
 .expand-target-short {
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.5s cubic-bezier(0, 1, 0, 1), padding 0.3s ease;
+  transition: max-height 0.5s cubic-bezier(0, 1, 0, 1), padding 0.3s ease, opacity 0.5s var(--ease-out-quint);
   background-color: var(--glass-bg);
   box-shadow: 0 0 0 0.6px var(--border-color);
   border-radius: 0 0 0.2rem 0.2rem;
@@ -1479,7 +1479,7 @@ a, button,
   padding: 1rem 1.5rem;
   transition: max-height 0.5s cubic-bezier(0, 0, 1, 0),
               padding 0.3s ease,
-              opacity 0.1s ease;
+              opacity 0.5s var(--ease-out-quint);
   border-bottom-left-radius: 0.2rem;
   border-bottom-right-radius: 0.2rem;
   opacity: 1;
