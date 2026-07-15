@@ -2,44 +2,22 @@ function theme() {
   let themeButtons = document.querySelectorAll(".theme-btn");
   let darkmode = localStorage.getItem("darkmode");
 
+  /* Track the pending theme-transitioning timer so rapid clicks cancel the
+     previous timer instead of stacking multiple timeouts. */
+  let themeTransitionTimer = null;
+
   const toggleThemeMode = (e) => {
     if (e) e.preventDefault();
 
-    /* Force the social card hover styles back to their rest state using inline
-       !important declarations. No CSS cascade can keep the hover visible
-       during the theme repaint. */
-    const bg = document.querySelector('.header-link .social-button--background');
-    const label = document.querySelector('.header-link .social-button--label');
-    const suppress = (el) => {
-      if (!el) return;
-      el.style.setProperty('transition', 'none', 'important');
-      el.style.setProperty('opacity', '0', 'important');
-    };
-    const restore = (el) => {
-      if (!el) return;
-      el.style.removeProperty('transition');
-      el.style.removeProperty('opacity');
-    };
-
-    suppress(bg);
-    suppress(label);
-    /* When the label was suppressed, also reset its transform and color
-       properties. This clears any hover state. */
-    if (label) {
-      label.style.setProperty('transform', 'translateY(4px)', 'important');
-      label.style.setProperty('color', '', 'important');
-    }
-
-    /* Restore the suppressed social button styles after a brief timeout.
-       The theme repaint finishes without visible flicker. */
-    setTimeout(() => {
-      restore(bg);
-      restore(label);
-      if (label) {
-        label.style.removeProperty('transform');
-        label.style.removeProperty('color');
-      }
-    }, 200);
+    /* Use the theme-transitioning CSS class to suppress social button hover
+       styles during the theme repaint. The CSS rules force hover styles back
+       to their rest state and disable transitions. Each new click cancels
+       any pending removal so rapid clicking never creates a stale restore. */
+    document.body.classList.add('theme-transitioning');
+    clearTimeout(themeTransitionTimer);
+    themeTransitionTimer = setTimeout(() => {
+      document.body.classList.remove('theme-transitioning');
+    }, 150);
 
     const currDarkmode = localStorage.getItem("darkmode");
     if (currDarkmode !== "active") {
@@ -456,10 +434,15 @@ function handleSidebar() {
     hamburger.style.zIndex = "";
   };
 
-  /* Toggle the sidebar open or closed when the hamburger icon is clicked. */
-
+  /* Toggle the sidebar open or closed when the hamburger icon is clicked.
+     A simple debounce prevents rapid toggling that could leave the sidebar
+     in a mid-animation state and trigger text selection on mobile. */
+  let hamburgerClickTimer = null;
   if (hamburger) {
     hamburger.addEventListener("click", () => {
+      if (hamburgerClickTimer) return;
+      hamburgerClickTimer = setTimeout(() => { hamburgerClickTimer = null; }, 450);
+
       if (menuSidebar.classList.contains("active")) {
         closeSidebar();
       } else {

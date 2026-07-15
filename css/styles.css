@@ -80,6 +80,11 @@
   background-color: var(--background-color);
 }
 
+/* Dark mode paragraph text: use a softer, muted tone instead of pure white for better readability. */
+.dark-mode p.body-section {
+  color: oklch(0.705 0.015 286.067);
+}
+
 /* Prevent horizontal overflow site-wide to avoid unwanted scrollbars on narrow viewports. */
 html,
 body {
@@ -89,6 +94,7 @@ body {
   position: relative;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  letter-spacing: -0.4px;
 }
 
 /* Set the text selection highlight color using the primary brand color. */
@@ -321,6 +327,8 @@ a, button,
   border-radius: 2rem;
   display: inline-block;
   touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -358,6 +366,8 @@ a, button,
   padding: 10px;
   touch-action: manipulation;
   pointer-events: auto;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 /* On touch devices, change the hamburger icon fill color on press to provide tactile feedback. */
@@ -424,6 +434,8 @@ a, button,
   height: 100%;
   padding: 5rem 1.5rem 1.5rem;
   pointer-events: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .sidebar-links {
@@ -449,6 +461,8 @@ a, button,
   width: auto;
   padding: 0.75rem 0.5rem;
   touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 /* Increase the theme toggle button size when it is rendered inside the sidebar layout. */
@@ -510,6 +524,8 @@ a, button,
   z-index: var(--z-nav);
   line-height: 1;
   flex-shrink: 0;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .theme-icon {
@@ -578,6 +594,9 @@ a, button,
   object-position: center;
   margin: 0 auto;
   flex: 0 0 auto;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-user-drag: none;
 }
 
 /*
@@ -724,6 +743,8 @@ a, button,
   margin: 0;
   height: auto;
   transition: transform 150ms cubic-bezier(0.215, 0.61, 0.355, 1);
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 /* Provide a subtle scale-down press feedback effect on touch devices. */
