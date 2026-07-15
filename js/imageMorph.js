@@ -274,8 +274,6 @@ const morph = (() => {
            responsive media queries on small screens.
            When modalPolaroidFrame is null, we fall back to empty padding and
            no shadow. */
-        morphClone.style.display = "block";
-        morphClone.style.opacity = "1";
         morphClone.style.boxSizing = "border-box";
         morphClone.style.backgroundColor = "var(--polaroid-frame-bg)";
         if (modalPolaroidFrame) {
@@ -293,6 +291,9 @@ const morph = (() => {
           scaleY: 1,
           transformOrigin: "left top",
         });
+
+        morphClone.style.display = "block";
+        morphClone.style.opacity = "1";
 
         const morphDur = computeMorphDuration(sourceRect, targetRect);
 
@@ -441,8 +442,6 @@ const morph = (() => {
          Padding and border-radius come from the live computed style so
          they match responsive media queries.
          When modalPolaroidFrame is null, skip the frame styling. */
-      morphClone.style.display = "block";
-      morphClone.style.opacity = "1";
       morphClone.style.boxSizing = "border-box";
       morphClone.style.backgroundColor = "var(--polaroid-frame-bg)";
       if (modalPolaroidFrame) {
@@ -462,6 +461,9 @@ const morph = (() => {
            around the clone's visual center. */
         transformOrigin: "center center",
       });
+
+      morphClone.style.display = "block";
+      morphClone.style.opacity = "1";
 
       modalContent.style.opacity = "0";
       modalImg.style.opacity = "0";
