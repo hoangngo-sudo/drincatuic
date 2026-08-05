@@ -133,6 +133,23 @@
         );
       }
 
+      /* On touch devices, give the card an immediate press response on
+         touchstart (scale 0.97, 150ms, power1.out — same TAP_STATE as
+         gsapButton.js). GSAP's scale plugs into the existing transform, so
+         the card's scattered rotate()/translate() is preserved; a CSS
+         :active transform would drop it. Skip under reduced motion. */
+      if (isTouchDevice() && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        const onTouchStart = () => {
+          gsap.to(item, { scale: 0.97, ease: "power1.out", duration: 0.15, overwrite: "auto" });
+        };
+        const onTouchEnd = () => {
+          gsap.to(item, { scale: 1, ease: "power1.out", duration: 0.15, overwrite: "auto" });
+        };
+        item.addEventListener("touchstart", onTouchStart, { passive: true });
+        item.addEventListener("touchend", onTouchEnd, { passive: true });
+        item.addEventListener("touchcancel", onTouchEnd, { passive: true });
+      }
+
       /* Forward clicks on the info overlay to the underlying image. The modal
          still opens. This runs on both mouse and touch devices. */
       infoOverlay.addEventListener("click", function (e) {

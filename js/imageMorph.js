@@ -247,8 +247,12 @@ const morph = (() => {
       closeBtn.style.opacity = "0";
       closeBtn.style.pointerEvents = "none";
       modal.style.backgroundColor = "rgba(0, 0, 0, 0)";
-      modal.style.backdropFilter = "blur(0px)";
-      modal.style.webkitBackdropFilter = "blur(0px)";
+      /* Jump the blur to its final 5px immediately. Backdrop-filter
+         re-rasterizes the whole viewport per frame; tweening it during the
+         morph doubles the per-frame cost on touch. 5px is imperceptible
+         mid-motion, and the dark background still fades in separately. */
+      modal.style.backdropFilter = "blur(5px)";
+      modal.style.webkitBackdropFilter = "blur(5px)";
       modal.classList.add("show");
       modalImg.style.opacity = "0";
       document.body.style.overflow = "hidden";
@@ -313,8 +317,6 @@ const morph = (() => {
 
         tl.to(modal, {
           backgroundColor: "rgba(0, 0, 0, 0.51)",
-          backdropFilter: "blur(5px)",
-          webkitBackdropFilter: "blur(5px)",
           duration: OVERLAY_DUR,
           ease: EASE_OUT_QUINT,
         }, 0.05);
@@ -485,6 +487,10 @@ const morph = (() => {
       modalImg.style.opacity = "0";
       closeBtn.style.opacity = "0";
       closeBtn.style.pointerEvents = "none";
+      /* Remove the blur immediately; the still-dark overlay masks it while
+         the clone flies back. Only the background color tweens now. */
+      modal.style.backdropFilter = "blur(0px)";
+      modal.style.webkitBackdropFilter = "blur(0px)";
 
       /* Hide the real polaroid card behind the still-visible modal
          backdrop. The clone lands in its place and crossfades into it.
@@ -519,8 +525,6 @@ const morph = (() => {
 
       tl.to(modal, {
         backgroundColor: "rgba(0, 0, 0, 0)",
-        backdropFilter: "blur(0px)",
-        webkitBackdropFilter: "blur(0px)",
         duration: OVERLAY_DUR,
         ease: EASE_OUT_QUINT,
       }, 0);
