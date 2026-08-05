@@ -18,7 +18,9 @@
   --border-color: #00000070;
   --svg-color: #000;
 
-  /* Semantic tokens: these values are reused across components and update automatically when the theme switches between light and dark mode. */
+  /* Semantic tokens. These values are reused across components and
+     update automatically when the theme switches between light and dark
+     mode. */
   --nav-bg: #00000061;
   --btn-hover: #E91E63;
   --selection-bg: #E91E63;
@@ -52,7 +54,9 @@
   --ease-in-out-cubic: cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 
-/* Dark mode overrides: swap all color tokens when the .dark-mode class is applied to the body element, and update the background color for the full page. */
+/* Dark mode overrides. Swap all color tokens when the .dark-mode class is
+   applied to the body element. Update the background color for the full
+   page. */
 .dark-mode {
   --primary-color: #ff4081;
   --primary-dark-color: #ff4081;
@@ -109,7 +113,7 @@ body {
 }
 
 /* The modal-content entrance animation is handled by the GSAP morph timeline
-   in imageMorph.js, so no CSS @keyframes are needed for it. */
+   in imageMorph.js. No CSS @keyframes are needed for it. */
 
 /* 
   Utility Classes
@@ -121,7 +125,8 @@ body {
   transition: none !important;
 }
 
-/* Scroll-triggered fade-in animation: JavaScript adds the .visible or .hidden class based on the element's position in the viewport. */
+/* Scroll-triggered fade-in animation. JavaScript adds the .visible or
+   .hidden class based on the element's position in the viewport. */
 .fade-in {
   opacity: 0;
   transform: translateY(16px);
@@ -230,7 +235,9 @@ p.body-section {
   z-index: var(--z-background);
 }
 
-/* In the default state, show the dark-background image and hide the light-background image to prevent a white flash before JavaScript applies the theme. */
+/* In the default state, show the dark-background image. Hide the
+   light-background image to prevent a white flash before JavaScript
+   applies the theme. */
 .dark-bg { opacity: 1; }
 .light-bg { opacity: 0; }
 
@@ -280,7 +287,8 @@ section.body-section {
   line-height: 1.6;
 }
 
-/* Prevent the browser from zooming on double-tap for all interactive elements, which improves the mobile touch experience. */
+/* Prevent the browser from zooming on double-tap for all interactive
+   elements. This improves the mobile touch experience. */
 a, button,
 .button, .nav-link, .social-button, .expand-trigger,
 .hamburger, .slider button, .dot, .modal-close,
@@ -416,7 +424,7 @@ a, button,
 
 .menu-sidebar.active {
   transform: translateX(0);
-  /* Don't set pointer-events:auto here ,the sidebar covers the hamburger. */
+  /* Do not set pointer-events: auto here. The sidebar covers the hamburger. */
 }
 
 /* Prevent the default tap highlight flash that appears on touch devices when tapping interactive elements. */
@@ -661,9 +669,11 @@ a, button,
   flex-shrink: 0;
 }
 
-/* Floating letter images for the RSVP button: hidden by default and revealed on hover or touch.
-   CSS transitions provide the baseline animation, while GSAP overrides inline styles during the touch animation
-   and then clears its props so the CSS hover effect can resume normally. */
+/* Floating letter images for the RSVP button. Hidden by default and
+   revealed on hover or touch.
+   CSS transitions provide the baseline animation. GSAP overrides inline
+   styles during the touch animation and then clears its props. The CSS
+   hover effect can then resume normally. */
 .button img {
   position: absolute;
   top: 50%;
@@ -689,7 +699,9 @@ a, button,
 .button__u  { width: 2rem; transform: translate(-2rem, -1rem) rotate(-10deg);   filter: blur(0.2px); }
 .button__s2 { width: 4rem; transform: translate(-1.5rem, -1rem) rotate(10deg);  filter: blur(0.2px); }
 
-/* Gate all button hover effects behind a pointer:fine media query to prevent sticky hover states on touch devices, where iOS and Android keep the :hover style active after a tap is lifted. */
+/* Gate all button hover effects behind a pointer:fine media query. This
+   prevents sticky hover states on touch devices. iOS and Android keep
+   the :hover style active after a tap is lifted. */
 @media (hover: hover) and (pointer: fine) {
   .button:hover,
   .button.hover {
@@ -765,8 +777,10 @@ a, button,
 }
 
 /* Suppress social-card hover styles during theme toggle repaint.
-   JavaScript adds the .theme-transitioning class to the body element for 150 milliseconds after each theme button click.
-   This rule forces hover styles back to their rest state and disables transitions so the suppression is instantaneous. */
+   JavaScript adds the .theme-transitioning class to the body element for
+   150 milliseconds after each theme button click.
+   This rule forces hover styles back to their rest state and disables
+   transitions. The suppression is instantaneous. */
 .theme-transitioning .social-button--background,
 .theme-transitioning .social-button--label {
   transition: none !important;
@@ -778,9 +792,11 @@ a, button,
   color: var(--tertiary-color) !important;
 }
 
-/* A full-size colored backdrop that remains hidden until hover or active state.
-   Uses inset positioning with top, right, bottom, and left set to zero instead of width and height at 100 percent
-   to guarantee full coverage even when the parent element has a height of auto. */
+/* A full-size colored backdrop. It remains hidden until hover or active
+   state.
+   Uses inset positioning with top, right, bottom, and left set to zero
+   instead of width and height at 100 percent. This guarantees full
+   coverage even when the parent element has a height of auto. */
 .social-button--background {
   background-color: var(--primary-color);
   position: absolute;
@@ -1056,17 +1072,20 @@ a, button,
   opacity: 1;
 }
 
-/* Apply a staggered text reveal effect so the subtitle enters 80 milliseconds after the title for a more polished entrance. */
+/* Apply a staggered text reveal effect. The subtitle enters 80
+   milliseconds after the title. */
 .grid-item.hover .grid-item-info p {
   transition-delay: 0.08s;
 }
 
-/* On touch devices, reset the directional transform to none so the overlay text appears statically centered. */
+/* On touch devices, reset the directional transform to none. The overlay
+   text appears statically centered. */
 .grid-item.show-info .grid-item-info p {
   transform: none;
 }
 
-/* Apply a subtle zoom effect to grid images when the overlay is active, but exclude polaroid cards since they use their own hover effects. */
+/* Apply a subtle zoom effect to grid images when the overlay is active.
+   Exclude polaroid cards because they use their own hover effects. */
 .grid-item:not(.polaroid-card).hover img,
 .grid-item:not(.polaroid-card).show-info img {
   transform: scale(1.05);
@@ -1078,10 +1097,10 @@ a, button,
 */
 
 /* GSAP manages GPU layer promotion internally via force3D when rotation
-   is animated.  Keeping will-change: transform on this element causes
+   is animated. Keeping will-change: transform on this element causes
    Chrome to create a compositor layer that briefly renders at 0×0
-   before being sized — the "shrink to dot" glitch.  Opacity alone is
-   sufficient for the crossfade. */
+   before being sized. This is the "shrink to dot" glitch. Opacity alone
+   is sufficient for the crossfade. */
 .morph-clone {
   display: none;
   position: fixed;
@@ -1123,8 +1142,9 @@ a, button,
   align-items: center;
 }
 
-/* The modal-content entrance is handled by the GSAP morph animation (imageMorph.js)
-   so no CSS animation is applied here — it would conflict with the morph tween. */
+/* The modal-content entrance is handled by the GSAP morph animation
+   (imageMorph.js). No CSS animation is applied here. It would conflict
+   with the morph tween. */
 
 .modal-content {
   position: relative;
@@ -1181,8 +1201,11 @@ a, button,
   height: 18px;
 }
 
-/* A polaroid-style frame wrapping the modal image so the full-resolution view maintains the same instant-photo aesthetic as the thumbnail grid.
-   The frame uses the same background, shadow, and rounded corners as the grid polaroids, with matching padding and concentric radius so the morph clone matches in both directions. */
+/* A polaroid-style frame wrapping the modal image. The full-resolution
+   view maintains the same instant-photo aesthetic as the thumbnail grid.
+   The frame uses the same background, shadow, and rounded corners as the
+   grid polaroids. Matching padding and concentric radius let the morph
+   clone match in both directions. */
 .modal-polaroid-frame {
   background: var(--polaroid-frame-bg);
   padding: 0.5rem;
@@ -1233,7 +1256,8 @@ a, button,
   overflow: hidden;
 }
 
-/* Slide images are stacked on top of each other using absolute positioning, and only the slide with the .active class is visible. */
+/* Slide images are stacked on top of each other using absolute
+   positioning. Only the slide with the .active class is visible. */
 .slider img {
   width: 100%;
   height: fit-content;
@@ -1534,8 +1558,9 @@ a, button,
   display: block;
   width: 100%;
   height: 100%;
-  /* Consistent diagonal: tied to viewport width so angle stays the same
-     on mobile as on desktop. Caps at 60px drop so it never gets too steep. */
+  /* Consistent diagonal. Tied to viewport width so the angle stays the
+     same on mobile as on desktop. Caps at 60px drop so it never gets too
+     steep. */
   clip-path: polygon(
     0 min(60px, 10vw),
     100% 0,
