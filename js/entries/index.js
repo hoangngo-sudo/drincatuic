@@ -22,8 +22,8 @@ document.addEventListener("DOMContentLoaded", () => {
       smooth: 1.5,
       effects: true,
       /* Smooth touch scrolling is disabled. Native touch scroll runs on the
-         compositor thread at hardware speed and a JavaScript
-         requestAnimationFrame loop can't keep pace. That causes visible
+         compositor thread at hardware speed. A JavaScript
+         requestAnimationFrame loop cannot keep pace. That causes visible
          jitter. */
       smoothTouch: 0,
     });

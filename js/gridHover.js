@@ -1,7 +1,7 @@
 /**
  * Grid Hover Overlay Module
- * Handles directional animated hover interactions for image grid items
- * Inspired by Hakim El Hattab's website
+ * Handles directional animated hover interactions for image grid items.
+ * Inspired by Hakim El Hattab's website.
  */
 (function () {
   "use strict";
@@ -93,8 +93,8 @@
 
       /* On mouse devices, apply a directional hover effect. Overlay elements
          offset opposite to the cursor movement.
-         Gate behind the touch-device check. Mobile and tablet users don't
-         get sticky hover states. */
+         Gate this behind the touch-device check. Mobile and tablet users
+         do not get sticky hover states. */
       if (!isTouchDevice()) {
         item.addEventListener(
           "mouseenter",

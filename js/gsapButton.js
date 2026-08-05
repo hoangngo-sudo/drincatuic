@@ -7,7 +7,7 @@
  *   - Press applies a scale(0.97) transform over 150ms per the button press
  *     principle.
  *   - No y-axis offsets. The interaction stays simple and predictable.
- *   - .social-button elements are excluded. Footer icons use bespoke CSS
+ *   - .social-button elements are excluded. Footer icons use custom CSS
  *     :active press states.
  */
 
@@ -37,7 +37,7 @@ export default function initGsapButtons() {
 
   /* Only attach hover animations on devices with a real hover pointer
      (mouse or trackpad). Touch-only devices fire phantom mouseenter events
-     on tap. We gate them out here to avoid sticky hover states. */
+     on tap. Gate them out here to avoid sticky hover states. */
   const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
   const buttons = document.querySelectorAll(BUTTON_SELECTORS);
@@ -68,8 +68,8 @@ export default function initGsapButtons() {
       gsap.to(el, { ...target, ease: EASE, duration: DURATION_HOVER, overwrite: "auto" });
     };
 
-    /* On touch devices, press down triggers an immediate scale on touchstart
-       and a eased return on touchend. */
+    /* On touch devices, press down triggers an immediate scale on
+       touchstart. It eases back on touchend. */
     const onTouchStart = () => {
       gsap.to(el, { ...TAP_STATE, ease: TAP_EASE, duration: DURATION_TAP, overwrite: "auto" });
     };
@@ -117,8 +117,8 @@ export default function initGsapButtons() {
          the stylesheet. */
       el.classList.add('hover');
 
-      /* After the letter animation finishes, reset the hover state so the
-         button doesn't stay stuck at scale 1.05 with the .hover CSS class.
+      /* After the letter animation finishes, reset the hover state. The
+         button does not stay stuck at scale 1.05 with the .hover CSS class.
          Then navigate. */
       setTimeout(() => {
         hovering = false;

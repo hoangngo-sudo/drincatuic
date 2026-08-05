@@ -10,9 +10,9 @@ if (modal) {
     ".image-grid img, .image-grid-span img, .polaroid-grid img"
   );
 
-  /* Initialize the morph animation module. We pass the modal's DOM element
-     references so it controls them without querying the DOM on every open
-     or close. */
+  /* Initialize the morph animation module. Pass the modal's DOM element
+     references. It then controls them without querying the DOM on every
+     open or close. */
   morph.init({ modal, modalImg, modalPolaroidFrame, modalContent, closeBtn });
 
   /**
@@ -40,8 +40,8 @@ if (modal) {
    */
   const closeModal = async () => {
     /* The morph.close function already knows which thumbnail was clicked.
-       It stores that reference during the open phase. We don't need to
-       pass it again here. */
+       It stores that reference during the open phase. There is no need
+       to pass it again here. */
     await morph.close();
 
     /* Resume the ScrollSmoother after the reverse morph animation finishes. */

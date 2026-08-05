@@ -2,17 +2,18 @@ function theme() {
   let themeButtons = document.querySelectorAll(".theme-btn");
   let darkmode = localStorage.getItem("darkmode");
 
-  /* Track the pending theme-transitioning timer so rapid clicks cancel the
+  /* Track the pending theme-transitioning timer. Rapid clicks cancel the
      previous timer instead of stacking multiple timeouts. */
   let themeTransitionTimer = null;
 
   const toggleThemeMode = (e) => {
     if (e) e.preventDefault();
 
-    /* Use the theme-transitioning CSS class to suppress social button hover
-       styles during the theme repaint. The CSS rules force hover styles back
-       to their rest state and disable transitions. Each new click cancels
-       any pending removal so rapid clicking never creates a stale restore. */
+    /* Use the theme-transitioning CSS class to suppress social button
+       hover styles during the theme repaint. The CSS rules force hover
+       styles back to their rest state and disable transitions. Each new
+       click cancels any pending removal. Rapid clicking never creates a
+       stale restore. */
     document.body.classList.add('theme-transitioning');
     clearTimeout(themeTransitionTimer);
     themeTransitionTimer = setTimeout(() => {
@@ -37,8 +38,8 @@ function theme() {
     localStorage.setItem("darkmode", "null");
   };
 
-  /* Only apply dark mode on page load when the user has previously opted
-     into it. Don't apply it on the first visit. */
+  /* Apply dark mode on page load only when the user previously opted
+     into it. Do not apply it on the first visit. */
   if (darkmode === "active") {
     enableDarkMode();
   } else {
@@ -105,8 +106,9 @@ function form() {
     }
   };
 
-  /* Clear error styling for a specific field type: payment radio labels,
-     acknowledgement label, or text input error messages. */
+  /* Clear error styling for a specific field type. This covers payment
+     radio labels, the acknowledgement label, and text input error
+     messages. */
   const resetErrorStyling = (type) => {
     if (type === "payment") {
       const willPayLabel = document.querySelector('label[for="will-pay"]');
@@ -181,7 +183,7 @@ function form() {
       document.querySelectorAll(".question-div")
     ).find((element) => element.textContent.includes("Payment"));
 
-    /* Collect all form field values into a person object. We use it for
+    /* Collect all form field values into a person object. Use it for
        validation. */
     let person = {
       name: "",
@@ -238,7 +240,7 @@ function form() {
     const emailRegex = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.(com|edu)$/;
     if (!person.email || !emailRegex.test(person.email)) {
       if (emailInput) {
-        // Add error message for email
+        // Add an error message for the email field.
         const errorMsg = document.createElement("span");
         errorMsg.className = "error-message";
         errorMsg.textContent =
@@ -252,7 +254,7 @@ function form() {
 
     if (!person.phone || person.phone.trim().length < 10) {
       if (phoneInput) {
-        // Add error message for phone
+        // Add an error message for the phone field.
         const errorMsg = document.createElement("span");
         errorMsg.className = "error-message";
         errorMsg.textContent = "Please enter a valid phone number.";
@@ -264,7 +266,7 @@ function form() {
     /* Validate that the acknowledgement checkbox is checked. */
     if (!person.acknowledged) {
       containsErrors = true;
-      // Highlight the checkbox label
+      // Highlight the acknowledgement label.
       const acknowledgeLabel = document.querySelector(
         'label[for="acknowledge"]'
       );
@@ -290,7 +292,7 @@ function form() {
         alreadyPaidLabel.style.color = "red";
       }
 
-      // Add error message for payment
+      // Add an error message for the payment field.
       if (paymentElements) {
         const errorMsg = document.createElement("span");
         errorMsg.className = "error-message";
@@ -306,7 +308,7 @@ function form() {
   const addRegister = async () => {
     if (!nameInput || !emailInput || !phoneInput) return;
 
-    // Set button to loading state
+    // Set the button to the loading state.
     setButtonLoading(true);
 
     const client = window.supabaseClient;
@@ -339,7 +341,7 @@ function form() {
     const checkboxes = document.querySelectorAll('input[type="checkbox"][id]:checked');
     checkboxes.forEach((checkbox) => {
       if (checkbox.id !== "acknowledge") {
-        // Map checkbox value to full sentence
+        // Map the checkbox value to a full sentence.
         if (serviceTextMap[checkbox.value]) {
           register.services.push(serviceTextMap[checkbox.value]);
         }
@@ -393,7 +395,7 @@ function form() {
      submits the registration data. */
   if (submitBtn) {
     submitBtn.addEventListener("click", function (event) {
-      /* Prevent the default form submission behavior. We handle it
+      /* Prevent the default form submission behavior. Handle it
          asynchronously with the Supabase client. */
       event.preventDefault();
 
@@ -435,8 +437,9 @@ function handleSidebar() {
   };
 
   /* Toggle the sidebar open or closed when the hamburger icon is clicked.
-     A simple debounce prevents rapid toggling that could leave the sidebar
-     in a mid-animation state and trigger text selection on mobile. */
+     A simple debounce prevents rapid toggling. Rapid toggling could leave
+     the sidebar in a mid-animation state and trigger text selection on
+     mobile. */
   let hamburgerClickTimer = null;
   if (hamburger) {
     hamburger.addEventListener("click", () => {

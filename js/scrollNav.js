@@ -1,19 +1,18 @@
 /**
  * scrollNav: GSAP-driven navbar hide/show controller.
  *
- * Behaviour:
- *   • Scroll DOWN past threshold → navbar slides up & hides
- *   • Scroll UP   past threshold → navbar slides down & shows
+ * Behavior:
+ *   • Scroll DOWN past threshold → navbar slides up and hides
+ *   • Scroll UP   past threshold → navbar slides down and shows
  *   • At page top (scrollY ≤ threshold) → always visible
  *   • Keyboard focus on a nav-link → always visible (a11y)
  *
- * Animation is driven externally by a ScrollTrigger onUpdate callback
- * so the navbar and hero-image rotation stay frame-synchronised.
+ * Animation is driven externally by a ScrollTrigger onUpdate callback.
+ * The navbar and hero-image rotation stay frame-synchronized.
  *
- * Returns a controller: { show(), hide(), forceShow(), isHidden }
- * or null if .sticky-nav is not in the DOM.
- *
- * Falls back to the original CSS-class approach when GSAP is not loaded.
+ * Returns a controller: { show(), hide(), forceShow(), isHidden }.
+ * Returns null when .sticky-nav is not in the DOM.
+ * Returns undefined when GSAP is not loaded.
  */
 
 import gsap from "gsap";
@@ -23,14 +22,14 @@ export default function scrollNav() {
   if (!nav) return null;
 
   /* Use GSAP quickTo tweeners when the GSAP library is available. They
-     give efficient frame-synchronised animations. */
+     give efficient frame-synchronized animations. */
   if (gsap) {
-    /* Set the initial centering transform with GSAP. CSS translateX won't
-       conflict with the y-axis animations. */
+    /* Set the initial centering transform with GSAP. CSS translateX will
+       not conflict with the y-axis animations. */
     gsap.set(nav, { xPercent: -50, x: 0, y: 0, opacity: 1 });
 
     /* Create quickTo tweeners for y position and opacity. Their durations
-       match so the navbar doesn't vanish before it slides out of view. */
+       match. The navbar does not vanish before it slides out of view. */
     const tweenY       = gsap.quickTo(nav, "y",       { duration: 0.6, ease: "power2.out" });
     const tweenOpacity = gsap.quickTo(nav, "opacity",  { duration: 0.6, ease: "power2.out" });
 
