@@ -48,9 +48,10 @@ const morph = (() => {
      last frame. */
   let sourceRotation = 0;
 
-  /* The .polaroid-card element that was clicked. Store it so the close
-     animation crossfades the clone into the real card. This masks any
-     sub-pixel mismatch when the two swap. */
+  /* The .polaroid-card element that was clicked. Store it during open so
+     the close animation can land the clone on it. The clone rotates into
+     the card's tilt mid-flight and lands pixel-exact; onCloseComplete
+     hides the clone and the identical card is revealed. No crossfade. */
   let sourceCardEl = null;
 
   /* The translateX and translateY values from the polaroid card's CSS
@@ -60,6 +61,9 @@ const morph = (() => {
      outside a polaroid card. */
   let sourceTranslateX = 0;
   let sourceTranslateY = 0;
+
+  let sourceFrameRadius = "0px";
+  let sourceImgRadius = "0px";
 
   let morphClone = null;
   let morphCloneImg = null;
@@ -71,6 +75,13 @@ const morph = (() => {
      response. It still decelerates gently. It is close to Apple's
      critically damped spring feel. */
   const EASE_OUT_QUINT = "cubic-bezier(0.23, 1, 0.32, 1)";
+
+  /* ease-in-out-circ: used for the close flight's rotation. It develops
+     the tilt through the flight instead of front-loading it with the
+     position's ease-out-quint, where a small angle is invisible on the
+     still-large clone. The image visibly curves into the card's resting
+     rotation as it lands. */
+  const EASE_IN_OUT_CIRC = "cubic-bezier(0.785, 0.135, 0.15, 0.86)";
 
   /* Open and close share the same easing. The motion is symmetric.
      Duration is computed per cycle based on travel distance (see
@@ -179,6 +190,25 @@ const morph = (() => {
     }
   };
 
+  /* Resting rotate()+translate() for every polaroid card, captured once
+     at init when no card is hovered. On hover (and .show-info) the card
+     straightens to rotate(0) per css/styles.css:957-962, so reading
+     getComputedStyle at click time would capture a flattened transform.
+     The close morph needs the true resting tilt so the clone retraces
+     into it. Cards not in the map fall back to the live computed style. */
+  const cardRestingTransforms = new WeakMap();
+
+  const captureCardRestingTransforms = () => {
+    document.querySelectorAll(".polaroid-card").forEach((card) => {
+      const m = new DOMMatrixReadOnly(window.getComputedStyle(card).transform);
+      cardRestingTransforms.set(card, {
+        rotation: Math.atan2(m.b, m.a) * (180 / Math.PI),
+        tx: m.e,
+        ty: m.f,
+      });
+    });
+  };
+
   /*
    * Open phase
    *
@@ -213,16 +243,39 @@ const morph = (() => {
          to the same frame-sized rect even after the user has scrolled. */
       closeSourceEl = polaroidFrame || sourceEl;
 
+      /* Capture the source frame and image corner radii so the close morph
+         can retrace into them. On small screens the modal polaroid frame
+         uses a smaller radius than the grid cards (css/styles.css
+         ~1800-1807), so the clone's corners must morph from the card's
+         value to the modal's value to stay consistent. */
+      const radiusEl = polaroidFrame || sourceEl;
+      sourceFrameRadius = window.getComputedStyle(radiusEl).borderRadius;
+      sourceImgRadius = sourceEl.tagName === "IMG"
+        ? window.getComputedStyle(sourceEl).borderRadius
+        : "0px";
+
       /* Capture the polaroid card's full transform (rotation and
          translation). The close animation needs both. The CSS uses
          rotate() translate() order. So m.e = tx and m.f = ty directly
          from the matrix. No decomposition needed. */
       if (polaroidFrame) {
         const card = polaroidFrame.closest('.polaroid-card');
-        const m = new DOMMatrixReadOnly(window.getComputedStyle(card).transform);
-        sourceRotation = Math.atan2(m.b, m.a) * (180 / Math.PI);
-        sourceTranslateX = m.e;
-        sourceTranslateY = m.f;
+        /* Use the resting snapshot captured at init, not the live
+           computed style. The card is hover-straightened to rotate(0)
+           when clicked (css/styles.css:957-962), which would make the
+           close clone fly back flat and snap to the tilt at the reveal.
+           Fall back to the live style if the card was never snapshotted. */
+        const resting = cardRestingTransforms.get(card);
+        if (resting) {
+          sourceRotation = resting.rotation;
+          sourceTranslateX = resting.tx;
+          sourceTranslateY = resting.ty;
+        } else {
+          const m = new DOMMatrixReadOnly(window.getComputedStyle(card).transform);
+          sourceRotation = Math.atan2(m.b, m.a) * (180 / Math.PI);
+          sourceTranslateX = m.e;
+          sourceTranslateY = m.f;
+        }
         sourceCardEl = card;
       } else {
         sourceRotation = 0;
@@ -283,9 +336,16 @@ const morph = (() => {
         morphClone.style.backgroundColor = "var(--polaroid-frame-bg)";
         if (modalPolaroidFrame) {
           morphClone.style.padding = window.getComputedStyle(modalPolaroidFrame).paddingLeft;
-          morphClone.style.borderRadius = window.getComputedStyle(modalPolaroidFrame).borderRadius;
+          /* Start at the source card's frame radius so the clone's corners
+             match the card it expands from; the tween morphs it to the
+             modal frame radius. */
+          morphClone.style.borderRadius = sourceFrameRadius;
           morphClone.style.boxShadow = window.getComputedStyle(modalPolaroidFrame).boxShadow;
         }
+        /* Start the clone image at the source card's image radius (it has
+           none by default, so its corners would be square); the tween
+           below morphs it to the modal image radius. */
+        morphCloneImg.style.borderRadius = sourceImgRadius;
 
         gsap.set(morphClone, {
           left: sourceRect.left,
@@ -306,11 +366,26 @@ const morph = (() => {
           onComplete: onOpenComplete,
         });
 
+        const modalFrameRadius = modalPolaroidFrame
+          ? window.getComputedStyle(modalPolaroidFrame).borderRadius
+          : sourceFrameRadius;
+        const modalImgRadius = window.getComputedStyle(modalImg).borderRadius;
+
         tl.to(morphClone, {
           left: targetRect.left,
           top: targetRect.top,
           width: targetRect.width,
           height: targetRect.height,
+          borderRadius: modalFrameRadius,
+          duration: morphDur,
+          ease: EASE_OUT_QUINT,
+        }, 0);
+
+        /* Round the clone image to the modal image radius in sync with the
+           growth, so its corners are never square or stuck at the source
+           card's value while the modal uses a different one. */
+        tl.to(morphCloneImg, {
+          borderRadius: modalImgRadius,
           duration: morphDur,
           ease: EASE_OUT_QUINT,
         }, 0);
@@ -467,6 +542,9 @@ const morph = (() => {
         morphClone.style.borderRadius = window.getComputedStyle(modalPolaroidFrame).borderRadius;
         morphClone.style.boxShadow = window.getComputedStyle(modalPolaroidFrame).boxShadow;
       }
+      /* The clone image starts at the modal image radius; the tween below
+         morphs it back to the source card's image radius on landing. */
+      morphCloneImg.style.borderRadius = window.getComputedStyle(modalImg).borderRadius;
 
       gsap.set(morphClone, {
         left: modalRect.left,
@@ -475,6 +553,7 @@ const morph = (() => {
         height: modalRect.height,
         scaleX: 1,
         scaleY: 1,
+        rotation: 0,
         /* Use center origin. The rotation during the close tween pivots
            around the clone's visual center. */
         transformOrigin: "center center",
@@ -492,14 +571,12 @@ const morph = (() => {
       modal.style.backdropFilter = "blur(0px)";
       modal.style.webkitBackdropFilter = "blur(0px)";
 
-      /* Hide the real polaroid card behind the still-visible modal
-         backdrop. The clone lands in its place and crossfades into it.
-         The backdrop blur masks the disappearance at this stage. The
-         crossfade at the end shows it without a snap. */
-      if (sourceCardEl) {
-        gsap.set(sourceCardEl, { opacity: 0 });
-      }
-
+      /* The card is never hidden. The backdrop (tweened below from
+         rgba(0,0,0,0.51) to transparent) obscures it at close start and
+         reveals it naturally as the clone flies home. The clone rotates
+         into the card's tilt mid-flight (rotation/x/y tween) and lands
+         pixel-exact on the card, so hiding the clone in onCloseComplete
+         hands off to the identical card with no crossfade. */
       const tl = gsap.timeline({
         onComplete: onCloseComplete,
       });
@@ -516,11 +593,34 @@ const morph = (() => {
         top: srcRect.top - sourceTranslateY,
         width: srcRect.width,
         height: srcRect.height,
-        rotation: sourceRotation,
         x: sourceTranslateX,
         y: sourceTranslateY,
+        /* Morph the frame radius back to the source card's radius so the
+           clone's corners match the card it lands on. */
+        borderRadius: sourceFrameRadius,
         duration: morphDur,
         ease: EASE_OUT_QUINT,
+      }, 0);
+
+      /* Round the clone image back to the source card's image radius in
+         sync with the landing. */
+      tl.to(morphCloneImg, {
+        borderRadius: sourceImgRadius,
+        duration: morphDur,
+        ease: EASE_OUT_QUINT,
+      }, 0);
+
+      /* The tilt is its own tween with ease-in-out-circ so it develops
+         through the flight as the clone approaches the card. Sharing the
+         position's ease-out-quint would front-load the rotation into the
+         first third, when the clone is still large and the small angle is
+         invisible. Eased here, the image visibly curves into the resting
+         rotation and lands exactly on it. Both tweens share morphDur and
+         start at 0, so the end pose is unchanged. */
+      tl.to(morphClone, {
+        rotation: sourceRotation,
+        duration: morphDur,
+        ease: EASE_IN_OUT_CIRC,
       }, 0);
 
       tl.to(modal, {
@@ -528,29 +628,6 @@ const morph = (() => {
         duration: OVERLAY_DUR,
         ease: EASE_OUT_QUINT,
       }, 0);
-
-      /* Crossfade: the clone fades out while the real polaroid card fades
-         in at the same time. Any sub-pixel positional mismatch between
-         the two is blended away instead of snapping. The overlap starts
-         80 ms before the position and rotation tween finishes. That gives
-         a 150 ms crossfade window. Emil's rule: only animate transform
-         and opacity. Keep them simple. */
-      const CROSSFADE_DUR = 0.15;
-      const CROSSFADE_OVERLAP = 0.08;
-
-      tl.to(morphClone, {
-        opacity: 0,
-        duration: CROSSFADE_DUR,
-        ease: "power2.out",
-      }, `-=${CROSSFADE_OVERLAP}`);
-
-      if (sourceCardEl) {
-        tl.to(sourceCardEl, {
-          opacity: 1,
-          duration: CROSSFADE_DUR,
-          ease: "power2.out",
-        }, `-=${CROSSFADE_DUR}`);
-      }
     });
 
   const onCloseComplete = () => {
@@ -573,9 +650,10 @@ const morph = (() => {
     modalImg.style.opacity = "";
     document.body.style.overflow = "";
 
-    /* Restore the real polaroid card to full opacity. The crossfade tween
-       may have been interrupted or never ran (for example, on the reduced
-       motion path). */
+    /* Defensive restore of the polaroid card to full opacity. The card is
+       never hidden during a normal close, but killTweens can leave state
+       behind on an interrupted cycle (plan 010). Keep this as the safety
+       net. */
     if (sourceCardEl) {
       gsap.set(sourceCardEl, { opacity: 1 });
     }
@@ -587,6 +665,8 @@ const morph = (() => {
     sourceRotation = 0;
     sourceTranslateX = 0;
     sourceTranslateY = 0;
+    sourceFrameRadius = "0px";
+    sourceImgRadius = "0px";
     sourceCardEl = null;
 
     if (resolveClose) { resolveClose(); resolveClose = null; }
@@ -608,6 +688,10 @@ const morph = (() => {
     modalPolaroidFrame = options.modalPolaroidFrame;
     modalContent = options.modalContent;
     closeBtn = options.closeBtn;
+    /* Snapshot resting card transforms now, while nothing is hovered.
+       open() uses these so a hover-straightened card still retraces into
+       its true tilt on close. */
+    captureCardRestingTransforms();
   };
 
   return { init, open, close, get isAnimating() { return isAnimating; } };
