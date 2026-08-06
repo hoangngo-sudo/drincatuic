@@ -1,12 +1,12 @@
 # *Event Website* project
 
-A static event website for student Christian fellowship group. Promotes the spring student retreat _"Falling in Love with Jesus"_ with a photo-rich landing page, smooth-scrolling animations, and a Supabase-backed registration form.
+A static event website for a student Christian fellowship group. It promotes the spring student retreat *"Falling in Love with Jesus"* with a photo-rich landing page, smooth-scrolling animations, and a Supabase-backed registration form.
 
 **Live site**: [https://hoangngo-sudo.github.io/drincatuic/](https://hoangngo-sudo.github.io/drincatuic/)
 
 ## Demo
 
-https://github.com/user-attachments/assets/9df883d5-5220-47a6-8a07-66a975d0f0c5
+https://github.com/user-attachments/assets/c1d8c17d-84f0-4fb1-946d-6861c6eb0c1a
 
 ## Architecture
 
@@ -20,10 +20,12 @@ flowchart TB
     IDX --> |Scroll| CONTACT["Contact Footer"]
     IDX --> |Click RSVP| REG["registration.html"]
 
-    GALLERY --> |Click image| MODAL["Image Modal<br/>Full-res view"]
+    GALLERY --> |Click image| MORPH["Image Morph<br/>clone expands to modal"]
     GALLERY --> |Touch tap 1| INFO["Info Overlay"]
-    INFO --> |Touch tap 2| MODAL
-    MODAL --> |Close / Escape| GALLERY
+    INFO --> |Touch tap 2| MORPH
+    MORPH --> MODAL["Image Modal<br/>Full-res view"]
+    MODAL --> |Close / Escape| MORPH
+    MORPH --> |Reverse to card| GALLERY
 
     REG --> |Submit| SUPA[("Supabase<br/>registrations table")]
     SUPA --> |Success| SUCCESS["Success Message"]
@@ -37,16 +39,17 @@ flowchart TB
 
 ## Features
 
-- **Dark/Light mode** Toggle saved to `localStorage`; token-based CSS theming with zero per-component overrides
-- **Polaroid collage gallery** Scattered rotation via `nth-child(6n+X)`, hover straightening + shadow depth, fullscreen modal viewer
-- **GSAP smooth scrolling** ScrollSmoother for buttery page scroll, scroll-driven hero background rotation via ScrollTrigger
-- **Directional hover effects** Mouse-direction-aware overlay animations (inspired by Hakim El Hattab)
-- **Touch-optimized** Two-tap interaction (tap 1 = overlay, tap 2 = modal), hamburger sidebar, touch-device CSS class
-- **Registration form** Client-side validation, Supabase insert, loading states, personalized success message
-- **Responsive-first** Fluid typography via `clamp()`/`min()`/`max()`, mobile breakpoints at 768px/480px
-- **Performance** Tiered image preloading, `loading="lazy"`, `content-visibility: auto`, `decoding="async"`, `requestAnimationFrame` guard, `passive` scroll listeners
-- **Security hardened** Content-Security-Policy, X-Frame-Options, X-Content-Type-Options, Permissions-Policy, strict referrer policy
-- **Frosted glass UI** `backdrop-filter: blur()` with SVG filter fallback on nav, buttons, and panels
+- **Dark/Light mode**: Toggle saved to `localStorage`; token-based CSS theming with zero per-component overrides
+- **Polaroid collage gallery**: Scattered rotation via `nth-child(6n+X)`, hover straightening + shadow depth, fullscreen modal viewer
+- **Image morph modal**: GSAP-driven directional morph — a clone of the clicked polaroid expands into the fullscreen modal and retraces its path (tilt + corner radius intact) on close, with distance-aware duration and no crossfade
+- **GSAP smooth scrolling**: ScrollSmoother for smooth page scrolling, scroll-driven hero background rotation via ScrollTrigger
+- **Directional hover effects**: Mouse-direction-aware overlay animations (inspired by Hakim El Hattab)
+- **Touch-optimized**: Two-tap interaction (tap 1 = overlay, tap 2 = modal), touch press feedback on polaroid cards, hamburger sidebar, touch-device CSS class
+- **Registration form**: Client-side validation, Supabase insert, loading states, personalized success message
+- **Responsive-first**: Fluid typography via `clamp()`/`min()`/`max()`, mobile breakpoints at 768px/480px
+- **Performance**: Tiered image preloading with background JPEG decode (the full-res bitmap is ready before the morph starts), static `backdrop-filter` during the morph (no per-frame blur tween), `loading="lazy"`, `content-visibility: auto`, `decoding="async"`, `requestAnimationFrame` guard, `passive` scroll listeners
+- **Security hardened**: Content-Security-Policy, X-Frame-Options, X-Content-Type-Options, Permissions-Policy, strict referrer policy
+- **Frosted glass UI**: `backdrop-filter: blur()` with SVG filter fallback on nav, buttons, and panels
 
 ## Tech Stack
 
@@ -69,6 +72,7 @@ graph TD
         SCRIPT[script.js]
         SLIDER[slider.js]
         IMGPRE[imagePreloading.js]
+        IMGMORPH[imageMorph.js]
         GRIDHOV[gridHover.js]
         MODAL[modal.js]
         EXPAND[expandable.js]
@@ -91,6 +95,7 @@ graph TD
     IDXE --> EXPAND
     IDXE --> GSAPBTN
     IDXE --> SCROLLNAV
+    MODAL --> IMGMORPH
 
     REGE --> CONFIG2[config.js]
     REGE --> SCRIPT2[script.js]
@@ -111,7 +116,7 @@ graph TD
 | WF Visual Sans | Variable web font (woff2) |
 | GitHub Pages | Static hosting via CNAME |
 
-JS modules are bundled through webpack entries with `runtimeChunk` manifest extraction and production content-hashed outputs. The Content-Security-Policy meta tag is dynamically generated via webpack's `HtmlWebpackPlugin` template parameters — development builds include `localhost:*` for HMR, production builds omit it.
+JS modules are bundled through webpack entries with `runtimeChunk` manifest extraction and production content-hashed outputs. The Content-Security-Policy meta tag is dynamically generated via webpack's `HtmlWebpackPlugin` template parameters. Development builds include `localhost:*` for HMR. Production builds omit it.
 
 ## Build with Webpack
 
@@ -150,8 +155,9 @@ Webpack outputs built files to `dist/` and generates both pages from templates:
 │   ├── script.js           # Theme, form handler, sidebar
 │   ├── config.js           # Supabase client init
 │   ├── slider.js           # Image carousel
-│   ├── imagePreloading.js  # Progressive image loading
-│   ├── gridHover.js        # Directional hover effects
+│   ├── imagePreloading.js  # Preload + pre-decode full-res images
+│   ├── imageMorph.js       # Directional morph open/close for the modal
+│   ├── gridHover.js        # Directional hover effects + touch press
 │   ├── modal.js            # Fullscreen image viewer
 │   ├── expandable.js       # Accordion Q&A
 │   ├── gsapButton.js       # GSAP-driven button hover/tap animations
@@ -182,6 +188,7 @@ graph TB
         SCROLLNAV_JS[scrollNav.js]
         HOVER[gridHover.js]
         PRELOAD[imagePreloading.js]
+        MORPH_JS[imageMorph.js]
         MODAL_JS[modal.js]
         SLIDER_JS[slider.js]
         EXPAND_JS[expandable.js]
@@ -195,6 +202,7 @@ graph TB
     POLAROID --> HOVER
     POLAROID --> MODAL_JS
     POLAROID --> PRELOAD
+    MODAL_JS --> MORPH_JS
     SLIDER_UI --> SLIDER_JS
     ACCORDION --> EXPAND_JS
     FORM_UI --> FORM_JS
