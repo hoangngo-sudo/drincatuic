@@ -39,7 +39,7 @@ jobs:
         run: pnpm install --frozen-lockfile --config.minimum-release-age=0
 
       - name: Build site
-        run: npm run build
+        run: pnpm run build
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_PUBLIC_KEY: ${{ secrets.SUPABASE_PUBLIC_KEY }}

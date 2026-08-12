@@ -121,8 +121,8 @@ JS modules are bundled through webpack entries with `runtimeChunk` manifest extr
 ## Build with Webpack
 
 ```bash
-npm install
-npm run build
+pnpm install
+pnpm run build
 ```
 
 Before local builds, create a `.env` file from `.env.example` and set:
@@ -133,7 +133,7 @@ Before local builds, create a `.env` file from `.env.example` and set:
 For local development:
 
 ```bash
-npm start
+pnpm start
 ```
 
 Webpack outputs built files to `dist/` and generates both pages from templates:
